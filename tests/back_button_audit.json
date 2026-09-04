@@ -1,0 +1,281 @@
+{
+  "timestamp": "2026-09-04T03:54:27",
+  "results": [
+    {
+      "route": "growth",
+      "status": "PASS",
+      "hitbox": {
+        "x": 4,
+        "y": 32.5,
+        "width": 48,
+        "height": 48
+      }
+    },
+    {
+      "route": "growth/weekly",
+      "status": "PASS",
+      "hitbox": {
+        "x": 4,
+        "y": 32.5,
+        "width": 48,
+        "height": 48
+      }
+    },
+    {
+      "route": "growth/action/a17",
+      "status": "PASS",
+      "hitbox": {
+        "x": 4,
+        "y": 32.5,
+        "width": 48,
+        "height": 48
+      }
+    },
+    {
+      "route": "archive",
+      "status": "PASS",
+      "hitbox": {
+        "x": 4,
+        "y": 32.5,
+        "width": 48,
+        "height": 48
+      }
+    },
+    {
+      "route": "archive/memories",
+      "status": "PASS",
+      "hitbox": {
+        "x": 4,
+        "y": 32.5,
+        "width": 48,
+        "height": 48
+      }
+    },
+    {
+      "route": "archive/members",
+      "status": "PASS",
+      "hitbox": {
+        "x": 4,
+        "y": 32.5,
+        "width": 48,
+        "height": 48
+      }
+    },
+    {
+      "route": "archive/basic/%E5%81%A5%E5%BA%B7%E7%8A%B6%E5%86%B5",
+      "status": "PASS",
+      "hitbox": {
+        "x": 4,
+        "y": 32.5,
+        "width": 48,
+        "height": 48
+      }
+    },
+    {
+      "route": "assessments",
+      "status": "PASS",
+      "hitbox": {
+        "x": 4,
+        "y": 32.5,
+        "width": 48,
+        "height": 48
+      }
+    },
+    {
+      "route": "assessments/detail/task-start",
+      "status": "PASS",
+      "hitbox": {
+        "x": 4,
+        "y": 32.5,
+        "width": 48,
+        "height": 48
+      }
+    },
+    {
+      "route": "assessments/report/emotion-cycle",
+      "status": "PASS",
+      "hitbox": {
+        "x": 4,
+        "y": 32.5,
+        "width": 48,
+        "height": 48
+      }
+    },
+    {
+      "route": "guides",
+      "status": "PASS",
+      "hitbox": {
+        "x": 4,
+        "y": 32.5,
+        "width": 48,
+        "height": 48
+      }
+    },
+    {
+      "route": "guides/category/%E4%BD%9C%E4%B8%9A%E5%AD%A6%E4%B9%A0",
+      "status": "PASS",
+      "hitbox": {
+        "x": 4,
+        "y": 32.5,
+        "width": 48,
+        "height": 48
+      }
+    },
+    {
+      "route": "guides/detail/g1",
+      "status": "PASS",
+      "hitbox": {
+        "x": 4,
+        "y": 32.5,
+        "width": 48,
+        "height": 48
+      }
+    },
+    {
+      "route": "membership",
+      "status": "PASS",
+      "hitbox": {
+        "x": 4,
+        "y": 32.5,
+        "width": 48,
+        "height": 48
+      }
+    },
+    {
+      "route": "membership/plans",
+      "status": "PASS",
+      "hitbox": {
+        "x": 4,
+        "y": 32.5,
+        "width": 48,
+        "height": 48
+      }
+    },
+    {
+      "route": "membership/orders",
+      "status": "PASS",
+      "hitbox": {
+        "x": 4,
+        "y": 32.5,
+        "width": 48,
+        "height": 48
+      }
+    },
+    {
+      "route": "task-center",
+      "status": "PASS",
+      "hitbox": {
+        "x": 4,
+        "y": 32.5,
+        "width": 48,
+        "height": 48
+      }
+    },
+    {
+      "route": "messages",
+      "status": "PASS",
+      "hitbox": {
+        "x": 4,
+        "y": 32.5,
+        "width": 48,
+        "height": 48
+      }
+    },
+    {
+      "route": "profile",
+      "status": "PASS",
+      "hitbox": {
+        "x": 4,
+        "y": 32.5,
+        "width": 48,
+        "height": 48
+      }
+    },
+    {
+      "route": "settings",
+      "status": "PASS",
+      "hitbox": {
+        "x": 4,
+        "y": 32.5,
+        "width": 48,
+        "height": 48
+      }
+    },
+    {
+      "route": "settings/account",
+      "status": "PASS",
+      "hitbox": {
+        "x": 4,
+        "y": 32.5,
+        "width": 48,
+        "height": 48
+      }
+    },
+    {
+      "route": "settings/notifications",
+      "status": "PASS",
+      "hitbox": {
+        "x": 4,
+        "y": 32.5,
+        "width": 48,
+        "height": 48
+      }
+    },
+    {
+      "route": "settings/privacy",
+      "status": "PASS",
+      "hitbox": {
+        "x": 4,
+        "y": 32.5,
+        "width": 48,
+        "height": 48
+      }
+    },
+    {
+      "route": "settings/help",
+      "status": "PASS",
+      "hitbox": {
+        "x": 4,
+        "y": 32.5,
+        "width": 48,
+        "height": 48
+      }
+    },
+    {
+      "route": "settings/about",
+      "status": "PASS",
+      "hitbox": {
+        "x": 4,
+        "y": 32.5,
+        "width": 48,
+        "height": 48
+      }
+    },
+    {
+      "route": "demo-tools",
+      "status": "PASS",
+      "hitbox": {
+        "x": 4,
+        "y": 32.5,
+        "width": 48,
+        "height": 48
+      }
+    },
+    {
+      "route": "feedback",
+      "status": "PASS",
+      "hitbox": {
+        "x": 4,
+        "y": 32.5,
+        "width": 48,
+        "height": 48
+      }
+    }
+  ],
+  "errors": [],
+  "summary": {
+    "passed": 27,
+    "total": 27,
+    "errors": 0
+  }
+}

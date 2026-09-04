@@ -1,0 +1,227 @@
+{
+  "timestamp": "2026-09-04T03:51:48",
+  "results": [
+    {
+      "width": 360,
+      "route": "home",
+      "status": "PASS",
+      "scrollWidth": 360,
+      "clientWidth": 360,
+      "rootScrollWidth": 360,
+      "rootClientWidth": 360
+    },
+    {
+      "width": 360,
+      "route": "growth",
+      "status": "PASS",
+      "scrollWidth": 360,
+      "clientWidth": 360,
+      "rootScrollWidth": 360,
+      "rootClientWidth": 360
+    },
+    {
+      "width": 360,
+      "route": "guides",
+      "status": "PASS",
+      "scrollWidth": 360,
+      "clientWidth": 360,
+      "rootScrollWidth": 360,
+      "rootClientWidth": 360
+    },
+    {
+      "width": 360,
+      "route": "assessments/report/emotion-cycle",
+      "status": "PASS",
+      "scrollWidth": 360,
+      "clientWidth": 360,
+      "rootScrollWidth": 360,
+      "rootClientWidth": 360
+    },
+    {
+      "width": 360,
+      "route": "archive",
+      "status": "PASS",
+      "scrollWidth": 360,
+      "clientWidth": 360,
+      "rootScrollWidth": 360,
+      "rootClientWidth": 360
+    },
+    {
+      "width": 360,
+      "route": "settings",
+      "status": "PASS",
+      "scrollWidth": 360,
+      "clientWidth": 360,
+      "rootScrollWidth": 360,
+      "rootClientWidth": 360
+    },
+    {
+      "width": 375,
+      "route": "home",
+      "status": "PASS",
+      "scrollWidth": 375,
+      "clientWidth": 375,
+      "rootScrollWidth": 375,
+      "rootClientWidth": 375
+    },
+    {
+      "width": 375,
+      "route": "growth",
+      "status": "PASS",
+      "scrollWidth": 375,
+      "clientWidth": 375,
+      "rootScrollWidth": 375,
+      "rootClientWidth": 375
+    },
+    {
+      "width": 375,
+      "route": "guides",
+      "status": "PASS",
+      "scrollWidth": 375,
+      "clientWidth": 375,
+      "rootScrollWidth": 375,
+      "rootClientWidth": 375
+    },
+    {
+      "width": 375,
+      "route": "assessments/report/emotion-cycle",
+      "status": "PASS",
+      "scrollWidth": 375,
+      "clientWidth": 375,
+      "rootScrollWidth": 375,
+      "rootClientWidth": 375
+    },
+    {
+      "width": 375,
+      "route": "archive",
+      "status": "PASS",
+      "scrollWidth": 375,
+      "clientWidth": 375,
+      "rootScrollWidth": 375,
+      "rootClientWidth": 375
+    },
+    {
+      "width": 375,
+      "route": "settings",
+      "status": "PASS",
+      "scrollWidth": 375,
+      "clientWidth": 375,
+      "rootScrollWidth": 375,
+      "rootClientWidth": 375
+    },
+    {
+      "width": 390,
+      "route": "home",
+      "status": "PASS",
+      "scrollWidth": 390,
+      "clientWidth": 390,
+      "rootScrollWidth": 390,
+      "rootClientWidth": 390
+    },
+    {
+      "width": 390,
+      "route": "growth",
+      "status": "PASS",
+      "scrollWidth": 390,
+      "clientWidth": 390,
+      "rootScrollWidth": 390,
+      "rootClientWidth": 390
+    },
+    {
+      "width": 390,
+      "route": "guides",
+      "status": "PASS",
+      "scrollWidth": 390,
+      "clientWidth": 390,
+      "rootScrollWidth": 390,
+      "rootClientWidth": 390
+    },
+    {
+      "width": 390,
+      "route": "assessments/report/emotion-cycle",
+      "status": "PASS",
+      "scrollWidth": 390,
+      "clientWidth": 390,
+      "rootScrollWidth": 390,
+      "rootClientWidth": 390
+    },
+    {
+      "width": 390,
+      "route": "archive",
+      "status": "PASS",
+      "scrollWidth": 390,
+      "clientWidth": 390,
+      "rootScrollWidth": 390,
+      "rootClientWidth": 390
+    },
+    {
+      "width": 390,
+      "route": "settings",
+      "status": "PASS",
+      "scrollWidth": 390,
+      "clientWidth": 390,
+      "rootScrollWidth": 390,
+      "rootClientWidth": 390
+    },
+    {
+      "width": 430,
+      "route": "home",
+      "status": "PASS",
+      "scrollWidth": 430,
+      "clientWidth": 430,
+      "rootScrollWidth": 430,
+      "rootClientWidth": 430
+    },
+    {
+      "width": 430,
+      "route": "growth",
+      "status": "PASS",
+      "scrollWidth": 430,
+      "clientWidth": 430,
+      "rootScrollWidth": 430,
+      "rootClientWidth": 430
+    },
+    {
+      "width": 430,
+      "route": "guides",
+      "status": "PASS",
+      "scrollWidth": 430,
+      "clientWidth": 430,
+      "rootScrollWidth": 430,
+      "rootClientWidth": 430
+    },
+    {
+      "width": 430,
+      "route": "assessments/report/emotion-cycle",
+      "status": "PASS",
+      "scrollWidth": 430,
+      "clientWidth": 430,
+      "rootScrollWidth": 430,
+      "rootClientWidth": 430
+    },
+    {
+      "width": 430,
+      "route": "archive",
+      "status": "PASS",
+      "scrollWidth": 430,
+      "clientWidth": 430,
+      "rootScrollWidth": 430,
+      "rootClientWidth": 430
+    },
+    {
+      "width": 430,
+      "route": "settings",
+      "status": "PASS",
+      "scrollWidth": 430,
+      "clientWidth": 430,
+      "rootScrollWidth": 430,
+      "rootClientWidth": 430
+    }
+  ],
+  "errors": [],
+  "summary": {
+    "passed": 24,
+    "total": 24,
+    "browser_errors": 0
+  }
+}

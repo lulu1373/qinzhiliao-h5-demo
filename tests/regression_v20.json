@@ -1,0 +1,66 @@
+{
+  "timestamp": "2026-09-04T02:51:13",
+  "results": [
+    {
+      "name": "登录链路与首页进入",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "name": "侧栏点击打开与主页面联动",
+      "status": "PASS",
+      "detail": "matrix(1, 0, 0, 1, 315.276, 0)"
+    },
+    {
+      "name": "左缘滑动打开侧栏",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "name": "对话→正面解读三阶段→行动卡",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "name": "任务中心→成长总结→逐级返回",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "name": "家庭档案家长/孩子/小亲记忆",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "name": "我的测评→测评详情→高保真报告",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "name": "关系指南分类/详情/返回链",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "name": "会员中心/方案/返回链",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "name": "设置二级页面与返回链",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "name": "360px / 430px 响应式无横向滚动",
+      "status": "PASS",
+      "detail": ""
+    }
+  ],
+  "errors": [],
+  "summary": {
+    "passed": 11,
+    "failed": 0,
+    "browser_errors": 0
+  }
+}

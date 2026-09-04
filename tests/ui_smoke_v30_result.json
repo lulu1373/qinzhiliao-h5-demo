@@ -1,0 +1,16 @@
+{
+  "steps": [
+    "login",
+    "home",
+    "drawer",
+    "chat-invite",
+    "interpret-restore",
+    "interpret-final",
+    "action-card",
+    "growth",
+    "guide",
+    "report"
+  ],
+  "errors": [],
+  "screens": 15
+}

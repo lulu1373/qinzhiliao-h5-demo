@@ -1,0 +1,6 @@
+{
+  "route": "assessments/report/emotion-cycle",
+  "errors": [],
+  "screens": 10,
+  "primary_bg": "linear-gradient(135deg, rgb(114, 174, 93) 0%, rgb(90, 149, 72) 100%)"
+}
