@@ -21,10 +21,7 @@ for path in sorted((root/'assets').rglob('*')):
 
 html=re.sub(r'<link\s+rel="stylesheet"\s+href="styles\.css">',f'<style>\n{css}\n</style>',html)
 html=html.replace('<script src="app.js"></script>',f'<script>\n{js}\n</script>')
-html=html.replace('亲智聊 H5 App Demo V3.0 · 黄金页面质感升级','亲智聊 H5 App Demo V3.0 · 黄金页面质感升级')
 (root/'dist').mkdir(exist_ok=True)
 (root/'dist'/'index.html').write_text(html,encoding='utf-8')
-out=Path('/mnt/data/亲智聊-H5-App-Demo-V3.0-质感升级版.html')
-out.write_text(html,encoding='utf-8')
-print(out)
-print(out.stat().st_size)
+print(root/'dist'/'index.html')
+print((root/'dist'/'index.html').stat().st_size)

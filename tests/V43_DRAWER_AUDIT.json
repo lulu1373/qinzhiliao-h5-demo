@@ -1,0 +1,78 @@
+[
+  {
+    "width": 360,
+    "height": 675,
+    "drawer_width": 316.8,
+    "scroll_before": 0,
+    "scroll_after": 185,
+    "selected": 1,
+    "errors": [],
+    "layout": {
+      "bodyW": 360,
+      "innerW": 360,
+      "scrollH": 790,
+      "clientH": 605,
+      "accountH": 70,
+      "memberH": 68,
+      "servicesH": 82
+    },
+    "pass": true
+  },
+  {
+    "width": 390,
+    "height": 675,
+    "drawer_width": 343.19,
+    "scroll_before": 0,
+    "scroll_after": 189,
+    "selected": 1,
+    "errors": [],
+    "layout": {
+      "bodyW": 390,
+      "innerW": 390,
+      "scrollH": 794,
+      "clientH": 605,
+      "accountH": 70,
+      "memberH": 68,
+      "servicesH": 86
+    },
+    "pass": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "drawer_width": 343.19,
+    "scroll_before": 0,
+    "scroll_after": 20,
+    "selected": 1,
+    "errors": [],
+    "layout": {
+      "bodyW": 390,
+      "innerW": 390,
+      "scrollH": 794,
+      "clientH": 774,
+      "accountH": 70,
+      "memberH": 68,
+      "servicesH": 86
+    },
+    "pass": true
+  },
+  {
+    "width": 430,
+    "height": 844,
+    "drawer_width": 378.39,
+    "scroll_before": 0,
+    "scroll_after": 20,
+    "selected": 1,
+    "errors": [],
+    "layout": {
+      "bodyW": 430,
+      "innerW": 430,
+      "scrollH": 794,
+      "clientH": 774,
+      "accountH": 70,
+      "memberH": 68,
+      "servicesH": 86
+    },
+    "pass": true
+  }
+]

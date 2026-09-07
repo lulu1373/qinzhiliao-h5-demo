@@ -1,0 +1,236 @@
+{
+  "routes": [
+    {
+      "route": "home",
+      "status": "PASS",
+      "actual": "home",
+      "notfound": false,
+      "overflow": false
+    },
+    {
+      "route": "growth",
+      "status": "PASS",
+      "actual": "growth",
+      "notfound": false,
+      "overflow": false
+    },
+    {
+      "route": "growth/weekly",
+      "status": "PASS",
+      "actual": "growth/weekly",
+      "notfound": false,
+      "overflow": false
+    },
+    {
+      "route": "growth/actions",
+      "status": "PASS",
+      "actual": "growth/actions",
+      "notfound": false,
+      "overflow": false
+    },
+    {
+      "route": "growth/action/a17",
+      "status": "PASS",
+      "actual": "growth/action/a17",
+      "notfound": false,
+      "overflow": false
+    },
+    {
+      "route": "archive",
+      "status": "PASS",
+      "actual": "archive",
+      "notfound": false,
+      "overflow": false
+    },
+    {
+      "route": "archive/memories",
+      "status": "PASS",
+      "actual": "archive/memories",
+      "notfound": false,
+      "overflow": false
+    },
+    {
+      "route": "archive/members",
+      "status": "PASS",
+      "actual": "archive/members",
+      "notfound": false,
+      "overflow": false
+    },
+    {
+      "route": "archive/basic/%E5%81%A5%E5%BA%B7%E7%8A%B6%E5%86%B5",
+      "status": "PASS",
+      "actual": "archive/basic/%E5%81%A5%E5%BA%B7%E7%8A%B6%E5%86%B5",
+      "notfound": false,
+      "overflow": false
+    },
+    {
+      "route": "assessments",
+      "status": "PASS",
+      "actual": "assessments",
+      "notfound": false,
+      "overflow": false
+    },
+    {
+      "route": "assessments/detail/task-start",
+      "status": "PASS",
+      "actual": "assessments/detail/task-start",
+      "notfound": false,
+      "overflow": false
+    },
+    {
+      "route": "assessments/questions/task-start",
+      "status": "PASS",
+      "actual": "assessments/questions/task-start",
+      "notfound": false,
+      "overflow": false
+    },
+    {
+      "route": "assessments/report/task-start",
+      "status": "PASS",
+      "actual": "assessments/report/task-start",
+      "notfound": false,
+      "overflow": false
+    },
+    {
+      "route": "guides",
+      "status": "PASS",
+      "actual": "guides",
+      "notfound": false,
+      "overflow": false
+    },
+    {
+      "route": "guides/category/%E4%BD%9C%E4%B8%9A%E5%AD%A6%E4%B9%A0",
+      "status": "PASS",
+      "actual": "guides/category/%E4%BD%9C%E4%B8%9A%E5%AD%A6%E4%B9%A0",
+      "notfound": false,
+      "overflow": false
+    },
+    {
+      "route": "guides/detail/g1",
+      "status": "PASS",
+      "actual": "guides/detail/g1",
+      "notfound": false,
+      "overflow": false
+    },
+    {
+      "route": "membership",
+      "status": "PASS",
+      "actual": "membership",
+      "notfound": false,
+      "overflow": false
+    },
+    {
+      "route": "membership/plans",
+      "status": "PASS",
+      "actual": "membership/plans",
+      "notfound": false,
+      "overflow": false
+    },
+    {
+      "route": "membership/orders",
+      "status": "PASS",
+      "actual": "membership/orders",
+      "notfound": false,
+      "overflow": false
+    },
+    {
+      "route": "task-center",
+      "status": "PASS",
+      "actual": "task-center",
+      "notfound": false,
+      "overflow": false
+    },
+    {
+      "route": "messages",
+      "status": "PASS",
+      "actual": "messages",
+      "notfound": false,
+      "overflow": false
+    },
+    {
+      "route": "profile",
+      "status": "PASS",
+      "actual": "profile",
+      "notfound": false,
+      "overflow": false
+    },
+    {
+      "route": "settings",
+      "status": "PASS",
+      "actual": "settings",
+      "notfound": false,
+      "overflow": false
+    },
+    {
+      "route": "settings/account",
+      "status": "PASS",
+      "actual": "settings/account",
+      "notfound": false,
+      "overflow": false
+    },
+    {
+      "route": "settings/notifications",
+      "status": "PASS",
+      "actual": "settings/notifications",
+      "notfound": false,
+      "overflow": false
+    },
+    {
+      "route": "settings/privacy",
+      "status": "PASS",
+      "actual": "settings/privacy",
+      "notfound": false,
+      "overflow": false
+    },
+    {
+      "route": "settings/help",
+      "status": "PASS",
+      "actual": "settings/help",
+      "notfound": false,
+      "overflow": false
+    },
+    {
+      "route": "settings/about",
+      "status": "PASS",
+      "actual": "settings/about",
+      "notfound": false,
+      "overflow": false
+    },
+    {
+      "route": "feedback",
+      "status": "PASS",
+      "actual": "feedback",
+      "notfound": false,
+      "overflow": false
+    },
+    {
+      "route": "demo-tools",
+      "status": "PASS",
+      "actual": "demo-tools",
+      "notfound": false,
+      "overflow": false
+    }
+  ],
+  "checks": [
+    {
+      "name": "30 个主要路由可渲染且无横向溢出",
+      "status": "PASS",
+      "count": 30
+    },
+    {
+      "name": "从功能页返回保持聊天草稿、阅读位置和侧栏状态",
+      "status": "PASS",
+      "detail": {
+        "top": 1291,
+        "draft": "未发送草稿保留测试",
+        "drawer": "open"
+      }
+    },
+    {
+      "name": "360/390/430 × 7 核心页面无横向溢出",
+      "status": "PASS",
+      "count": 21
+    }
+  ],
+  "errors": []
+}

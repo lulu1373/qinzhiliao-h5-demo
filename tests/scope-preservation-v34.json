@@ -1,0 +1,12 @@
+{
+  "baseline": "V3.3 抽屉边缘修复版",
+  "baseline_html_sha256": "03f981c1aaa14a0fc20ee792d9a8b9ec0e60a89023cab7c2fe745b7e76996f60",
+  "baseline_zip_sha256": "b3138086f7eed6ca08b7864b0dbe848858d9b69cb8bfd8a9d8eead4378271ccb",
+  "preservation_checks": {
+    "router_unchanged": true,
+    "drawer_physics_unchanged": true,
+    "original_css_unchanged": true,
+    "assets_unchanged": true
+  },
+  "current_html_sha256": "affaad164e96d6be7ecd681c7d66ea63769a436c056401c30f70b1c5d7f313e3"
+}

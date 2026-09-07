@@ -1,0 +1,50 @@
+{
+  "version": "V3.5",
+  "environment": "Chromium headless, standalone set_content, native CDP touch and wheel; not physical devices",
+  "checks": [
+    {
+      "name": "单一原生滚动容器，76px固定账号栏；旧固定会员、大快捷卡和底栏移除",
+      "result": "PASS"
+    },
+    {
+      "name": "会员条起手原生上滑：统一滚动、头部不动、不误跳转、不带动首页",
+      "result": "PASS",
+      "delta": 23
+    },
+    {
+      "name": "功能入口起手原生上滑：统一滚动、头部不动、不误跳转、不带动首页",
+      "result": "PASS",
+      "delta": 103
+    },
+    {
+      "name": "对话记录起手原生上滑：统一滚动、头部不动、不误跳转、不带动首页",
+      "result": "PASS",
+      "delta": 103
+    },
+    {
+      "name": "轻斜向上滑不误触关闭",
+      "result": "PASS"
+    },
+    {
+      "name": "向下原生滚动可回到上部内容",
+      "result": "PASS"
+    },
+    {
+      "name": "功能卡区域鼠标滚轮滚动同一内容区",
+      "result": "PASS"
+    },
+    {
+      "name": "滚动到底继续上滑不传递给首页",
+      "result": "PASS"
+    },
+    {
+      "name": "联系客服在滚动末端可达；返回恢复原展开状态和滚动位置",
+      "result": "PASS",
+      "saved": 152,
+      "restored": 152
+    }
+  ],
+  "viewports": [],
+  "errors": [],
+  "console_errors": []
+}

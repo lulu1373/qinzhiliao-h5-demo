@@ -1,0 +1,20 @@
+{
+  "baseline": "V3.4",
+  "baseline_sha256": {
+    "app.js": "9e0ee9a7c46ccd54b77f1aca0eb6156204722d29c53e0eec3d22ef4c3d2f3269",
+    "styles.css": "0c096cac2e562f1c3b224222de2024f3c65065b8c956fb1313f3c6f4050eed32",
+    "index.html": "affaad164e96d6be7ecd681c7d66ea63769a436c056401c30f70b1c5d7f313e3"
+  },
+  "protected_functions_unchanged": {
+    "drawerWidth": true,
+    "setDrawerPhase": true,
+    "settleClosedDrawer": true,
+    "setDrawerProgress": true,
+    "getPendingTasks": true,
+    "getUnreadMessageCount": true,
+    "recordActionResult": true,
+    "handleConfirmOk": true
+  },
+  "artwork_files_unchanged": 11,
+  "note": "Drawer DOM/styles/gesture coordination and drawer-origin return view restoration changed; route IDs and business state unchanged."
+}
