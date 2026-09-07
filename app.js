@@ -5,6 +5,20 @@ const ASSETS={logo:'./assets/logo.png',mascot:'./assets/mascot.png',mascotLogin:
 const STORAGE_KEY='qzl-h5-app-demo-v3-state';
 const DEBUG_KEY='qzl-h5-debug';
 
+// V4.5 mobile runtime: real phones should not render the fake prototype status bar.
+const RUNTIME_MOBILE=Boolean((navigator.userAgentData&&navigator.userAgentData.mobile)||/Android|iPhone|iPod/i.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1));
+const RUNTIME_STANDALONE=Boolean(window.matchMedia&&window.matchMedia('(display-mode: standalone)').matches||window.navigator.standalone===true);
+document.documentElement.classList.toggle('mobile-runtime',RUNTIME_MOBILE);
+document.documentElement.classList.toggle('standalone-runtime',RUNTIME_STANDALONE);
+
+// Installable single-file friendly manifest. In the standalone build ASSETS.logo is embedded as a data URI.
+try{
+  const manifest={name:'亲智聊',short_name:'亲智聊',start_url:location.pathname+location.search+'#/home',display:'standalone',background_color:'#F8F4EC',theme_color:'#F8F4EC',icons:[{src:ASSETS.logo,sizes:'256x256',type:'image/png',purpose:'any maskable'}]};
+  const manifestUrl=URL.createObjectURL(new Blob([JSON.stringify(manifest)],{type:'application/manifest+json'}));
+  const manifestLink=document.createElement('link');manifestLink.rel='manifest';manifestLink.href=manifestUrl;document.head.appendChild(manifestLink);
+  const touchIcon=document.createElement('link');touchIcon.rel='apple-touch-icon';touchIcon.href=ASSETS.logo;document.head.appendChild(touchIcon);
+}catch(_e){}
+
 const svg={
   menu:'<svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg>',
   gift:'<svg viewBox="0 0 24 24"><rect x="3" y="9" width="18" height="12" rx="2"/><path d="M12 9v12M3 13h18M12 9H7.8a2.8 2.8 0 1 1 2.6-3.8L12 9Zm0 0h4.2a2.8 2.8 0 1 0-2.6-3.8L12 9Z"/></svg>',
@@ -687,7 +701,7 @@ function renderHomeIdle(){
 function renderComposer(){
   return `<div class="composer"><div class="composer-row">
     <button class="composer-btn" data-action="voice-start" aria-label="语音输入">${svg.mic}</button>
-    <div class="composer-input"><textarea id="chatInput" rows="1" placeholder="${state.chat.active?'继续和小亲说……':'和小亲说说发生了什么…'}"></textarea></div>
+    <div class="composer-input"><textarea id="chatInput" rows="1" placeholder="${state.chat.active?'继续和小亲说…':'和小亲说说…'}"></textarea></div>
     <button class="composer-btn" data-action="attachment-sheet" aria-label="添加附件">${svg.plus}</button>
     <button class="composer-btn" id="chatSendBtn" data-action="chat-send" aria-label="发送">${svg.send}</button>
   </div></div>`;
@@ -877,7 +891,7 @@ function renderGuideDetail(id){
 
 function renderMembership(){
   const active=state.membership.active;
-  return `<div class="secondary-page membership-page">${titleBar('会员中心',{back:'home',right:{label:'订单',action:'member-orders'}})}<div class="page-body"><div class="member-banner"><h2>${active?'亲智聊会员':'普通用户'}</h2><p>${active?'有效期至 2027 年 9 月 3 日':'开通后获得完整测评报告、长期成长总结和扩展家庭档案。'}</p><button class="primary-btn" data-action="route" data-route="membership/plans" style="margin-top:14px;height:42px">${active?'续费会员':'立即开通'}</button></div><div class="section-title"><span>会员专属权益</span></div><div class="benefit-grid"><div class="benefit-card"><span>${svg.relation}</span><b>深度关系理解</b><p>更完整的关系分析与修正过程</p></div><div class="benefit-card"><span>${svg.assessment}</span><b>完整测评报告</b><p>查看全部维度与历史变化</p></div><div class="benefit-card"><span>${svg.guide}</span><b>指南会员内容</b><p>系统专题与进阶内容</p></div><div class="benefit-card"><span>${svg.growth}</span><b>长期成长总结</b><p>查看更多阶段变化</p></div><div class="benefit-card"><span>${svg.family}</span><b>家庭档案扩展</b><p>更多成员与长期记录</p></div><div class="benefit-card"><span>${svg.sparkle}</span><b>智能体权益</b><p>成长督导与报告解读</p></div></div><div class="panel" style="margin-top:12px"><div class="panel-title">我的权益使用情况</div>${listRow(svg.assessment,'完整测评报告','本月已使用 1 次','route','data-route="assessments"')}${listRow(svg.growth,'长期成长总结','本月已生成 1 份','route','data-route="growth/weekly"')}${listRow(svg.brain,'家庭档案','已建立 2 位成员','route','data-route="archive"')}</div></div></div>`;
+  return `<div class="secondary-page membership-page">${titleBar('会员中心',{back:'home',right:{label:'订单',action:'member-orders'}})}<div class="page-body"><div class="member-banner membership-identity-card ${active?'is-active':'is-free'}"><div class="membership-identity-copy"><span class="membership-eyebrow">${active?'MEMBER':'MEMBERSHIP'}</span><h2>${active?'亲智聊会员':'普通用户'}</h2><p>${active?'有效期至 2027 年 9 月 3 日':'开通后获得完整测评报告、长期成长总结和扩展家庭档案。'}</p></div><button class="primary-btn membership-cta" data-action="route" data-route="membership/plans">${active?'续费会员':'立即开通'}</button></div><div class="section-title"><span>会员专属权益</span></div><div class="benefit-grid"><div class="benefit-card"><span>${svg.relation}</span><b>深度关系理解</b><p>更完整的关系分析与修正过程</p></div><div class="benefit-card"><span>${svg.assessment}</span><b>完整测评报告</b><p>查看全部维度与历史变化</p></div><div class="benefit-card"><span>${svg.guide}</span><b>指南会员内容</b><p>系统专题与进阶内容</p></div><div class="benefit-card"><span>${svg.growth}</span><b>长期成长总结</b><p>查看更多阶段变化</p></div><div class="benefit-card"><span>${svg.family}</span><b>家庭档案扩展</b><p>更多成员与长期记录</p></div><div class="benefit-card"><span>${svg.sparkle}</span><b>智能体权益</b><p>成长督导与报告解读</p></div></div><div class="panel" style="margin-top:12px"><div class="panel-title">我的权益使用情况</div>${listRow(svg.assessment,'完整测评报告','本月已使用 1 次','route','data-route="assessments"')}${listRow(svg.growth,'长期成长总结','本月已生成 1 份','route','data-route="growth/weekly"')}${listRow(svg.brain,'家庭档案','已建立 2 位成员','route','data-route="archive"')}</div></div></div>`;
 }
 
 function renderMembershipPlans(){
@@ -1028,7 +1042,7 @@ function renderDrawer(){
   <div class="v35-drawer-scroll v43-drawer-scroll" id="drawerScroll" tabindex="0" aria-label="侧栏内容，可上下滚动">
     <button class="v35-membership v43-membership" data-action="route" data-route="membership">
       <span class="v43-membership-icon" aria-hidden="true">${svg.sparkle}</span>
-      <span class="v35-membership-copy v43-membership-copy"><b>亲智聊会员</b><small>${state.membership.active?'会员权益已开启':'解锁完整理解与成长能力'}</small></span>
+      <span class="v35-membership-copy v43-membership-copy"><b>亲智聊会员</b><small>${state.membership.active?'会员权益已开启':'完整理解与成长权益'}</small></span>
       <span class="v35-membership-link v43-membership-link">查看权益<span aria-hidden="true">${svg.back}</span></span>
     </button>
     <nav class="v35-services v43-services" aria-label="常用功能">

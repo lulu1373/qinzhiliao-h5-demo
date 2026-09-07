@@ -2388,3 +2388,414 @@ button:focus-visible,input:focus-visible,textarea:focus-visible{outline-color:rg
   .v43-services button{height:70px!important}
   .v43-services b{font-size:12.5px!important}
 }
+
+
+/* ==================== V4.4 Membership palette refinement ==================== */
+.membership-page .membership-identity-card{
+  position:relative!important;
+  min-height:166px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:flex-start!important;
+  justify-content:space-between!important;
+  gap:18px!important;
+  padding:22px 22px 20px!important;
+  border-radius:22px!important;
+  overflow:hidden!important;
+  box-shadow:0 10px 28px rgba(91,66,43,.055)!important;
+  border:1px solid rgba(151,111,70,.10)!important;
+}
+.membership-page .membership-identity-card:after{
+  content:"";
+  position:absolute;
+  width:168px;height:168px;
+  right:-78px;top:-86px;
+  border-radius:50%;
+  background:rgba(255,255,255,.30);
+  pointer-events:none;
+}
+.membership-page .membership-identity-copy{position:relative;z-index:1;max-width:88%}
+.membership-page .membership-eyebrow{
+  display:block;
+  margin-bottom:7px;
+  font-size:9.5px;
+  line-height:14px;
+  letter-spacing:.12em;
+  font-weight:700;
+  text-transform:uppercase;
+}
+.membership-page .membership-identity-card h2{
+  margin:0!important;
+  font-size:21px!important;
+  line-height:29px!important;
+  font-weight:650!important;
+  letter-spacing:0!important;
+}
+.membership-page .membership-identity-card p{
+  margin:7px 0 0!important;
+  max-width:310px;
+  font-size:12.5px!important;
+  line-height:1.58!important;
+}
+.membership-page .membership-cta{
+  position:relative;z-index:1;
+  min-width:108px!important;
+  height:45px!important;
+  padding:0 22px!important;
+  margin:0!important;
+  border-radius:17px!important;
+  font-size:14px!important;
+  line-height:45px!important;
+  font-weight:650!important;
+  box-shadow:0 5px 14px rgba(151,95,53,.13)!important;
+  transition:transform .10s ease,filter .14s ease,box-shadow .14s ease!important;
+}
+.membership-page .membership-cta:active{
+  transform:scale(.98)!important;
+  filter:brightness(.98)!important;
+  box-shadow:0 2px 8px rgba(151,95,53,.10)!important;
+}
+
+/* Free state: warm champagne invitation, no green field. */
+.membership-page .membership-identity-card.is-free{
+  background:linear-gradient(135deg,#F5E9D5 0%,#EFDDBF 100%)!important;
+  color:#473C32!important;
+}
+.membership-page .membership-identity-card.is-free .membership-eyebrow{color:#AC814D!important}
+.membership-page .membership-identity-card.is-free h2{color:#443A31!important}
+.membership-page .membership-identity-card.is-free p{color:#7B6D5D!important}
+.membership-page .membership-identity-card.is-free .membership-cta{
+  background:linear-gradient(135deg,#DEA066 0%,#D58A50 100%)!important;
+  color:#FFF9F1!important;
+  border:1px solid rgba(170,101,48,.08)!important;
+}
+
+/* Active state: deep cocoa + champagne gold, distinct from brand green. */
+.membership-page .membership-identity-card.is-active{
+  background:linear-gradient(135deg,#52473E 0%,#67584A 100%)!important;
+  color:#FFF9F1!important;
+  border-color:rgba(255,239,213,.10)!important;
+  box-shadow:0 12px 30px rgba(68,52,40,.10)!important;
+}
+.membership-page .membership-identity-card.is-active:after{background:rgba(255,242,217,.055)}
+.membership-page .membership-identity-card.is-active .membership-eyebrow{color:#D8B878!important}
+.membership-page .membership-identity-card.is-active h2{color:#FFF9F1!important}
+.membership-page .membership-identity-card.is-active p{color:#D8CDC2!important}
+.membership-page .membership-identity-card.is-active .membership-cta{
+  background:linear-gradient(135deg,#E0C18A 0%,#CFA86A 100%)!important;
+  color:#45382E!important;
+  border:1px solid rgba(255,245,225,.18)!important;
+  box-shadow:0 5px 14px rgba(38,29,23,.14)!important;
+}
+
+/* Benefits stay quiet: cream surfaces + tiny semantic icon color only. */
+.membership-page .section-title{color:#3D352F!important}
+.membership-page .benefit-grid{gap:10px!important}
+.membership-page .benefit-card{
+  background:#FFFDF9!important;
+  border-color:rgba(126,96,66,.075)!important;
+  box-shadow:0 6px 18px rgba(74,55,38,.032)!important;
+}
+.membership-page .benefit-card>span{
+  width:36px;height:36px;
+  display:grid;place-items:center;
+  border-radius:12px!important;
+  background:#F7F0E7!important;
+}
+.membership-page .benefit-card>span svg{width:19px!important;height:19px!important;stroke-width:1.7!important}
+.membership-page .benefit-card b{color:#3B342E!important;font-weight:600!important}
+.membership-page .benefit-card p{color:#8C8177!important}
+.membership-page .panel{background:#FFFDF9!important;border-color:rgba(126,96,66,.07)!important}
+
+/* Plan selection follows the same champagne/caramel language. */
+.membership-plans-page .plan-card.selected{
+  background:linear-gradient(145deg,#FFFDF8 0%,#F8EDD9 100%)!important;
+  border-color:#D7B579!important;
+  box-shadow:0 0 0 3px rgba(194,151,82,.065)!important;
+}
+.membership-plans-page .plan-card .recommend{background:#A9854C!important;color:#FFF9EF!important}
+.membership-plans-page .plan-card strong{color:#8C633D!important}
+.membership-plans-page .primary-btn{
+  background:linear-gradient(135deg,#DEA066,#D58A50)!important;
+  color:#FFF9F1!important;
+}
+
+@media(max-width:360px){
+  .membership-page .membership-identity-card{min-height:154px!important;padding:19px 18px 18px!important}
+  .membership-page .membership-identity-card h2{font-size:20px!important}
+  .membership-page .membership-identity-card p{font-size:12px!important}
+  .membership-page .membership-cta{height:43px!important;line-height:43px!important;min-width:102px!important;padding:0 19px!important}
+}
+
+
+/* ======================================================================
+   V4.5 — Mobile readability & tactile scale
+   Goal: move from compact web-demo scale to consumer mobile-app scale.
+   No IA / route / state-machine changes.
+   ====================================================================== */
+:root{
+  --font-display:32px;
+  --font-page-title:24px;
+  --font-section-title:20px;
+  --font-card-title:18px;
+  --font-body-large:17px;
+  --font-body:16px;
+  --font-support:14px;
+  --font-caption:13px;
+  --mobile-tap:48px;
+}
+
+/* Only real mobile runtimes hide prototype chrome. Desktop review keeps it. */
+.mobile-runtime .statusbar,
+.mobile-runtime .stack-statusbar,
+.mobile-runtime .editor-statusbar{display:none!important}
+.mobile-runtime .main-viewport{padding-top:0!important}
+.mobile-runtime .topbar{
+  height:calc(68px + var(--safe-top))!important;
+  padding-top:var(--safe-top)!important;
+}
+.mobile-runtime .page-titlebar{
+  height:calc(64px + var(--safe-top))!important;
+  padding-top:var(--safe-top)!important;
+}
+.mobile-runtime .v3-login-brand{
+  height:calc(68px + var(--safe-top))!important;
+  padding-top:calc(7px + var(--safe-top))!important;
+}
+.mobile-runtime .auth-top{height:calc(58px + var(--safe-top))!important;padding-top:var(--safe-top)!important}
+
+/* Font weight discipline: 400 / 500 / 600 / 700 only. */
+.topbar-title,.page-titlebar b,.section-title,.panel-title,.archive-title,
+.v3-top-brand b,.v43-name,.v43-services b,.v43-history-copy b,
+.growth-main b,.v3-question-list b,.assessment-main h3,.settings-row b,.list-row-main b,
+.membership-page .membership-identity-card h2,.benefit-card b,.plan-card h3,
+.article-body h1,.article-body h2,.invite-card h3,.interpret-head b,.final-title b,.action-title b{font-weight:600!important}
+.primary-btn,.secondary-btn,.ghost-btn,.small-cta,.inline-main,.inline-alt,.choice-chip{font-weight:600!important}
+
+/* App shell / top navigation */
+.topbar{height:68px!important;padding:0 16px!important;gap:8px!important}
+.v3-home-topbar{padding-left:12px!important}
+.icon-btn,.round-btn,.menu-btn,.back-btn{width:48px!important;height:48px!important;border-radius:24px!important;min-width:48px!important;min-height:48px!important}
+.icon-btn svg,.round-btn svg,.menu-btn svg,.back-btn svg{width:24px!important;height:24px!important;stroke-width:1.9!important}
+.v3-top-brand{gap:10px!important}
+.v3-top-brand img{width:42px!important;height:42px!important;border-radius:14px!important}
+.v3-top-brand b{font-size:20px!important;line-height:24px!important;letter-spacing:-.35px!important}
+.v3-top-brand small{font-size:13px!important;line-height:18px!important;margin-top:2px!important;color:#7D756E!important}
+.page-titlebar{height:64px!important}
+.page-titlebar b{font-size:21px!important;line-height:28px!important}
+.page-titlebar .back-btn{width:48px!important;height:48px!important}
+.page-titlebar .right-action{font-size:15px!important;height:44px!important;font-weight:500!important}
+
+/* Global readable hierarchy */
+.section-title{font-size:var(--font-section-title)!important;line-height:28px!important;margin:24px 0 14px!important}
+.section-title button{font-size:14px!important;line-height:20px!important;padding:8px 2px!important}
+.panel-title,.archive-title{font-size:var(--font-card-title)!important;line-height:26px!important}
+.subtle{font-size:var(--font-support)!important;line-height:1.6!important}
+.hero-card h1{font-size:var(--font-page-title)!important;line-height:32px!important}
+.hero-card p{font-size:var(--font-body)!important;line-height:1.65!important}
+.panel{padding:18px!important;border-radius:22px!important}
+.page-body{padding:18px 18px calc(32px + var(--safe-bottom))!important}
+
+/* Home hero: larger, bolder, fewer things per screen rather than smaller type. */
+.v3-home-stage{height:382px!important}
+.v3-home-copy{left:28px!important;top:58px!important}
+.v3-home-copy h1{font-size:var(--font-display)!important;line-height:40px!important;font-weight:700!important;letter-spacing:-.7px!important}
+.v3-home-copy p{font-size:var(--font-body-large)!important;line-height:26px!important;margin-top:8px!important;font-weight:400!important;color:#6A625B!important}
+.v3-home-mascot{width:286px!important;right:-7px!important;bottom:38px!important;image-rendering:auto!important}
+.v3-home-prompts{left:18px!important;right:18px!important;bottom:18px!important;gap:10px!important}
+.v3-home-chip{height:48px!important;border-radius:24px!important;padding:0 10px!important;gap:8px!important;font-size:15px!important;line-height:20px!important;font-weight:500!important}
+.v3-home-chip span{width:24px!important;height:24px!important;border-radius:8px!important;flex:0 0 24px!important}
+.v3-home-chip svg{width:15px!important;height:15px!important;stroke-width:1.9!important}
+
+/* Home growth card */
+.v3-home-content{padding-top:7px!important}
+.v3-growth-summary{padding:20px 19px 18px!important;border-radius:24px!important}
+.v3-growth-summary .growth-row{gap:14px!important}
+.v3-growth-summary .growth-icon{width:56px!important;height:56px!important;border-radius:18px!important}
+.v3-growth-summary .growth-icon svg{width:27px!important;height:27px!important}
+.v3-growth-summary .card-kicker{font-size:14px!important;line-height:20px!important;font-weight:500!important}
+.v3-growth-summary .growth-main b{font-size:18px!important;line-height:26px!important;max-width:250px!important;margin-top:2px!important}
+.v3-growth-summary .growth-main>span:not(.card-kicker){font-size:14px!important;line-height:21px!important;color:#7A7169!important}
+.v3-growth-summary .growth-stats{gap:10px!important;margin-top:16px!important}
+.v3-growth-summary .growth-stat{padding:13px 14px!important;border-radius:16px!important}
+.v3-growth-summary .growth-stat small{font-size:13px!important;line-height:18px!important}
+.v3-growth-summary .growth-stat strong{font-size:24px!important;line-height:30px!important;margin-top:5px!important}
+.v3-growth-summary .growth-stat strong em{font-size:13px!important;margin-left:3px!important}
+.v3-growth-deco{width:50px!important;height:50px!important}
+
+/* Question list */
+.v3-question-list{padding:4px 16px!important;border-radius:22px!important}
+.v3-question-list>button{min-height:78px!important;gap:14px!important;padding:10px 0!important}
+.v3-question-icon{width:44px!important;height:44px!important;border-radius:14px!important}
+.v3-question-icon svg{width:22px!important;height:22px!important;stroke-width:1.9!important}
+.v3-question-list b{font-size:17px!important;line-height:24px!important}
+.v3-question-list small{font-size:14px!important;line-height:21px!important;color:#80776F!important}
+.v3-question-list i svg{width:19px!important;height:19px!important;stroke-width:1.8!important}
+.home-or{font-size:14px!important;line-height:21px!important;margin-top:16px!important}
+
+/* Composer: iOS-safe text size, 56+ px tactile target. */
+.composer{padding:8px 12px calc(10px + var(--safe-bottom))!important}
+.composer-row{min-height:60px!important;border-radius:30px!important;padding:5px 7px!important;gap:7px!important}
+.composer-btn{width:48px!important;height:48px!important;border-radius:24px!important;min-width:48px!important}
+.composer-btn svg{width:24px!important;height:24px!important;stroke-width:1.9!important}
+.composer-input{min-height:48px!important;padding:0 5px!important}
+.composer-input textarea{font-size:16px!important;line-height:24px!important;padding:12px 0!important;min-height:48px!important}
+.composer-input textarea::placeholder{font-size:16px!important;color:#9A9189!important}
+
+/* Chat: reading is the core task, so it gets body-large scale. */
+.chat-area{padding:12px 14px 20px!important}
+.chat-date{font-size:13px!important;line-height:18px!important;margin:5px 0 15px!important}
+.message-line{gap:9px!important;margin:12px 0!important}
+.ai-avatar{width:38px!important;height:38px!important;border-radius:13px!important;flex-basis:38px!important}
+.ai-avatar img{width:41px!important;height:42px!important}
+.message-stack{max-width:86%!important}
+.chat-message{font-size:17px!important;line-height:1.67!important;padding:14px 16px!important;border-radius:20px!important}
+.chat-message small{font-size:13px!important;line-height:18px!important;margin-top:7px!important}
+.message-tools button{min-width:42px!important;min-height:42px!important}
+.message-tools button svg{width:21px!important;height:21px!important}
+.chip-row{gap:8px!important;margin:10px 0 17px!important;padding-left:47px!important}
+.choice-chip{font-size:15px!important;line-height:21px!important;min-height:42px!important;border-radius:21px!important;padding:9px 14px!important}
+.boundary-note{font-size:14px!important;line-height:21px!important;padding:7px 47px 0!important}
+.invite-card,.interpretation-card,.action-card{margin-left:47px!important;border-radius:22px!important}
+.invite-card{padding:19px!important}
+.invite-card h3{font-size:18px!important;line-height:26px!important}
+.invite-card p{font-size:16px!important;line-height:1.65!important}
+.inline-main,.inline-alt{font-size:15px!important;min-height:44px!important;padding:0 15px!important;border-radius:16px!important}
+.interpretation-card{padding:19px!important}
+.interpret-head b{font-size:18px!important;line-height:26px!important}
+.interpret-head small{font-size:13px!important;line-height:18px!important}
+.interpret-mark{width:42px!important;height:42px!important;border-radius:14px!important}
+.progress-labels span{font-size:13px!important;line-height:18px!important}
+.understanding-box{font-size:16px!important;line-height:1.7!important;padding:15px!important}
+.final-title{font-size:18px!important;line-height:26px!important}
+.insight-section{padding:14px 15px!important}
+.insight-section small{font-size:13px!important;line-height:18px!important}
+.insight-section p{font-size:16px!important;line-height:1.65!important}
+.relationship-loop{font-size:14px!important;line-height:21px!important;padding:13px 11px!important}
+.insight-conclusion{font-size:16px!important;line-height:1.68!important;padding:14px 15px!important}
+.action-card{padding:19px!important}
+.action-title b{font-size:18px!important;line-height:26px!important}
+.action-kicker{font-size:13px!important;line-height:18px!important}
+.phrase-box{font-size:16px!important;line-height:1.65!important;padding:14px!important}
+.action-reason{font-size:14px!important;line-height:1.6!important;padding:13px!important}
+.back-to-latest{height:42px!important;border-radius:21px!important;font-size:14px!important;padding:0 14px!important;bottom:88px!important}
+
+/* Drawer: readable mobile personal space. */
+.v43-account-bar{height:calc(82px + var(--safe-top))!important;padding:calc(12px + var(--safe-top)) 14px 12px!important}
+.v43-avatar-button{width:52px!important;height:52px!important;flex-basis:52px!important}
+.v43-avatar-button .v35-user-avatar-img{width:50px!important;height:50px!important}
+.v43-name{font-size:20px!important;line-height:26px!important;min-height:26px!important}
+.v43-role{font-size:14px!important;line-height:20px!important;margin-top:1px!important}
+.v43-quick-nav{gap:2px!important}
+.v43-quick-button,.v43-close-button{width:48px!important;height:48px!important;flex-basis:48px!important;border-radius:14px!important}
+.v43-quick-button .v35-quick-icon{width:26px!important;height:26px!important}
+.v43-quick-button .v35-quick-icon svg,.v43-close-button svg{width:24px!important;height:24px!important;stroke-width:1.9!important}
+.v43-quick-button em{min-width:18px!important;height:18px!important;right:1px!important;top:0!important;font-size:10px!important}
+.v43-drawer-scroll{padding:14px 16px calc(20px + var(--safe-bottom))!important}
+.v43-membership{min-height:76px!important;padding:12px 14px!important;border-radius:18px!important}
+.v43-membership-icon{width:38px!important;height:38px!important;flex-basis:38px!important}
+.v43-membership-icon svg{width:21px!important;height:21px!important}
+.v43-membership-copy b{font-size:17px!important;line-height:24px!important}
+.v43-membership-copy small{font-size:14px!important;line-height:20px!important}
+.v43-membership-link{font-size:14px!important;line-height:20px!important}
+.v43-services{margin-top:14px!important}
+.v43-services button{height:86px!important;gap:9px!important}
+.v43-services button>span{width:42px!important;height:42px!important}
+.v43-services button svg{width:23px!important;height:23px!important;stroke-width:1.9!important}
+.v43-services b{font-size:16px!important;line-height:23px!important;font-weight:500!important}
+.v43-history{margin-top:24px!important}
+.v43-history-heading{margin-bottom:9px!important}
+.v43-history-heading h3{font-size:16px!important;line-height:23px!important}
+.v43-history-heading>span{font-size:13px!important;line-height:18px!important}
+.v43-history-row{min-height:72px!important;padding:11px 10px 11px 14px!important}
+.v43-history-copy{gap:3px!important}
+.v43-history-copy b{font-size:17px!important;line-height:24px!important;font-weight:500!important}
+.v43-history-copy small{font-size:14px!important;line-height:20px!important}
+.v43-support button{min-height:56px!important;font-size:16px!important;line-height:23px!important;gap:11px!important}
+.v43-support button>svg{width:21px!important;height:21px!important;stroke-width:1.8!important}
+
+/* Generic secondary pages */
+.list-row{min-height:68px!important;padding:13px 2px!important;gap:13px!important}
+.list-row-icon{width:44px!important;height:44px!important;border-radius:14px!important}
+.list-row-icon svg{width:22px!important;height:22px!important}
+.list-row-main b{font-size:16px!important;line-height:23px!important;font-weight:500!important}
+.list-row-main span{font-size:14px!important;line-height:21px!important}
+.settings-row{min-height:64px!important;padding:0 16px!important}
+.settings-row b{font-size:16px!important;line-height:23px!important;font-weight:500!important}
+.settings-row small{font-size:14px!important;line-height:21px!important}
+.metric{padding:14px!important;border-radius:16px!important}
+.metric small{font-size:13px!important;line-height:18px!important}
+.metric strong{font-size:24px!important;line-height:30px!important}
+.segmented{min-height:44px!important}
+.segment-btn{font-size:14px!important;min-height:40px!important}
+.tag{font-size:13px!important;line-height:18px!important;padding:6px 9px!important}
+
+/* Assessment */
+.assessment-card{padding:17px!important}
+.assessment-icon{width:54px!important;height:54px!important;border-radius:17px!important}
+.assessment-main h3{font-size:18px!important;line-height:26px!important}
+.assessment-main p{font-size:14px!important;line-height:21px!important}
+.assessment-footer span{font-size:13px!important}
+.small-cta{height:42px!important;border-radius:16px!important;padding:0 15px!important;font-size:14px!important}
+.question-count{font-size:14px!important}
+.question-body{padding:28px 20px!important}
+.question-body h1{font-size:22px!important;line-height:1.5!important;margin:14px 0 22px!important}
+.question-option{min-height:62px!important;border-radius:18px!important;padding:15px 16px!important;font-size:16px!important;line-height:24px!important}
+.question-nav button{height:52px!important;font-size:16px!important}
+.dimension-head{font-size:15px!important}
+
+/* Membership */
+.membership-page .membership-eyebrow{font-size:13px!important;line-height:18px!important}
+.membership-page .membership-identity-card h2{font-size:24px!important;line-height:32px!important}
+.membership-page .membership-identity-card p{font-size:15px!important;line-height:1.6!important}
+.membership-page .membership-cta{height:48px!important;line-height:48px!important;font-size:16px!important;min-width:116px!important}
+.benefit-card{padding:15px!important}
+.benefit-card b{font-size:16px!important;line-height:23px!important}
+.benefit-card p{font-size:14px!important;line-height:21px!important}
+.plan-card{padding:18px!important}
+.plan-card h3{font-size:18px!important;line-height:26px!important}
+.plan-card strong{font-size:28px!important;line-height:34px!important}
+.plan-card p{font-size:14px!important;line-height:21px!important}
+.plan-card .recommend{font-size:12px!important;padding:5px 9px!important}
+.order-row{font-size:15px!important;min-height:58px!important}
+.order-row span{font-size:13px!important}
+
+/* Auth */
+.v3-brand-lockup b{font-size:21px!important;line-height:26px!important}
+.v3-brand-lockup small{font-size:13px!important;line-height:18px!important}
+.v3-login-story>p{font-size:16px!important;line-height:1.6!important}
+.v3-value-pill{font-size:14px!important;line-height:20px!important;padding:10px 15px!important}
+.v3-login-actions .primary-btn,.v3-login-actions .secondary-btn{font-size:16px!important}
+.agreement-row{font-size:13px!important;line-height:20px!important}
+.auth-panel h1,.auth-center h1{font-size:25px!important;line-height:33px!important}
+.auth-panel>p,.auth-center p{font-size:15px!important;line-height:1.6!important}
+
+/* Content/editorial pages */
+.article-body{font-size:16px!important;line-height:1.75!important}
+.article-body h1{font-size:25px!important;line-height:34px!important}
+.article-body h2{font-size:20px!important;line-height:28px!important}
+.article-meta{font-size:13px!important;line-height:19px!important}
+.profile-list-row{min-height:66px!important;font-size:16px!important}
+.profile-list-row .profile-list-value{font-size:14px!important}
+.feedback-label{font-size:15px!important;line-height:22px!important}
+.feedback-textarea textarea,.feedback-contact input,.editor-field input{font-size:16px!important;line-height:24px!important}
+
+/* Narrow phones: preserve typography; reduce spacing, never shrink text. */
+@media(max-width:360px){
+  .topbar{padding-left:11px!important;padding-right:11px!important}
+  .v3-top-brand img{width:40px!important;height:40px!important}
+  .v3-top-brand b{font-size:19px!important}
+  .v3-top-brand small{font-size:13px!important}
+  .v3-home-stage{height:386px!important}
+  .v3-home-copy{left:22px!important}
+  .v3-home-copy h1{font-size:30px!important}
+  .v3-home-prompts{left:12px!important;right:12px!important;gap:8px!important}
+  .v3-home-chip{font-size:15px!important;padding:0 8px!important;gap:6px!important}
+  .section{padding-left:12px!important;padding-right:12px!important}
+  .v43-account-bar{padding-left:10px!important;padding-right:8px!important}
+  .v43-quick-button,.v43-close-button{width:44px!important;height:48px!important;flex-basis:44px!important}
+  .v43-name{font-size:19px!important}
+  .v43-services button{height:82px!important}
+  .v43-services b{font-size:16px!important}
+  .membership-page .membership-identity-card p{font-size:15px!important}
+}
