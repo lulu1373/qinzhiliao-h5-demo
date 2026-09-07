@@ -1,0 +1,92 @@
+{
+  "results": [
+    {
+      "name": "version 7.2",
+      "ok": true
+    },
+    {
+      "name": "home reached",
+      "ok": true
+    },
+    {
+      "name": "four exact menu items",
+      "ok": true,
+      "labels": [
+        "新建对话",
+        "扫一扫",
+        "产品介绍",
+        "立即分享"
+      ]
+    },
+    {
+      "name": "not bottom sheet",
+      "ok": true
+    },
+    {
+      "name": "menu anchored under top-right button",
+      "ok": true,
+      "geom": {
+        "button": {
+          "x": 332,
+          "y": 9.5,
+          "w": 48,
+          "h": 48,
+          "bottom": 57.5,
+          "right": 380
+        },
+        "menu": {
+          "x": 216.0020751953125,
+          "y": 63.49794387817383,
+          "w": 163.99765014648438,
+          "h": 229.99668884277344,
+          "right": 379.9997253417969
+        },
+        "vw": 390
+      }
+    },
+    {
+      "name": "visual spec: white rounded / 16px / 25px icons",
+      "ok": true,
+      "styles": {
+        "radius": "25px",
+        "bg": "rgba(255, 255, 255, 0.984)",
+        "font": "16px",
+        "row": "57px",
+        "svg": [
+          25,
+          25
+        ]
+      }
+    },
+    {
+      "name": "outside tap closes",
+      "ok": true
+    },
+    {
+      "name": "conversation active before new",
+      "ok": true
+    },
+    {
+      "name": "new conversation returns idle home",
+      "ok": true
+    },
+    {
+      "name": "scan closes popup and reports demo",
+      "ok": true
+    },
+    {
+      "name": "product intro opens about page",
+      "ok": true
+    },
+    {
+      "name": "share closes popup",
+      "ok": true
+    },
+    {
+      "name": "no page/console errors",
+      "ok": true,
+      "errors": []
+    }
+  ],
+  "errors": []
+}

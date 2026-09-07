@@ -1,0 +1,605 @@
+{
+  "artifact": "亲智聊-H5-App-Demo-V7.1-成长总结完成版.html",
+  "version": "7.1",
+  "viewport": "390x844",
+  "engine": "Chromium via Playwright",
+  "results": [
+    {
+      "step": "版本标记",
+      "ok": true,
+      "version": "7.1"
+    },
+    {
+      "step": "登录页初始可用",
+      "ok": true
+    },
+    {
+      "step": "真实登录流程进入首页",
+      "ok": true,
+      "hash": "#/home"
+    },
+    {
+      "step": "成长总结保持单一路由",
+      "ok": true,
+      "hash": "#/growth"
+    },
+    {
+      "step": "首次进入即为V7.1新布局",
+      "ok": true
+    },
+    {
+      "step": "布局文本：周",
+      "ok": true
+    },
+    {
+      "step": "布局文本：月",
+      "ok": true
+    },
+    {
+      "step": "布局文本：全部",
+      "ok": true
+    },
+    {
+      "step": "布局文本：本周亮点",
+      "ok": true
+    },
+    {
+      "step": "布局文本：2026 年 8 月",
+      "ok": true
+    },
+    {
+      "step": "布局文本：写作业时先减少一次催促",
+      "ok": true
+    },
+    {
+      "step": "布局文本：手机问题先不急着讲道理",
+      "ok": true
+    },
+    {
+      "step": "布局文本：睡前先听孩子说完，再回应",
+      "ok": true
+    },
+    {
+      "step": "初始统计 7/3/2/3",
+      "ok": true
+    },
+    {
+      "step": "成长总结字号规范",
+      "ok": true,
+      "values": {
+        "pageTitle": 22,
+        "heroTitle": 25,
+        "heroBody": 15,
+        "sectionTitle": 20,
+        "highlightTitle": 16,
+        "highlightBody": 14,
+        "month": 17,
+        "weekday": 12,
+        "day": 14,
+        "actionTitle": 16,
+        "source": 13,
+        "status": 13,
+        "button": 15
+      }
+    },
+    {
+      "step": "成长总结无 10/10.5/11px 正文",
+      "ok": true,
+      "min_font": 12,
+      "bad": []
+    },
+    {
+      "step": "Hero Icon 44/24",
+      "ok": true,
+      "values": {
+        "hero": [
+          44,
+          44
+        ],
+        "heroSvg": [
+          24,
+          24
+        ],
+        "highlight": [
+          40,
+          40
+        ],
+        "highlightSvg": [
+          22,
+          22
+        ],
+        "current": [
+          40,
+          40
+        ],
+        "currentSvg": [
+          22,
+          22
+        ],
+        "recent": [
+          31.999998092651367,
+          32
+        ],
+        "recentSvg": [
+          18,
+          18
+        ],
+        "calendarSvg": 0,
+        "dots": [
+          [
+            6,
+            6
+          ],
+          [
+            6,
+            6
+          ],
+          [
+            6,
+            6
+          ]
+        ]
+      }
+    },
+    {
+      "step": "亮点 Icon 40/22",
+      "ok": true,
+      "values": {
+        "hero": [
+          44,
+          44
+        ],
+        "heroSvg": [
+          24,
+          24
+        ],
+        "highlight": [
+          40,
+          40
+        ],
+        "highlightSvg": [
+          22,
+          22
+        ],
+        "current": [
+          40,
+          40
+        ],
+        "currentSvg": [
+          22,
+          22
+        ],
+        "recent": [
+          31.999998092651367,
+          32
+        ],
+        "recentSvg": [
+          18,
+          18
+        ],
+        "calendarSvg": 0,
+        "dots": [
+          [
+            6,
+            6
+          ],
+          [
+            6,
+            6
+          ],
+          [
+            6,
+            6
+          ]
+        ]
+      }
+    },
+    {
+      "step": "当前行动 Icon 40/22",
+      "ok": true,
+      "values": {
+        "hero": [
+          44,
+          44
+        ],
+        "heroSvg": [
+          24,
+          24
+        ],
+        "highlight": [
+          40,
+          40
+        ],
+        "highlightSvg": [
+          22,
+          22
+        ],
+        "current": [
+          40,
+          40
+        ],
+        "currentSvg": [
+          22,
+          22
+        ],
+        "recent": [
+          31.999998092651367,
+          32
+        ],
+        "recentSvg": [
+          18,
+          18
+        ],
+        "calendarSvg": 0,
+        "dots": [
+          [
+            6,
+            6
+          ],
+          [
+            6,
+            6
+          ],
+          [
+            6,
+            6
+          ]
+        ]
+      }
+    },
+    {
+      "step": "最近行动 Icon 32/18",
+      "ok": true,
+      "values": {
+        "hero": [
+          44,
+          44
+        ],
+        "heroSvg": [
+          24,
+          24
+        ],
+        "highlight": [
+          40,
+          40
+        ],
+        "highlightSvg": [
+          22,
+          22
+        ],
+        "current": [
+          40,
+          40
+        ],
+        "currentSvg": [
+          22,
+          22
+        ],
+        "recent": [
+          31.999998092651367,
+          32
+        ],
+        "recentSvg": [
+          18,
+          18
+        ],
+        "calendarSvg": 0,
+        "dots": [
+          [
+            6,
+            6
+          ],
+          [
+            6,
+            6
+          ],
+          [
+            6,
+            6
+          ]
+        ]
+      }
+    },
+    {
+      "step": "Calendar 仅状态点无 SVG",
+      "ok": true,
+      "calendar_svg_count": 0
+    },
+    {
+      "step": "月 Tab 原地切换",
+      "ok": true
+    },
+    {
+      "step": "周 Tab 原地切回",
+      "ok": true
+    },
+    {
+      "step": "日期 2026-08-17 局部选中",
+      "ok": true,
+      "scroll_before": 515,
+      "scroll_after": 515,
+      "delta": 0,
+      "url_before": "#/growth",
+      "url_after": "#/growth"
+    },
+    {
+      "step": "日期 2026-08-17 行动匹配",
+      "ok": true,
+      "card": "8月17日\n今天的行动\n顺一点\n睡前先听孩子说完，再回应\n\n来源：孩子最近不愿意和我说话\n\n修改反馈\n查看详情\n和小亲复盘"
+    },
+    {
+      "step": "日期 2026-08-23 局部选中",
+      "ok": true,
+      "scroll_before": 515,
+      "scroll_after": 515,
+      "delta": 0,
+      "url_before": "#/growth",
+      "url_after": "#/growth"
+    },
+    {
+      "step": "日期 2026-08-23 行动匹配",
+      "ok": true,
+      "card": "8月23日\n今天的行动\n没变化\n手机问题先不急着讲道理\n\n来源：孩子一直玩手机\n\n修改反馈\n查看详情\n和小亲复盘"
+    },
+    {
+      "step": "日期 2026-08-26 局部选中",
+      "ok": true,
+      "scroll_before": 563,
+      "scroll_after": 563,
+      "delta": 0,
+      "url_before": "#/growth",
+      "url_after": "#/growth"
+    },
+    {
+      "step": "日期 2026-08-26 行动匹配",
+      "ok": true,
+      "card": "8月26日\n今天的行动\n待尝试\n写作业时先减少一次催促\n\n来源：写作业又吵起来了\n\n试过了\n还没试\n查看详情"
+    },
+    {
+      "step": "空日期 2026-08-25 局部选中",
+      "ok": true,
+      "scroll_before": 563,
+      "scroll_after": 563,
+      "delta": 0,
+      "url_before": "#/growth",
+      "url_after": "#/growth"
+    },
+    {
+      "step": "空日期是真空状态",
+      "ok": true,
+      "card": "8月25日\n今天的行动\n这一天没有行动记录\n\n这是一个真正的空日期，不会显示其他日期的行动。"
+    },
+    {
+      "step": "切到 7 月不跳页",
+      "ok": true,
+      "scroll_before": 288,
+      "scroll_after": 288,
+      "delta": 0,
+      "url_before": "#/growth",
+      "url_after": "#/growth"
+    },
+    {
+      "step": "7 月 selectedDate 已清空",
+      "ok": true,
+      "calendar": "2026 年 7 月\n‹\n›\n一\n二\n三\n四\n五\n六\n日\n1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12\n13\n14\n15\n16\n17\n18\n19\n20\n",
+      "card": "当前行动\n选择日期查看\n先从日历选择一个日期\n\n日历里的状态点代表已经产生过行动。"
+    },
+    {
+      "step": "切回 8 月不跳页",
+      "ok": true,
+      "scroll_before": 288,
+      "scroll_after": 288,
+      "delta": 0,
+      "url_before": "#/growth",
+      "url_after": "#/growth"
+    },
+    {
+      "step": "回 8 月仍不保留旧选中行动",
+      "ok": true
+    },
+    {
+      "step": "重新选择 8 月 26 日",
+      "ok": true,
+      "scroll_before": 563,
+      "scroll_after": 563,
+      "delta": 0,
+      "url_before": "#/growth",
+      "url_after": "#/growth"
+    },
+    {
+      "step": "最近行动第一条原地定位",
+      "ok": true,
+      "scroll_before": 759,
+      "scroll_after": 759,
+      "controlled_scroll": true
+    },
+    {
+      "step": "最近行动第二条原地定位",
+      "ok": true,
+      "scroll_before": 759,
+      "scroll_after": 748,
+      "controlled_scroll": true
+    },
+    {
+      "step": "详情前选择 2026-08-17",
+      "ok": true,
+      "scroll_before": 515,
+      "scroll_after": 515,
+      "delta": 0,
+      "url_before": "#/growth",
+      "url_after": "#/growth"
+    },
+    {
+      "step": "详情独立匹配 2026-08-17",
+      "ok": true,
+      "detail": "睡前先听孩子说完，再回应\n8月17日 · 来源：孩子最近不愿意和我说话\n为什么这样做\n\n先把“回应”从解决问题改成听完孩子真正想说的内容，能降低沟通压力。\n\n可以怎么说\n\n“你先说完，我暂时不急着给建议。”\n\n观察什么\n\n孩子是否愿意多说一点，或者结束谈话时情绪更平稳。\n\n反馈结果\n\n顺一点\n\n和小亲复盘"
+    },
+    {
+      "step": "关闭详情 Sheet 不跳顶部 2026-08-17",
+      "ok": true,
+      "scroll_before": 748,
+      "scroll_after": 748
+    },
+    {
+      "step": "详情前选择 2026-08-23",
+      "ok": true,
+      "scroll_before": 515,
+      "scroll_after": 515,
+      "delta": 0,
+      "url_before": "#/growth",
+      "url_after": "#/growth"
+    },
+    {
+      "step": "详情独立匹配 2026-08-23",
+      "ok": true,
+      "detail": "手机问题先不急着讲道理\n8月23日 · 来源：孩子一直玩手机\n为什么这样做\n\n手机冲突很容易变成控制权争夺。先不急着讲道理，才能把规则重新谈回双方都能执行的约定。\n\n可以怎么说\n\n“我们先不讨论玩多久，我想先听听你为什么还不想停。”\n\n观察什么\n\n孩子是否愿意开始谈手机规则，而不是立刻进入防御。\n\n反馈结果\n\n没变化\n\n和小亲复盘"
+    },
+    {
+      "step": "关闭详情 Sheet 不跳顶部 2026-08-23",
+      "ok": true,
+      "scroll_before": 759,
+      "scroll_after": 759
+    },
+    {
+      "step": "详情前选择 2026-08-26",
+      "ok": true,
+      "scroll_before": 563,
+      "scroll_after": 563,
+      "delta": 0,
+      "url_before": "#/growth",
+      "url_after": "#/growth"
+    },
+    {
+      "step": "详情独立匹配 2026-08-26",
+      "ok": true,
+      "detail": "写作业时先减少一次催促\n8月26日 · 来源：写作业又吵起来了\n为什么这样做\n\n连续催促会同时提高孩子的任务压力和你的失控感。减少一次催促，是先退出“催促—抵抗”循环。\n\n可以怎么说\n\n“你是还没准备好，还是不知道先从哪里开始？”\n\n观察什么\n\n五分钟后孩子是否更容易启动，或者愿意告诉你真正卡在哪里。\n\n反馈结果\n\n待尝试"
+    },
+    {
+      "step": "关闭详情 Sheet 不跳顶部 2026-08-26",
+      "ok": true,
+      "scroll_before": 759,
+      "scroll_after": 759
+    },
+    {
+      "step": "反馈前选择 8 月 26 日",
+      "ok": true,
+      "scroll_before": 563,
+      "scroll_after": 563,
+      "delta": 0,
+      "url_before": "#/growth",
+      "url_after": "#/growth"
+    },
+    {
+      "step": "还没试保持原地",
+      "ok": true,
+      "scroll_before": 759,
+      "scroll_after": 759,
+      "delta": 0,
+      "url_before": "#/growth",
+      "url_after": "#/growth"
+    },
+    {
+      "step": "还没试不改变待尝试状态",
+      "ok": true
+    },
+    {
+      "step": "Feedback Icon 40/22 顺一点",
+      "ok": true,
+      "values": [
+        40,
+        40,
+        22,
+        22
+      ]
+    },
+    {
+      "step": "反馈 顺一点 原地保存",
+      "ok": true,
+      "scroll_before": 759,
+      "scroll_after": 759,
+      "dot_class": "v70-day-dot better",
+      "card": "8月26日\n今天的行动\n顺一点\n写作业时先减少一次催促\n\n来源：写作业又吵起来了\n\n修改反馈\n查看详情\n和小亲复盘"
+    },
+    {
+      "step": "Feedback Icon 40/22 没变化",
+      "ok": true,
+      "values": [
+        40,
+        40,
+        22,
+        22
+      ]
+    },
+    {
+      "step": "反馈 没变化 原地保存",
+      "ok": true,
+      "scroll_before": 759,
+      "scroll_after": 759,
+      "dot_class": "v70-day-dot same",
+      "card": "8月26日\n今天的行动\n没变化\n写作业时先减少一次催促\n\n来源：写作业又吵起来了\n\n修改反馈\n查看详情\n和小亲复盘"
+    },
+    {
+      "step": "Feedback Icon 40/22 更糟",
+      "ok": true,
+      "values": [
+        40,
+        40,
+        22,
+        22
+      ]
+    },
+    {
+      "step": "反馈 更糟 原地保存",
+      "ok": true,
+      "scroll_before": 759,
+      "scroll_after": 759,
+      "dot_class": "v70-day-dot worse",
+      "card": "8月26日\n今天的行动\n更糟\n写作业时先减少一次催促\n\n来源：写作业又吵起来了\n\n修改反馈\n查看详情\n和小亲复盘"
+    },
+    {
+      "step": "反馈后统计原地更新为 3 次反馈",
+      "ok": true
+    },
+    {
+      "step": "行动详情 Bottom Sheet 打开",
+      "ok": true
+    },
+    {
+      "step": "当前详情仍为写作业行动",
+      "ok": true
+    },
+    {
+      "step": "关闭 Sheet 保持 scrollTop",
+      "ok": true,
+      "scroll_before": 759,
+      "scroll_after": 759
+    },
+    {
+      "step": "查看全部行动仍在 #/growth",
+      "ok": true,
+      "records": 3
+    },
+    {
+      "step": "返回成长总结为局部返回",
+      "ok": true
+    },
+    {
+      "step": "和小亲复盘才回首页 AI 连续聊天",
+      "ok": true,
+      "hash": "#/home"
+    },
+    {
+      "step": "系统反馈 Emoji 已从源码删除",
+      "ok": true
+    },
+    {
+      "step": "Page Error / Console Error = 0",
+      "ok": true,
+      "errors": []
+    }
+  ],
+  "errors": [],
+  "passed": 65,
+  "total": 65,
+  "all_passed": true
+}

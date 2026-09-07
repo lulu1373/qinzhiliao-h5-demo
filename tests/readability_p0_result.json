@@ -1,0 +1,61 @@
+{
+  "action": {
+    "kicker": 12,
+    "summary": 15,
+    "quoteLabel": 12,
+    "quote": 15,
+    "fallback": 14,
+    "reason": 14,
+    "button": 15,
+    "height": 546.953125
+  },
+  "memory": {
+    "font": 14,
+    "height": 70.390625
+  },
+  "messages": {
+    "font": 14,
+    "row": 123.21875
+  },
+  "weekly": [
+    {
+      "text": "这一周，你们围绕写作业和手机规则聊了 3 次，也尝试了 2 个小行动。",
+      "font": 16,
+      "cls": ""
+    },
+    {
+      "text": "在两次作业沟通中，你都尝试把“快点开始”换成了一个问题。孩子并不是每次都会马上回应，但冲突升级的速度变慢了。",
+      "font": 14,
+      "cls": ""
+    },
+    {
+      "text": "提醒之后留出 5 分钟，不立即追加第二遍。",
+      "font": 14,
+      "cls": ""
+    },
+    {
+      "text": "记录孩子更容易开始任务的具体条件。",
+      "font": 14,
+      "cls": ""
+    }
+  ],
+  "taskPlan": {
+    "font": 14,
+    "height": 159.78125
+  },
+  "reportLocked": {
+    "font": 14,
+    "height": 159.78125
+  },
+  "profile": {
+    "font": 14,
+    "height": 44.78125
+  },
+  "agreement": {
+    "font": 15,
+    "pheight": 54.59375,
+    "scrollHeight": 844,
+    "clientHeight": 844
+  },
+  "errors": []
+}
