@@ -4163,50 +4163,6 @@ svg{vertical-align:middle}
 /* Avoid legacy generic SVG rules changing the new light utility geometry. */
 .v67-home .qzl-v77-line,.v67-quick .qzl-v77-line{fill:none!important;stroke-width:1.65!important}
 </style>
-
-<style id="v78-family-avatar">
-/* =========================================================
-   V7.8 — Family member avatars
-   Independent avatar per child / family member; parent syncs with profile.
-   ========================================================= */
-.member-avatar.member-avatar-upload{
-  position:relative;display:grid;place-items:center;flex:0 0 52px;
-  width:52px;height:52px;border:0;padding:0;background:#F1F3ED;
-  border-radius:50%;appearance:none;overflow:visible;cursor:pointer;
-  box-shadow:0 0 0 1px rgba(81,101,75,.07);
-}
-.member-avatar-upload:active{transform:scale(.97)}
-.member-avatar-photo,.member-avatar-media,.member-avatar-fallback{
-  width:100%;height:100%;display:grid;place-items:center;border-radius:50%;object-fit:cover;overflow:hidden;
-}
-.member-avatar-fallback{background:#F1F3ED;color:#628D56}
-.member-avatar-fallback img,.member-avatar-fallback svg{width:27px!important;height:27px!important;object-fit:contain}
-.member-avatar-camera{
-  position:absolute;right:-2px;bottom:-2px;width:19px;height:19px;border-radius:50%;
-  display:grid;place-items:center;background:#FFFDF9;border:1px solid rgba(73,84,68,.10);
-  box-shadow:0 3px 8px rgba(57,68,52,.12);pointer-events:none;
-}
-.member-avatar-camera svg,.member-avatar-camera img{width:11px!important;height:11px!important;display:block;object-fit:contain}
-.family-avatar-hint{margin-top:10px!important;color:#8A9186!important}
-.family-member-panel{padding-top:3px!important;padding-bottom:3px!important}
-.family-member-list-row{display:flex;align-items:center;gap:12px;min-height:70px;border-bottom:1px solid #F0EBE5;padding:9px 0}
-.family-member-list-row:last-child{border-bottom:0}
-.family-member-list-row .member-avatar-upload{width:48px;height:48px;flex-basis:48px}
-.family-member-list-main{flex:1;min-width:0;align-self:stretch;border:0;background:transparent;padding:0;display:flex;align-items:center;justify-content:space-between;text-align:left;color:inherit}
-.family-member-list-main>span{min-width:0;display:block}
-.family-member-list-main b{display:block;font-size:14px;font-weight:550;line-height:1.35;color:#363A35}
-.family-member-list-main small{display:block;margin-top:5px;font-size:13px;line-height:1.35;color:#8A8F87;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.family-member-list-main .chevron{font-style:normal;font-size:22px;color:#B4B1AA;padding-left:8px}
-.member-avatar-display{overflow:hidden;padding:0!important}
-.member-avatar-display .member-avatar-media{width:100%;height:100%}
-.family-avatar-sheet-preview{width:86px;height:86px;margin:2px auto 18px;border-radius:50%;background:#F1F3ED;display:grid;place-items:center;overflow:hidden;box-shadow:0 8px 22px rgba(59,72,54,.09),0 0 0 1px rgba(79,94,73,.07)}
-.family-avatar-sheet-media{width:100%;height:100%;border-radius:50%;object-fit:cover;display:grid;place-items:center;overflow:hidden}
-.family-avatar-sheet-preview .member-avatar-fallback img,.family-avatar-sheet-preview .member-avatar-fallback svg{width:38px!important;height:38px!important}
-@media(max-width:360px){
-  .member-avatar.member-avatar-upload{width:50px;height:50px;flex-basis:50px}
-  .family-member-list-row .member-avatar-upload{width:46px;height:46px;flex-basis:46px}
-}
-</style>
 </head><body><div id="app" aria-live="polite"></div><script>
 (function(){
 'use strict';
@@ -4371,7 +4327,7 @@ const DEFAULT_STATE={
   quickConsent:false,
   codeExpireAt:0,
   user:{name:'阳光妈妈',role:'母亲',phone:'13800000000',avatar:'',avatarImage:''},
-  family:{children:[{id:'child1',name:'小明',age:10,gender:'男孩',grade:'小学四年级',avatarImage:''}],others:[]},
+  family:{children:[{id:'child1',name:'小明',age:10,gender:'男孩',grade:'小学四年级'}],others:[]},
   membership:{active:false,plan:null,expireAt:null,orders:[]},
   chat:{active:false,scenario:null,node:'idle',messages:[],typing:false,reviewResult:null,freeTurns:0},
   actions:DEFAULT_ACTIONS,
@@ -5067,12 +5023,12 @@ function renderArchive(){
 }
 
 function renderParentArchive(){
-  return `<div><div class="panel"><div class="member-card">${familyAvatarButton('parent','','parent')}<div class="member-main"><b>${esc(state.user.name)}</b><span>与孩子的关系：${esc(roleLabel(state.user.role))}</span></div><button class="edit-pill" data-action="edit-parent">编辑</button></div><div class="subtle family-avatar-hint">点击头像可以更换照片。档案根据你提供及确认的信息整理。</div></div><div class="panel"><div class="archive-title">能力档案</div><div class="ability-row"><b>情绪觉察</b><p>开始能更早发现自己从担心进入着急的时刻。</p></div><div class="ability-row"><b>倾听与回应</b><p>愿意先听孩子把话说完，再讨论怎么处理问题。</p></div><div class="ability-row"><b>关系修复</b><p>冲突后愿意回来看发生了什么，而不是只停留在自责。</p></div></div><div class="panel"><div class="archive-title">教养方式与观念</div><div class="ability-row"><b>教养类型</b><p>目前更关注规则能否被执行，也在练习给孩子更多自主空间。</p></div><div class="ability-row"><b>成长观</b><p>希望孩子逐渐学会为自己的事情负责。</p></div><div class="ability-row"><b>儿童观</b><p>开始更多区分“孩子不愿意”和“孩子暂时做不到”。</p></div><div class="ability-row"><b>教育观</b><p>希望学习和关系都重要，而不是只追求当下完成任务。</p></div><button class="primary-btn full-btn" data-action="archive-correct" data-member="parent" style="margin-top:14px">补充 / 修正档案</button></div></div>`;
+  return `<div><div class="panel"><div class="member-card"><div class="member-avatar">${profileGlyph('parent')}</div><div class="member-main"><b>${esc(state.user.name)}</b><span>与孩子的关系：${esc(roleLabel(state.user.role))}</span></div><button class="edit-pill" data-action="edit-parent">编辑</button></div><div class="subtle" style="margin-top:10px">档案根据你提供及确认的信息整理。</div></div><div class="panel"><div class="archive-title">能力档案</div><div class="ability-row"><b>情绪觉察</b><p>开始能更早发现自己从担心进入着急的时刻。</p></div><div class="ability-row"><b>倾听与回应</b><p>愿意先听孩子把话说完，再讨论怎么处理问题。</p></div><div class="ability-row"><b>关系修复</b><p>冲突后愿意回来看发生了什么，而不是只停留在自责。</p></div></div><div class="panel"><div class="archive-title">教养方式与观念</div><div class="ability-row"><b>教养类型</b><p>目前更关注规则能否被执行，也在练习给孩子更多自主空间。</p></div><div class="ability-row"><b>成长观</b><p>希望孩子逐渐学会为自己的事情负责。</p></div><div class="ability-row"><b>儿童观</b><p>开始更多区分“孩子不愿意”和“孩子暂时做不到”。</p></div><div class="ability-row"><b>教育观</b><p>希望学习和关系都重要，而不是只追求当下完成任务。</p></div><button class="primary-btn full-btn" data-action="archive-correct" data-member="parent" style="margin-top:14px">补充 / 修正档案</button></div></div>`;
 }
 
 function renderChildArchive(){
-  const child=state.family?.children?.[0]||{id:'child1',name:'小明',age:10,gender:'男孩',grade:'小学四年级'};
-  return `<div><div class="panel"><div class="member-card">${familyAvatarButton('child',child.id,'child')}<div class="member-main"><b>${esc(child.name)}</b><span>${esc(child.age)} 岁 · ${esc(child.gender)} · ${esc(child.grade||'')}</span></div><button class="edit-pill" data-action="edit-child">编辑</button></div><div class="subtle family-avatar-hint">点击头像可以上传孩子照片。档案根据你提供及确认的信息整理。</div></div><div class="panel"><div class="archive-title">基础档案</div><div class="archive-four"><button data-action="archive-basic" data-category="生理基础">生理基础</button><button data-action="archive-basic" data-category="健康状况">健康状况</button><button data-action="archive-basic" data-category="气质与印记">气质与印记</button><button data-action="archive-basic" data-category="家庭背景">家庭背景</button></div></div><div class="panel"><div class="archive-title">能力档案</div><div class="ability-row"><b>任务启动</b><p>面对不喜欢或觉得困难的任务时，启动会比较慢。</p></div><div class="ability-row"><b>自主表达</b><p>被连续催促时容易用拒绝或顶嘴表达不满。</p></div><div class="ability-row"><b>情绪恢复</b><p>冲突之后通常需要一段安静时间，才愿意重新沟通。</p></div><button class="primary-btn full-btn" data-action="archive-correct" data-member="child" style="margin-top:14px">补充 / 修正档案</button></div></div>`;
+  const child=state.family?.children?.[0]||{name:'小明',age:10,gender:'男孩',grade:'小学四年级'};
+  return `<div><div class="panel"><div class="member-card"><div class="member-avatar">${profileGlyph('child')}</div><div class="member-main"><b>${esc(child.name)}</b><span>${esc(child.age)} 岁 · ${esc(child.gender)} · ${esc(child.grade||'')}</span></div><button class="edit-pill" data-action="edit-child">编辑</button></div><div class="subtle" style="margin-top:10px">档案根据你提供及确认的信息整理。</div></div><div class="panel"><div class="archive-title">基础档案</div><div class="archive-four"><button data-action="archive-basic" data-category="生理基础">生理基础</button><button data-action="archive-basic" data-category="健康状况">健康状况</button><button data-action="archive-basic" data-category="气质与印记">气质与印记</button><button data-action="archive-basic" data-category="家庭背景">家庭背景</button></div></div><div class="panel"><div class="archive-title">能力档案</div><div class="ability-row"><b>任务启动</b><p>面对不喜欢或觉得困难的任务时，启动会比较慢。</p></div><div class="ability-row"><b>自主表达</b><p>被连续催促时容易用拒绝或顶嘴表达不满。</p></div><div class="ability-row"><b>情绪恢复</b><p>冲突之后通常需要一段安静时间，才愿意重新沟通。</p></div><button class="primary-btn full-btn" data-action="archive-correct" data-member="child" style="margin-top:14px">补充 / 修正档案</button></div></div>`;
 }
 
 function renderMemorySummary(){
@@ -5084,9 +5040,9 @@ function renderMemories(){
 }
 
 function renderMembers(){
-  const childRows=(state.family?.children||[]).map((child,i)=>familyMemberListRow('child',child.id,child.name,`孩子${child.age?` · ${child.age} 岁`:''}`,i===0?'edit-child':'member-demo-info')).join('');
-  const otherRows=(state.family?.others||[]).map(item=>familyMemberListRow('other',item.id,item.name,item.relation||'家庭成员','member-demo-info')).join('');
-  return `<div class="secondary-page archive-page members-page">${titleBar('家庭成员',{back:'archive',right:{label:'添加',action:'member-add'}})}<div class="page-body"><div class="panel family-member-panel">${familyMemberListRow('parent','',state.user.name,'家长 · '+roleLabel(state.user.role),'edit-parent')}${childRows}${otherRows}</div><div class="empty-card card"><img src="${ASSETS.mascot}" alt=""><h3>可以继续添加家庭成员</h3><p>每位成员都有独立头像和档案，信息不会混在一起。</p><button class="secondary-btn" data-action="member-add">添加成员</button></div></div></div>`;
+  const childRows=(state.family?.children||[]).map((child,i)=>listRow(svg.child,child.name,`孩子${child.age?` · ${child.age} 岁`:''}`,i===0?'edit-child':'member-demo-info',`data-child-id="${esc(child.id)}"`)).join('');
+  const otherRows=(state.family?.others||[]).map(item=>listRow(svg.user,item.name,item.relation,'member-demo-info',`data-child-id="${esc(item.id)}"`)).join('');
+  return `<div class="secondary-page archive-page members-page">${titleBar('家庭成员',{back:'archive',right:{label:'添加',action:'member-add'}})}<div class="page-body"><div class="panel">${listRow(svg.user,state.user.name,'家长 · '+roleLabel(state.user.role),'edit-parent')}${childRows}${otherRows}</div><div class="empty-card card"><img src="${ASSETS.mascot}" alt=""><h3>可以继续添加家庭成员</h3><p>每位成员都有独立档案，信息不会混在一起。</p><button class="secondary-btn" data-action="member-add">添加成员</button></div></div></div>`;
 }
 
 function renderArchiveBasic(category){
@@ -5106,7 +5062,7 @@ function renderAssessmentCard(a){
 
 function renderAssessmentDetail(id){
   const a=getAssessmentView(ASSESSMENTS.find(x=>x.id===id)||ASSESSMENTS[0]);
-  return `<div class="secondary-page assessment-page">${titleBar(a.title,{back:'assessments'})}<div class="page-body"><div class="hero-card"><h1>这个测评能帮你了解什么？</h1><p>它不会判断孩子“好或不好”，而是帮助你观察面对任务时怎样开始、什么情况下容易回避，以及哪些支持方式更适合。</p></div><div class="panel"><div class="ability-row"><b>适用对象</b><p>6—15 岁孩子的家长</p></div><div class="ability-row"><b>预计时间</b><p>约 ${a.minutes} 分钟</p></div><div class="ability-row"><b>报告包含</b><p>任务理解、启动能力、压力反应、自主感和父母支持方式。</p></div><div class="ability-row"><b>隐私说明</b><p>答案仅用于生成本次结果；你可以决定是否保存到家庭档案。</p></div></div><div class="panel"><div class="member-card"><div class="member-avatar member-avatar-display">${memberAvatarMarkup('child',state.family?.children?.[0]?.id||'child1','member-avatar-media')}</div><div class="member-main"><b>本次测评对象</b><span>${esc(state.family?.children?.[0]?.name||'小明')} · ${esc(state.family?.children?.[0]?.age||10)} 岁</span></div><button class="edit-pill" data-action="member-select">更换</button></div></div><button class="primary-btn full-btn" data-action="assessment-start" data-id="${a.id}">${a.status==='progress'?'继续测评':'开始测评'}</button></div></div>`;
+  return `<div class="secondary-page assessment-page">${titleBar(a.title,{back:'assessments'})}<div class="page-body"><div class="hero-card"><h1>这个测评能帮你了解什么？</h1><p>它不会判断孩子“好或不好”，而是帮助你观察面对任务时怎样开始、什么情况下容易回避，以及哪些支持方式更适合。</p></div><div class="panel"><div class="ability-row"><b>适用对象</b><p>6—15 岁孩子的家长</p></div><div class="ability-row"><b>预计时间</b><p>约 ${a.minutes} 分钟</p></div><div class="ability-row"><b>报告包含</b><p>任务理解、启动能力、压力反应、自主感和父母支持方式。</p></div><div class="ability-row"><b>隐私说明</b><p>答案仅用于生成本次结果；你可以决定是否保存到家庭档案。</p></div></div><div class="panel"><div class="member-card"><div class="member-avatar">${profileGlyph('child')}</div><div class="member-main"><b>本次测评对象</b><span>小明 · 10 岁</span></div><button class="edit-pill" data-action="member-select">更换</button></div></div><button class="primary-btn full-btn" data-action="assessment-start" data-id="${a.id}">${a.status==='progress'?'继续测评':'开始测评'}</button></div></div>`;
 }
 
 function renderAssessmentQuestions(id){
@@ -5367,7 +5323,7 @@ function renderHelpCenter(){
 }
 
 function renderAbout(){
-  return `<div class="secondary-page settings-page about-page">${titleBar('关于亲智聊',{back:'settings'})}<div class="page-body"><div class="empty-card"><img src="${ASSETS.logo}" alt="" style="border-radius:25px"><h3>亲智聊</h3><p>家庭关系理解与行动陪伴产品<br>版本 7.8 Demo</p></div><div class="settings-group">${listRow(svg.file,'服务协议','','route','data-route="agreement/service"')}${listRow(svg.shield,'隐私政策','','route','data-route="agreement/privacy"')}${listRow(svg.file,'第三方信息共享清单','','about-toast')}${listRow(svg.settings,'权限使用说明','','about-toast')}</div></div></div>`;
+  return `<div class="secondary-page settings-page about-page">${titleBar('关于亲智聊',{back:'settings'})}<div class="page-body"><div class="empty-card"><img src="${ASSETS.logo}" alt="" style="border-radius:25px"><h3>亲智聊</h3><p>家庭关系理解与行动陪伴产品<br>版本 7.7 Demo</p></div><div class="settings-group">${listRow(svg.file,'服务协议','','route','data-route="agreement/service"')}${listRow(svg.shield,'隐私政策','','route','data-route="agreement/privacy"')}${listRow(svg.file,'第三方信息共享清单','','about-toast')}${listRow(svg.settings,'权限使用说明','','about-toast')}</div></div></div>`;
 }
 
 function renderDemoTools(){
@@ -5645,7 +5601,6 @@ function handleClick(e){
   else if(action==='archive-basic')navigate('archive/basic/'+encodeURIComponent(el.dataset.category));
   else if(action==='memory-toggle')toggleMemory(el.dataset.id);
   else if(action==='memory-clear')confirmMemoryClear();
-  else if(action==='family-avatar')showFamilyAvatarSheet(el.dataset.memberType||'parent',el.dataset.memberId||'');
   else if(action==='edit-parent'||action==='edit-child')showMemberEdit(action==='edit-parent'?'parent':'child');
   else if(action==='member-add')showMemberAdd();
   else if(action==='member-demo-info')toast('更多成员的独立档案编辑将在下一版继续补齐');
@@ -5905,42 +5860,9 @@ function completePayment(success){
 
 let profileRoleDraft='';
 let avatarCropState=null;
-let avatarEditTarget={type:'parent',id:''};
-
-function getFamilyAvatarTarget(type='parent',id=''){
-  if(type==='parent')return {type:'parent',id:'',kind:'parent',name:state.user.name||'家长',record:state.user};
-  const list=type==='child'?(state.family?.children||[]):(state.family?.others||[]);
-  const record=list.find(x=>String(x.id)===String(id))||(type==='child'?list[0]:null);
-  if(!record)return null;
-  return {type,id:record.id,kind:type==='child'?'child':'parent',name:record.name||'家庭成员',record};
-}
-function memberAvatarMarkup(type='parent',id='',cls=''){
-  const target=getFamilyAvatarTarget(type,id);if(!target)return `<span class="member-avatar-fallback ${esc(cls)}">${svg.user}</span>`;
-  const custom=target.record.avatarImage||'';
-  if(custom)return `<img class="member-avatar-photo ${esc(cls)}" src="${esc(custom)}" alt="${esc(target.name)}的头像">`;
-  if(type==='parent')return `<img class="member-avatar-photo ${esc(cls)}" src="${esc(ASSETS.avatarNeutral)}" alt="${esc(target.name)}的头像">`;
-  return `<span class="member-avatar-fallback ${esc(cls)}">${target.kind==='child'?svg.child:svg.user}</span>`;
-}
-function familyAvatarButton(type='parent',id='',kind='parent'){
-  const target=getFamilyAvatarTarget(type,id);const name=target?.name||'家庭成员';
-  return `<button class="member-avatar member-avatar-upload" data-action="family-avatar" data-member-type="${esc(type)}" data-member-id="${esc(id||'')}" aria-label="更换${esc(name)}的头像">${memberAvatarMarkup(type,id,'member-avatar-media')}<span class="member-avatar-camera" aria-hidden="true">${svg.camera}</span></button>`;
-}
-function familyMemberListRow(type,id,name,desc,action){
-  return `<div class="family-member-list-row">${familyAvatarButton(type,id,type==='child'?'child':'parent')}<button class="family-member-list-main" data-action="${esc(action)}" ${type==='child'?`data-child-id="${esc(id)}"`:''}><span><b>${esc(name)}</b><small>${esc(desc||'')}</small></span><i class="chevron">›</i></button></div>`;
-}
-function showFamilyAvatarSheet(type='parent',id=''){
-  const target=getFamilyAvatarTarget(type,id);if(!target){toast('没有找到这个家庭成员');return;}
-  avatarEditTarget={type:target.type,id:target.id||''};
-  const hasCustom=!!target.record.avatarImage;
-  showBottomSheet(`<h2>更换${esc(target.name)}的头像</h2><div class="sheet-sub">选择照片后可以调整位置和大小，确认后才会保存。</div><div class="family-avatar-sheet-preview">${memberAvatarMarkup(target.type,target.id,'family-avatar-sheet-media')}</div><button class="sheet-option" data-overlay-action="profile-avatar-album">${svg.image}　从相册选择</button><button class="sheet-option" data-overlay-action="profile-avatar-camera">${svg.camera}　拍照</button>${hasCustom?`<button class="sheet-option danger-soft" data-overlay-action="profile-avatar-default">恢复默认头像</button>`:''}`);
-}
-function resetCurrentAvatarTarget(){
-  const target=getFamilyAvatarTarget(avatarEditTarget.type,avatarEditTarget.id);if(!target)return;
-  target.record.avatarImage='';saveState();closeOverlay();renderRoute(currentRoute);toast('已恢复默认头像');
-}
 
 function showProfileAvatarSheet(){
-  showFamilyAvatarSheet('parent','');
+  showBottomSheet(`<h2>更换头像</h2><div class="sheet-sub">选择照片后可以先调整位置和大小，确认后才会保存。</div><div class="avatar-sheet-preview">${userAvatarMarkup('avatar-sheet-img')}</div><button class="sheet-option" data-overlay-action="profile-avatar-album">${svg.image}　从相册选择</button><button class="sheet-option" data-overlay-action="profile-avatar-camera">${svg.camera}　拍照</button>${state.user.avatarImage?`<button class="sheet-option danger-soft" data-overlay-action="profile-avatar-default">恢复默认头像</button>`:''}`);
 }
 function showNicknameEditor(){
   showOverlay(`<div class="editor-layer"><div class="editor-statusbar"><span>9:41</span><span class="status-icons">▮▮▮　Wi-Fi　▰</span></div><div class="editor-topbar"><button class="editor-cancel" data-overlay-action="editor-close">取消</button><b>编辑昵称</b><button class="editor-done" data-overlay-action="profile-name-confirm">完成</button></div><div class="editor-body"><div class="editor-field"><input id="nicknameEditorInput" value="${esc(state.user.name)}" maxlength="16" placeholder="请输入昵称"></div><div class="editor-note">最多 16 个字</div></div></div>`);
@@ -5998,10 +5920,7 @@ function bindAvatarCropEditor(){
 }
 function saveAvatarCrop(){
   const canvas=document.getElementById('avatarCropCanvas');if(!canvas)return;
-  const target=getFamilyAvatarTarget(avatarEditTarget.type,avatarEditTarget.id);if(!target){toast('没有找到这个家庭成员');return;}
-  const output=document.createElement('canvas');output.width=360;output.height=360;
-  const ctx=output.getContext('2d');ctx.drawImage(canvas,0,0,canvas.width,canvas.height,0,0,360,360);
-  target.record.avatarImage=output.toDataURL('image/jpeg',.84);saveState();avatarCropState=null;closeOverlay();renderRoute(currentRoute);toast(`${target.name}的头像已更新`);
+  state.user.avatarImage=canvas.toDataURL('image/jpeg',.9);saveState();avatarCropState=null;closeOverlay();renderRoute(currentRoute);toast('头像已更新');
 }
 
 function showAccountPhoneSheet(){
@@ -6075,8 +5994,8 @@ function handleOverlayClick(e){
   else if(action==='member-add-role-draft'){newMemberNameDraft=document.getElementById('newMemberName')?.value.trim()||newMemberNameDraft;newMemberRelationDraft=target.dataset.relation||newMemberRelationDraft;closeOverlay();renderMemberAddSheet();}
   else if(action==='member-add-save'){
     const name=document.getElementById('newMemberName')?.value.trim();if(!name){toast('请输入成员称呼');return;}
-    if(newMemberRelationDraft==='孩子')state.family.children.push({id:uid('child'),name,age:0,gender:'暂不填写',grade:'',avatarImage:''});
-    else state.family.others.push({id:uid('member'),name,relation:newMemberRelationDraft,avatarImage:''});
+    if(newMemberRelationDraft==='孩子')state.family.children.push({id:uid('child'),name,age:0,gender:'暂不填写',grade:''});
+    else state.family.others.push({id:uid('member'),name,relation:newMemberRelationDraft});
     closeOverlay();saveState();renderRoute(currentRoute);toast('家庭成员已添加');
   }
   else if(action==='member-selected'){closeOverlay();toast('已选择小明');}
@@ -6093,7 +6012,7 @@ function handleOverlayClick(e){
   else if(action==='profile-avatar-album'){openProfileAvatarPicker(false);}
   else if(action==='profile-avatar-camera'){openProfileAvatarPicker(true);}
   else if(action==='profile-avatar-confirm'){saveAvatarCrop();}
-  else if(action==='profile-avatar-default'){resetCurrentAvatarTarget();}
+  else if(action==='profile-avatar-default'){state.user.avatarImage='';saveState();closeOverlay();renderRoute(currentRoute);toast('已恢复默认头像');}
   else if(action==='account-phone-demo'){closeOverlay();toast('Demo：手机号验证流程已预留');}
   else if(action==='account-wechat-demo'){closeOverlay();toast('Demo：微信绑定管理已预留');}
   else if(action==='network-demo'){closeOverlay();showNetwork();}
@@ -6465,9 +6384,9 @@ function showGrowthActionDetail(id){const a=state.actions.find(x=>x.id===id);if(
 /* Feedback sheet is supplied by the V7.1 local-state override below. */
 recordActionResult=function(id,result,text){const a=state.actions.find(x=>x.id===id);if(a){a.result=result;a.resultText=text;a.status='done';state.growth.selectedDate=a.date;state.growth.month=a.date.slice(0,7);}saveState();closeOverlay();if(routeBase(currentRoute)==='growth')refreshGrowthLocal();else renderRoute(currentRoute);toast('已记录：'+text);};
 /* =========================================================
-   V7.8 Growth Summary + Home More Menu + approved reference icons + Family Avatar — final local-state overrides
+   V7.7 Growth Summary + Home More Menu + approved reference icon artwork — final local-state overrides
    ========================================================= */
-window.__QZL_VERSION='7.8';
+window.__QZL_VERSION='7.7';
 
 function inferGrowthResult(action){
   if(!action||action.status==='pending')return null;
@@ -6810,7 +6729,7 @@ svg.homework=ref77('edit');
 /* Relation/action reason stays semantic but no longer thick. */
 svg.relation=line77('relation','#806FCB','<circle cx="7" cy="12" r="2.7"/><circle cx="17" cy="12" r="2.7"/><path d="M9.7 10.2h4.6l-1.4-1.4M14.3 13.8H9.7l1.4 1.4"/>');
 
-/* V7.8: initialize only after approved reference artwork + family-avatar overrides are active. */
+/* V7.7: initialize only after approved reference artwork overrides are active. */
 normalizeGrowthActions();
 migrateCenterState();
 saveState();
