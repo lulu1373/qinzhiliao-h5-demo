@@ -3570,6 +3570,14 @@ button:focus-visible,input:focus-visible,textarea:focus-visible{outline-color:rg
 .v65-inline-category .category-feed{margin-top:0}
 .v64-topic-strip button{transition:background .14s ease,color .14s ease,box-shadow .14s ease,transform .08s ease}
 .v64-topic-strip button:active{transform:scale(.97)}
+
+/* V8.2: bottom sheet option alignment fix */
+.sheet-option{display:flex!important;align-items:center!important;gap:12px!important;line-height:1.42!important;text-align:left!important;}
+.sheet-option svg,.sheet-option i{flex:0 0 auto;display:block!important;width:22px;height:22px;margin-right:0!important;}
+.sheet-option > span{display:block;}
+.sheet-option > span:only-child{flex:1 1 auto;}
+.sheet-option .subtle{margin-top:2px!important;}
+.family-avatar-sheet-preview + .sheet-option{margin-top:12px;}
 </style>
 <style id="v67-design-system">
 /* =========================================================
@@ -4276,6 +4284,29 @@ svg{vertical-align:middle}
   .settings-page .list-row-icon .qzl-v80-tone{width:23px!important;height:23px!important}
 }
 </style>
+
+<style id="v83-completed-item-icon-system">
+/* V8.3 — completed items: feature icon carries content type; badge carries status. */
+.v80-completed-panel .list-row-icon.v83-completed-icon{
+  position:relative!important;width:48px!important;height:48px!important;border-radius:15px!important;
+  background:#F7F4EF!important;border:1px solid rgba(70,63,55,.055)!important;box-shadow:none!important;
+  overflow:visible!important;display:grid!important;place-items:center!important;
+}
+.v83-completed-icon:before{display:none!important}
+.v83-completed-feature{display:grid;place-items:center;width:28px;height:28px}
+.v83-completed-feature .qzl-v80-tone{width:26px!important;height:26px!important}
+.v83-completed-feature .qzl-ref-icon{width:28px!important;height:28px!important;object-fit:contain!important;filter:saturate(.94) contrast(.98)!important}
+.v83-completed-badge{
+  position:absolute;right:-3px;top:-3px;width:18px;height:18px;border-radius:50%;
+  background:#fff;box-shadow:0 2px 7px rgba(55,75,48,.10);display:grid;place-items:center;padding:1px;
+}
+.qzl-v83-completed-badge-svg{display:block;width:16px;height:16px}
+.v83-completed-row .v80-completed-meta em{background:#F3F0EB;color:#817C75}
+@media(max-width:360px){
+  .v80-completed-panel .list-row-icon.v83-completed-icon{width:46px!important;height:46px!important}
+  .v83-completed-feature .qzl-ref-icon{width:27px!important;height:27px!important}
+}
+</style>
 </head><body><div id="app" aria-live="polite"></div><script>
 (function(){
 'use strict';
@@ -4711,7 +4742,7 @@ function renderRoute(route){
     }
     currentRoute=route;
     const html=renderScreen(route);
-    // V8.1: only animate when entering the secondary stack from Home.
+    // V8.2: only animate when entering the secondary stack from Home.
     // Replacing one secondary route with another used to remove the outgoing page
     // first and slide the incoming page from 100%, exposing Home for ~1 frame.
     // That was perceived as a flash in Settings and other nested pages.
@@ -4774,7 +4805,9 @@ function listRow(icon,title,sub,action,extra=''){
   return `<button class="list-row" data-action="${esc(action)}" ${extra}><span class="list-row-icon">${icon}</span><span class="list-row-main"><b>${esc(title)}</b>${sub?`<span>${esc(sub)}</span>`:''}</span><span class="chevron">›</span></button>`;
 }
 function completedTaskRow(title,meta,type,route){
-  return `<button class="list-row v80-completed-row" data-action="route" data-route="${route}"><span class="list-row-icon v80-completed-icon">${svg.completedStatus}</span><span class="list-row-main"><b>${esc(title)}</b><span class="v80-completed-meta">${esc(meta)} <em>${esc(type)}</em></span></span><span class="chevron">›</span></button>`;
+  const kind=type==='测评'?'assessment':'action';
+  const featureIcon=kind==='assessment'?svg.assessment:svg.task;
+  return `<button class="list-row v80-completed-row v83-completed-row type-${kind}" data-action="route" data-route="${route}"><span class="list-row-icon v83-completed-icon"><span class="v83-completed-feature">${featureIcon}</span><span class="v83-completed-badge" aria-label="已完成">${svg.completedBadge}</span></span><span class="list-row-main"><b>${esc(title)}</b><span class="v80-completed-meta">${esc(meta)} <em>${esc(type)}</em></span></span><span class="chevron">›</span></button>`;
 }
 
 function renderScreen(route){
@@ -6659,7 +6692,7 @@ recordActionResult=function(id,result,text){const a=state.actions.find(x=>x.id==
 /* =========================================================
    V8.0 Growth Summary + Home More Menu + Family Archive IA + Icon Harmony — final local-state overrides
    ========================================================= */
-window.__QZL_VERSION='8.1';
+window.__QZL_VERSION='8.3';
 
 function inferGrowthResult(action){
   if(!action||action.status==='pending')return null;
@@ -7006,6 +7039,7 @@ svg.relation=line77('relation','#806FCB','<circle cx="7" cy="12" r="2.7"/><circl
 const v80Tone=(name,stroke,fill,body)=>`<svg class="qzl-v80-tone qzl-v80-${name}" viewBox="0 0 24 24" aria-hidden="true" style="--v80-stroke:${stroke};--v80-fill:${fill}">${body}</svg>`;
 
 svg.completedStatus=v80Tone('completed','#67A15A','#EAF4E6','<circle cx="12" cy="12" r="8.2" fill="var(--v80-fill)" stroke="var(--v80-stroke)"/><path d="m8.2 12.1 2.35 2.4 5.25-5.4" fill="none" stroke="var(--v80-stroke)"/>');
+svg.completedBadge='<svg class="qzl-v83-completed-badge-svg" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="7" fill="#68A35D"/><path d="m4.7 8.2 2 2 4.6-4.6" fill="none" stroke="#fff" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 svg.profile=v80Tone('profile','#6384D7','#E9F0FF','<circle cx="12" cy="8.2" r="3.4" fill="var(--v80-fill)" stroke="var(--v80-stroke)"/><path d="M5.7 20c.45-4 2.7-6.1 6.3-6.1s5.85 2.1 6.3 6.1" fill="var(--v80-fill)" stroke="var(--v80-stroke)"/>');
 svg.notification=v80Tone('notification','#E58B4B','#FCEBDD','<path d="M18 9.5a6 6 0 0 0-12 0c0 4.55-1.75 6.05-2.4 7.45h16.8C19.75 15.55 18 14.05 18 9.5Z" fill="var(--v80-fill)" stroke="var(--v80-stroke)"/><path d="M9.7 20h4.6" fill="none" stroke="var(--v80-stroke)"/>');
 svg.bell=svg.notification;
@@ -7026,5 +7060,5 @@ setDrawerProgress(0);
 })();
 
 </script>
-<!-- V8.1 nested secondary navigation flash fix: Home→secondary animates; secondary→secondary swaps in place. -->
+<!-- V8.2 nested secondary navigation flash fix: Home→secondary animates; secondary→secondary swaps in place. -->
 </body></html>
