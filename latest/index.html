@@ -4711,7 +4711,12 @@ function renderRoute(route){
     }
     currentRoute=route;
     const html=renderScreen(route);
-    const cls=sameRoute?'stack-screen':'stack-screen stack-enter';
+    // V8.1: only animate when entering the secondary stack from Home.
+    // Replacing one secondary route with another used to remove the outgoing page
+    // first and slide the incoming page from 100%, exposing Home for ~1 frame.
+    // That was perceived as a flash in Settings and other nested pages.
+    const shouldEnterAnimate=!sameRoute&&!wasSecondary;
+    const cls=shouldEnterAnimate?'stack-screen stack-enter':'stack-screen';
     pageStack.innerHTML=`<section class="${cls}" data-route="${esc(route)}"><div class="stack-statusbar"><span>9:41</span><span class="status-icons">▮▮▮　Wi-Fi　▰</span></div><div class="stack-content">${html}</div></section>`;
     bindRenderedRoute(route,pageStack);
     if(!drawerEl.innerHTML)renderDrawer();
@@ -5549,7 +5554,7 @@ function renderHelpCenter(){
 }
 
 function renderAbout(){
-  return `<div class="secondary-page settings-page about-page">${titleBar('关于亲智聊',{back:'settings'})}<div class="page-body"><div class="empty-card"><img src="${ASSETS.logo}" alt="" style="border-radius:25px"><h3>亲智聊</h3><p>家庭关系理解与行动陪伴产品<br>版本 8.0 Demo</p></div><div class="settings-group">${listRow(svg.file,'服务协议','','route','data-route="agreement/service"')}${listRow(svg.shield,'隐私政策','','route','data-route="agreement/privacy"')}${listRow(svg.file,'第三方信息共享清单','','about-toast')}${listRow(svg.settings,'权限使用说明','','about-toast')}</div></div></div>`;
+  return `<div class="secondary-page settings-page about-page">${titleBar('关于亲智聊',{back:'settings'})}<div class="page-body"><div class="empty-card"><img src="${ASSETS.logo}" alt="" style="border-radius:25px"><h3>亲智聊</h3><p>家庭关系理解与行动陪伴产品<br>版本 8.1 Demo</p></div><div class="settings-group">${listRow(svg.file,'服务协议','','route','data-route="agreement/service"')}${listRow(svg.shield,'隐私政策','','route','data-route="agreement/privacy"')}${listRow(svg.file,'第三方信息共享清单','','about-toast')}${listRow(svg.settings,'权限使用说明','','about-toast')}</div></div></div>`;
 }
 
 function renderDemoTools(){
@@ -6654,7 +6659,7 @@ recordActionResult=function(id,result,text){const a=state.actions.find(x=>x.id==
 /* =========================================================
    V8.0 Growth Summary + Home More Menu + Family Archive IA + Icon Harmony — final local-state overrides
    ========================================================= */
-window.__QZL_VERSION='8.0';
+window.__QZL_VERSION='8.1';
 
 function inferGrowthResult(action){
   if(!action||action.status==='pending')return null;
@@ -7020,4 +7025,6 @@ setDrawerProgress(0);
 
 })();
 
-</script></body></html>
+</script>
+<!-- V8.1 nested secondary navigation flash fix: Home→secondary animates; secondary→secondary swaps in place. -->
+</body></html>
