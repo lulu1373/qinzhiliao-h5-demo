@@ -4240,6 +4240,42 @@ svg{vertical-align:middle}
 .v79-memory-item{align-items:center!important}.v79-memory-item .memory-main small{display:block;font-size:11.5px;color:#A09D97;margin-top:5px}.v79-memory-kicker{display:flex;align-items:center;gap:7px;margin-bottom:5px}.v79-memory-kicker em{font-size:11.5px;color:#7E8580;font-style:normal;font-weight:600}.v79-memory-kicker .v79-source-badge{padding:2px 7px}.v79-memory-item .memory-main>b{font-size:15px!important}.v79-memory-item .memory-main>p{font-size:14px!important;line-height:1.58!important}
 @media(max-width:360px){.v79-archive-tabs .segment-btn{font-size:11.5px!important}.v79-family-people{gap:9px}.v79-insight-actions{gap:5px}.v79-insight-actions button{font-size:11.5px;padding:0 5px}.v79-flow.large span{font-size:11.5px;padding:5px 6px}}
 </style>
+
+<style id="v80-icon-harmony">
+/* V8.0 — distinguish status icons from feature icons, and calm settings visuals. */
+.qzl-v80-tone{display:block;width:24px;height:24px;fill:none;stroke-linecap:round;stroke-linejoin:round;stroke-width:1.55;vector-effect:non-scaling-stroke}
+.qzl-v80-tone *{stroke-width:1.55;stroke-linecap:round;stroke-linejoin:round}
+
+/* Settings: one quiet plate, one flat duotone geometry family. */
+.settings-page .list-row-icon{
+  width:44px!important;height:44px!important;border-radius:14px!important;
+  background:#F6F3EE!important;border:1px solid rgba(69,62,54,.055)!important;
+  box-shadow:none!important;
+}
+.settings-page .list-row-icon:before{display:none!important}
+.settings-page .list-row-icon .qzl-v80-tone{width:24px!important;height:24px!important}
+.settings-page .list-row-icon .qzl-ref-icon{width:24px!important;height:24px!important;filter:saturate(.84) contrast(.96)!important}
+.settings-page .settings-group{box-shadow:0 7px 22px rgba(72,55,41,.035)!important}
+
+/* Completed list: leading icon always communicates status. Type is secondary metadata. */
+.v80-completed-panel .list-row-icon.v80-completed-icon{
+  width:44px!important;height:44px!important;border-radius:14px!important;
+  background:#F4F6F1!important;border:1px solid rgba(82,112,74,.065)!important;box-shadow:none!important;
+}
+.v80-completed-icon:before{display:none!important}
+.v80-completed-icon .qzl-v80-tone{width:25px!important;height:25px!important}
+.v80-completed-meta{display:flex!important;align-items:center!important;gap:7px!important;flex-wrap:wrap}
+.v80-completed-meta em{font-style:normal;font-size:11.5px;line-height:18px;padding:1px 7px;border-radius:9px;background:#F2F0EB;color:#89847C;font-weight:500}
+
+/* Drawer header: notification/task should be quieter than feature artwork. */
+.v6-drawer-actions .qzl-v80-tone{width:24px!important;height:24px!important}
+.v6-drawer-actions button{color:#3C3A36!important}
+
+@media(max-width:360px){
+  .settings-page .list-row-icon,.v80-completed-panel .list-row-icon.v80-completed-icon{width:42px!important;height:42px!important}
+  .settings-page .list-row-icon .qzl-v80-tone{width:23px!important;height:23px!important}
+}
+</style>
 </head><body><div id="app" aria-live="polite"></div><script>
 (function(){
 'use strict';
@@ -4731,6 +4767,9 @@ function titleBar(title,{right='',back='home',forceBack=false}={}){
 }
 function listRow(icon,title,sub,action,extra=''){
   return `<button class="list-row" data-action="${esc(action)}" ${extra}><span class="list-row-icon">${icon}</span><span class="list-row-main"><b>${esc(title)}</b>${sub?`<span>${esc(sub)}</span>`:''}</span><span class="chevron">›</span></button>`;
+}
+function completedTaskRow(title,meta,type,route){
+  return `<button class="list-row v80-completed-row" data-action="route" data-route="${route}"><span class="list-row-icon v80-completed-icon">${svg.completedStatus}</span><span class="list-row-main"><b>${esc(title)}</b><span class="v80-completed-meta">${esc(meta)} <em>${esc(type)}</em></span></span><span class="chevron">›</span></button>`;
 }
 
 function renderScreen(route){
@@ -5444,8 +5483,10 @@ function renderTaskCenter(){
   const tasks=getPendingTasks();
   const rows=tasks.map(t=>listRow(t.kind==='action'?svg.sprout:svg.assessment,t.title,t.sub,'route',`data-task-id="${esc(t.id)}" data-route="${t.kind==='action'?'growth/action/':'assessments/detail/'}${esc(t.resourceId)}"`)).join('');
   const pending=`<div class="panel"><div class="panel-title">待处理事项${tasks.length?' · '+tasks.length:''}</div>${rows||'<div class="empty-card"><h3>当前没有待处理事项</h3><p>新的行动与测评进度会出现在这里。</p></div>'}</div><div class="panel"><div class="panel-title">进行中的计划</div><div class="latest-action"><b>7 天少催促计划</b><p>第 2 天 / 共 7 天。今天先练习把提醒改成一个问题。</p><button class="inline-main" data-action="route" data-route="growth">查看今天任务</button></div></div>`;
-  const completedRows=state.actions.filter(a=>a.status==='done').map(a=>listRow(svg.check,a.title,a.date+' · '+a.resultText,'route',`data-route="growth/action/${esc(a.id)}"`)).join('')+ASSESSMENTS.map(getAssessmentView).filter(a=>a.status==='completed').map(a=>listRow(svg.assessment,a.title,'测评已完成'+(a.date?' · '+a.date:''),'route',`data-route="assessments/report/${esc(a.id)}"`)).join('');
-  const completed=`<div class="panel"><div class="panel-title">已完成事项</div>${completedRows||'<div class="empty-card"><p>完成行动反馈或测评后，记录会保留在这里。</p></div>'}</div>`;
+  const completedActionRows=state.actions.filter(a=>a.status==='done').map(a=>completedTaskRow(a.title,a.date+' · '+a.resultText,'行动',`growth/action/${esc(a.id)}`)).join('');
+  const completedAssessmentRows=ASSESSMENTS.map(getAssessmentView).filter(a=>a.status==='completed').map(a=>completedTaskRow(a.title,(a.date||'')+(a.date?' · ':'' )+'测评已完成','测评',`assessments/report/${esc(a.id)}`)).join('');
+  const completedRows=completedActionRows+completedAssessmentRows;
+  const completed=`<div class="panel v80-completed-panel"><div class="panel-title">已完成事项</div>${completedRows||'<div class="empty-card"><p>完成行动反馈或测评后，记录会保留在这里。</p></div>'}</div>`;
   return `<div class="secondary-page task-page">${titleBar('任务中心',{back:'home'})}<div class="page-body"><div class="segmented"><button class="segment-btn ${tab==='pending'?'active':''}" data-action="task-tab" data-value="pending">待处理</button><button class="segment-btn ${tab==='completed'?'active':''}" data-action="task-tab" data-value="completed">已完成</button></div>${tab==='pending'?pending:completed}</div></div>`;
 }
 function renderMessages(){
@@ -5508,7 +5549,7 @@ function renderHelpCenter(){
 }
 
 function renderAbout(){
-  return `<div class="secondary-page settings-page about-page">${titleBar('关于亲智聊',{back:'settings'})}<div class="page-body"><div class="empty-card"><img src="${ASSETS.logo}" alt="" style="border-radius:25px"><h3>亲智聊</h3><p>家庭关系理解与行动陪伴产品<br>版本 7.9 Demo</p></div><div class="settings-group">${listRow(svg.file,'服务协议','','route','data-route="agreement/service"')}${listRow(svg.shield,'隐私政策','','route','data-route="agreement/privacy"')}${listRow(svg.file,'第三方信息共享清单','','about-toast')}${listRow(svg.settings,'权限使用说明','','about-toast')}</div></div></div>`;
+  return `<div class="secondary-page settings-page about-page">${titleBar('关于亲智聊',{back:'settings'})}<div class="page-body"><div class="empty-card"><img src="${ASSETS.logo}" alt="" style="border-radius:25px"><h3>亲智聊</h3><p>家庭关系理解与行动陪伴产品<br>版本 8.0 Demo</p></div><div class="settings-group">${listRow(svg.file,'服务协议','','route','data-route="agreement/service"')}${listRow(svg.shield,'隐私政策','','route','data-route="agreement/privacy"')}${listRow(svg.file,'第三方信息共享清单','','about-toast')}${listRow(svg.settings,'权限使用说明','','about-toast')}</div></div></div>`;
 }
 
 function renderDemoTools(){
@@ -6611,9 +6652,9 @@ function showGrowthActionDetail(id){const a=state.actions.find(x=>x.id===id);if(
 /* Feedback sheet is supplied by the V7.1 local-state override below. */
 recordActionResult=function(id,result,text){const a=state.actions.find(x=>x.id===id);if(a){a.result=result;a.resultText=text;a.status='done';state.growth.selectedDate=a.date;state.growth.month=a.date.slice(0,7);}saveState();closeOverlay();if(routeBase(currentRoute)==='growth')refreshGrowthLocal();else renderRoute(currentRoute);toast('已记录：'+text);};
 /* =========================================================
-   V7.9 Growth Summary + Home More Menu + approved reference icons + Family Archive IA — final local-state overrides
+   V8.0 Growth Summary + Home More Menu + Family Archive IA + Icon Harmony — final local-state overrides
    ========================================================= */
-window.__QZL_VERSION='7.9';
+window.__QZL_VERSION='8.0';
 
 function inferGrowthResult(action){
   if(!action||action.status==='pending')return null;
@@ -6956,7 +6997,20 @@ svg.homework=ref77('edit');
 /* Relation/action reason stays semantic but no longer thick. */
 svg.relation=line77('relation','#806FCB','<circle cx="7" cy="12" r="2.7"/><circle cx="17" cy="12" r="2.7"/><path d="M9.7 10.2h4.6l-1.4-1.4M14.3 13.8H9.7l1.4 1.4"/>');
 
-/* V7.9: initialize only after approved reference artwork + family archive IA overrides are active. */
+/* V8.0 — icon harmony: status and settings use one calm flat duotone vector language. */
+const v80Tone=(name,stroke,fill,body)=>`<svg class="qzl-v80-tone qzl-v80-${name}" viewBox="0 0 24 24" aria-hidden="true" style="--v80-stroke:${stroke};--v80-fill:${fill}">${body}</svg>`;
+
+svg.completedStatus=v80Tone('completed','#67A15A','#EAF4E6','<circle cx="12" cy="12" r="8.2" fill="var(--v80-fill)" stroke="var(--v80-stroke)"/><path d="m8.2 12.1 2.35 2.4 5.25-5.4" fill="none" stroke="var(--v80-stroke)"/>');
+svg.profile=v80Tone('profile','#6384D7','#E9F0FF','<circle cx="12" cy="8.2" r="3.4" fill="var(--v80-fill)" stroke="var(--v80-stroke)"/><path d="M5.7 20c.45-4 2.7-6.1 6.3-6.1s5.85 2.1 6.3 6.1" fill="var(--v80-fill)" stroke="var(--v80-stroke)"/>');
+svg.notification=v80Tone('notification','#E58B4B','#FCEBDD','<path d="M18 9.5a6 6 0 0 0-12 0c0 4.55-1.75 6.05-2.4 7.45h16.8C19.75 15.55 18 14.05 18 9.5Z" fill="var(--v80-fill)" stroke="var(--v80-stroke)"/><path d="M9.7 20h4.6" fill="none" stroke="var(--v80-stroke)"/>');
+svg.bell=svg.notification;
+svg.shield=v80Tone('shield','#69A15C','#E8F4E4','<path d="M12 3.3 5.2 5.9v5.25c0 4.2 2.65 7.65 6.8 9.45 4.15-1.8 6.8-5.25 6.8-9.45V5.9L12 3.3Z" fill="var(--v80-fill)" stroke="var(--v80-stroke)"/><path d="m8.8 12 2.05 2.05 4.35-4.35" fill="none" stroke="var(--v80-stroke)"/>');
+svg.help=v80Tone('help','#6F8CD9','#EDF1FD','<circle cx="12" cy="12" r="8.3" fill="var(--v80-fill)" stroke="var(--v80-stroke)"/><path d="M9.6 9.5a2.5 2.5 0 1 1 3.05 2.45c-.75.25-.75.95-.75 1.65M12 17.15h.01" fill="none" stroke="var(--v80-stroke)"/>');
+svg.info=v80Tone('info','#8875C8','#F0ECFA','<circle cx="12" cy="12" r="8.3" fill="var(--v80-fill)" stroke="var(--v80-stroke)"/><path d="M12 10.8v5.3M12 7.6h.01" fill="none" stroke="var(--v80-stroke)"/>');
+svg.infoCircle=svg.info;
+svg.task=v80Tone('task','#E58B4B','#FCEBDD','<rect x="5.6" y="4.2" width="12.8" height="15.7" rx="2.5" fill="var(--v80-fill)" stroke="var(--v80-stroke)"/><path d="M9 4.2V3h6v1.2M8.9 9h6.2M8.9 12.6h6.2" fill="none" stroke="var(--v80-stroke)"/><path d="m8.9 16.4 1.35 1.35 2.7-2.9" fill="none" stroke="var(--v80-stroke)"/>');
+
+/* V8.0: initialize only after approved reference artwork + family archive IA + icon harmony overrides are active. */
 normalizeGrowthActions();
 migrateCenterState();
 saveState();
