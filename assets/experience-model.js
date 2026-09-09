@@ -6,9 +6,9 @@
   const RELATIONSHIPS = ['孩子', '伴侣', '父母', '自己'];
   const STEPS = ['context', 'support', 'phrase', 'action', 'feedback', 'done'];
   const GROUPS = [
-    { id: 'screen', title: '屏幕与规则', description: '一起找能坚持、也能商量的边界', demo: true },
-    { id: 'nursery', title: '入园适应', description: '给分离与新生活一点准备', demo: true },
-    { id: 'play', title: '日常陪伴', description: '从一小段在一起的时间开始', demo: true }
+    { id: 'screen', title: '屏幕与规则', description: '一起找能坚持、也能商量的边界', memberCount:1286, activity:'今天 23 条新讨论', latest:'约定时间到了，孩子还是不愿停怎么办？', demo: true },
+    { id: 'nursery', title: '入园适应', description: '给分离与新生活一点准备', memberCount:842, activity:'今天 16 条新讨论', latest:'入园第二周，早上还是哭着不愿分开', demo: true },
+    { id: 'play', title: '日常陪伴', description: '从一小段在一起的时间开始', memberCount:1634, activity:'今天 31 条新讨论', latest:'下班很累时，怎么保留一点高质量陪伴？', demo: true }
   ];
   const STAGES = [
     { id: 'nursery', title: '入园准备', subtitle: '不用一次准备完，先选一件', demo: true, items: [
@@ -63,7 +63,21 @@
     p4:{images:['assets/community-school-ready.webp'],likeCount:64,commentCount:9,hotComment:'我们也先去门口转了一圈，孩子回来一直说那棵大树。',publishedLabel:'昨天 18:42'},
     p8:{images:['assets/community-family-walk.webp'],likeCount:51,commentCount:7,hotComment:'并排走的时候不追问，反而更容易等到一句真心话。',publishedLabel:'周一 20:06'}
   };
-  const POSTS = postRows.map((r, i) => ({ id:r[0], title:r[1], group:r[2], kind:r[3], postType:r[3]==='method'?'method':'dynamic', stage:r[4], topic:r[5], body:r[6], attempt:r[7], result:r[8], author:['小禾的笔记','慢慢来','一起试试'][i % 3] + ' · 示例', scene:r[2], demo:true, images:[], likeCount:18+i*3, commentCount:2+i%5, publishedLabel:'本周', ...postVisuals[r[0]] }));
+  const postProfiles = {
+    p1:{author:'小禾妈妈',familyMeta:'广州 · 10岁男孩 · 四年级'},
+    p2:{author:'木棉爸爸',familyMeta:'广州 · 9岁女孩 · 三年级'},
+    p3:{author:'一起试试',familyMeta:'方法整理 · 学龄期'},
+    p4:{author:'安安妈妈',familyMeta:'广州 · 3岁女孩 · 入园期'},
+    p5:{author:'慢慢妈妈',familyMeta:'广州 · 3岁男孩 · 入园期'},
+    p6:{author:'入园资料夹',familyMeta:'信息整理 · 入园期'},
+    p7:{author:'小树爸爸',familyMeta:'广州 · 7岁男孩 · 一年级'},
+    p8:{author:'阿青妈妈',familyMeta:'广州 · 13岁女孩 · 初一'},
+    p9:{author:'一起试试',familyMeta:'方法整理 · 全年龄'},
+    p10:{author:'木棉爸爸',familyMeta:'广州 · 9岁女孩 · 三年级'},
+    p11:{author:'慢慢来',familyMeta:'家长自我照顾 · 全年龄'},
+    p12:{author:'安安妈妈',familyMeta:'广州 · 3岁女孩 · 入园期'}
+  };
+  const POSTS = postRows.map((r, i) => ({ id:r[0], title:r[1], group:r[2], kind:r[3], postType:r[3]==='method'?'method':'dynamic', stage:r[4], topic:r[5], body:r[6], attempt:r[7], result:r[8], author:['一位家长','慢慢来','一起试试'][i % 3], scene:r[2], demo:true, images:[], likeCount:18+i*3, commentCount:2+i%5, publishedLabel:'本周', ...postVisuals[r[0]], ...postProfiles[r[0]] }));
   const OFFICIAL_NEWS = [
     {id:'gz-primary-public-2026',title:'2026年广州公办小学招生：报名、审核与注册时间',source:'广州市教育局',sourceUrl:'https://jyj.gz.gov.cn/yw/zsks/content/post_10791639.html',publishedAt:'2026-04-29',status:'已结束',stage:'幼升小',audience:'计划在广州报名公办小学一年级的家庭',summary:'官方公布了网上报名、资料审核、录取结果与注册的完整时间安排。',keyPoints:['网上报名已于5月7日至11日完成','资料审核安排在5月16日至18日','6月27日办理注册，7月6日起可查询录取结果'],timeline:['5月7—11日｜网上报名','5月16—18日｜资料审核','6月27日｜学校注册','7月6日起｜查询录取结果']},
     {id:'gz-primary-private-2026',title:'2026年广州民办小学招生：志愿、摇号与补录安排',source:'广州市教育局',sourceUrl:'https://jyj.gz.gov.cn/gk/shgysyjs/content/post_10799485.html',publishedAt:'2026-05-06',status:'已结束',stage:'幼升小',audience:'考虑报名广州民办小学一年级的家庭',summary:'从信息采集、填报志愿到电脑派位、确认录取和两轮补录，一页看清关键节点。',keyPoints:['5月11日至15日完成信息采集','5月30日至6月4日填报志愿','报名人数超过招生计划的学校按规定组织电脑派位'],timeline:['5月11—15日｜信息采集','5月30日—6月4日｜填报志愿','6月12日｜电脑派位','6月18—21日｜确认录取','7月13—17日、8月21—26日｜补录']},

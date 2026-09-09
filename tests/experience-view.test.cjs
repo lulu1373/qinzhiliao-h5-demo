@@ -12,7 +12,7 @@ test('community back button keeps its 44px touch target without a persistent cir
   assert.match(css,/\.xp-back:hover\{background:transparent\}/);
 });
 test('community offers a Douban-inspired dynamic stream and three navigation tabs',()=>{const real=require('../assets/experience-model.js');const html=view.render('experience/community',ctx({model:real}));assert.match(html,/家长社区/);assert.match(html,/data-value="dynamic"/);assert.match(html,/data-value="groups"/);assert.match(html,/data-value="news"/);assert.match(html,/data-xp-action="like-post"/);assert.match(html,/data-xp-action="save-post"/);assert.match(html,/xp-story-media/);assert.match(html,/热门回应/);});
-test('post details preserve author story and provide adoption and local comments',()=>{const html=view.render('experience/post/p1',ctx());assert.match(html,/带回我的情况/);assert.match(html,/data-xp-action="adopt"/);assert.match(html,/id="xpComment"/);});
+test('post details preserve author story and provide adoption and local comments',()=>{const html=view.render('experience/post/p1',ctx());assert.match(html,/我家也遇到类似问题/);assert.match(html,/结合我家情况问小亲/);assert.match(html,/data-xp-action="adopt"/);assert.match(html,/id="xpComment"/);});
 test('user supplied draft and comments cannot inject markup',()=>{const data={posts:[],comments:[{postId:'p1',body:'<img onerror="bad()">'}],saved:[],joined:[],draft:{title:'<script>bad()</script>',body:'<img src=x>'},ui:{}};assert.doesNotMatch(view.render('experience/preview',ctx({data})),/<script>/);assert.doesNotMatch(view.render('experience/post/p1',ctx({data})),/<img onerror/);});
 test('all journey steps render deliberate next steps and exits',()=>{for(const step of ['context','support','phrase','action','feedback','done']){const html=view.render('experience/journey/j1',ctx({journey:{id:'j1',scene:'screen',step,description:'昨晚吵了一架'}}));assert.match(html,/data-xp-action=/);assert.ok(html.length>400,step);assert.doesNotMatch(html,/undefined|null/);}});
 test('feedback includes negative and no-action outcomes',()=>{const html=view.render('experience/journey/j1',ctx({journey:{id:'j1',scene:'screen',step:'feedback'}}));for(const value of ['better','same','worse','not_tried','declined'])assert.match(html,new RegExp('data-value="'+value+'"'));});
@@ -28,9 +28,21 @@ test('personal history shows only real journey records with resume links',()=>{c
 test('news tab renders official utility cards and a sourced detail page',()=>{
  const real=require('../assets/experience-model.js');
  const list=view.render('experience/community',ctx({model:real,data:{ui:{tab:'news'}}}));
- assert.match(list,/官方资讯/); assert.match(list,/广州市教育局/); assert.match(list,/报名|编班/); assert.match(list,/data-route="experience\/news\//);
+ assert.match(list,/官方信息/); assert.match(list,/广州市教育局/); assert.doesNotMatch(list,/xp-compose-fab/); assert.match(list,/报名|编班/); assert.match(list,/data-route="experience\/news\//);
  const detail=view.render('experience/news/gz-primary-public-2026',ctx({model:real}));
  assert.match(detail,/关键时间/); assert.match(detail,/适用对象/); assert.match(detail,/打开官方原文/); assert.match(detail,/rel="noopener noreferrer"/);
+});
+
+
+test('community V2 exposes family context, social proof and chip-based publishing',()=>{
+ const real=require('../assets/experience-model.js');
+ const feed=view.render('experience/community',ctx({model:real,data:{ui:{tab:'dynamic'}}}));
+ assert.match(feed,/小禾妈妈/); assert.match(feed,/广州 · 10岁男孩 · 四年级/); assert.match(feed,/同感 <span>86<\/span>/);
+ const groups=view.render('experience/community',ctx({model:real,data:{ui:{tab:'groups'}}}));
+ assert.match(groups,/1,286 位家长/); assert.match(groups,/今天 23 条新讨论/); assert.match(groups,/最近在聊/);
+ const compose=view.render('experience/compose',ctx({model:real,data:{draft:{postType:'question'}}}));
+ assert.match(compose,/data-xp-action="post-type"/); assert.match(compose,/>经历<\/button>/); assert.match(compose,/>求助<\/button>/); assert.match(compose,/>方法<\/button>/);
+ assert.match(compose,/id="xpStage"/); assert.match(compose,/小学高年级/);
 });
 
 test('composer supports local image selection, preview and removal',()=>{

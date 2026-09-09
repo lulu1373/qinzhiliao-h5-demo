@@ -238,6 +238,11 @@ function installExperience() {
         button.textContent = active ? '暂停，按自己的节奏来' : '陪我停一小会儿';
         return;
       }
+      if (action === 'post-type') {
+        const data = read();
+        commit(model.updateDraft(data,{postType:val}));
+        return refresh(button.closest('.xp-page')?.scrollTop || 0);
+      }
       if (action === 'compose') return go('experience/compose');
       if (action === 'draft-preview') {
         saveDraft();
