@@ -54,6 +54,13 @@ class ExperienceTests(unittest.TestCase):
         self.assertEqual(len([a for a in self.stored()['actions'] if a.get('journeyId')]), 0)
         self.assertEqual(self.stored()['experience']['journeys'][-1]['step'], 'done')
 
+    def test_community_back_returns_home_when_opened_from_a_direct_link(self):
+        self.page.goto('about:blank')
+        self.page.goto(self.url + '#/guides', wait_until='networkidle')
+        self.page.locator('[data-xp-action="back"]').click()
+        self.page.wait_for_selector('.xp-home')
+        self.assertTrue(self.page.url.endswith('#/home'))
+
     def test_draft_preview_publish_and_comment_are_local(self):
         self.page.goto(self.url + '#/experience/compose')
         self.page.locator('#xpTitle').fill('试着先听完')

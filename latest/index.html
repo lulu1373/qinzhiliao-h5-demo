@@ -7933,6 +7933,7 @@ function installExperience() {
           const previous = {support:'context',phrase:'support',action:'phrase',feedback:'action',done:journey?.ended ? 'support' : 'feedback'};
           patchJourney(journey.id,{step:previous[journey.step] || 'context'}); return refresh();
         }
+        if (routeBase(currentRoute) === 'guides' || routeBase(currentRoute) === 'experience/community') return goBack('home',true);
         return goBack('guides');
       }
       if (action === 'tools') return toolsSheet();
