@@ -51,6 +51,7 @@ class GrowthReportTests(unittest.TestCase):
         return self.page.evaluate('(key)=>JSON.parse(localStorage.getItem(key))', KEY)
 
     def open_growth(self):
+        self.page.locator('[data-action="drawer-open"]').click()
         self.page.locator('button[data-route="growth"]:visible').first.click()
         self.page.wait_for_function("location.hash === '#/growth'")
         self.page.wait_for_selector('.secondary-page.growth-page')
