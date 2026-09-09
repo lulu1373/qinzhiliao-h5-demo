@@ -4371,6 +4371,11 @@ svg{vertical-align:middle}
 @media(max-width:360px){.v90-card-intro{margin-left:30px}.v90-card-reveal-wrap{margin-left:30px}.v90-save-receipt{margin-left:30px}.v90-toolbox-grid{gap:8px}.v90-mini-card{padding:12px 10px}.v90-mini-card b{font-size:14px}}
 @media(prefers-reduced-motion:reduce){.v90-card-flipper{transition:none!important}}
 
+
+/* Shared illustrated collection icon, independent of inherited SVG fill. */
+.v6-tool-orbit .qzl-treasure-icon{width:34px!important;height:34px!important}
+.v90-toolbox-hero i .qzl-treasure-icon{width:32px;height:32px}
+.v90-toolbox-empty i .qzl-treasure-icon{width:36px;height:36px}
 </style>
 </head><body><div id="app" aria-live="polite"></div><script>
 (function(){
@@ -4396,6 +4401,7 @@ try{
 
 const svg={
   menu:'<svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg>',
+  treasureBox:'<img class="qzl-ref-icon qzl-treasure-icon" src="assets/treasure-box-v90.svg" alt="" aria-hidden="true" draggable="false">',
   gift:'<svg viewBox="0 0 24 24"><rect x="3" y="9" width="18" height="12" rx="2"/><path d="M12 9v12M3 13h18M12 9H7.8a2.8 2.8 0 1 1 2.6-3.8L12 9Zm0 0h4.2a2.8 2.8 0 1 0-2.6-3.8L12 9Z"/></svg>',
   volume:'<svg viewBox="0 0 24 24"><path d="M5 10v4h3l4 4V6L8 10H5Z"/><path d="M16 9a4 4 0 0 1 0 6M18.5 6.5a7.5 7.5 0 0 1 0 11"/></svg>',
   mute:'<svg viewBox="0 0 24 24"><path d="M5 10v4h3l4 4V6L8 10H5Z"/><path d="m16 10 5 5m0-5-5 5"/></svg>',
@@ -5699,7 +5705,7 @@ function renderDrawer(){
           <button data-action="route" data-route="assessments"><span class="blue">${svg.assessment}</span><b>我的测评</b></button>
           <button data-action="route" data-route="guides"><span class="peach">${svg.guide}</span><b>关系指南</b></button>
           <button data-action="route" data-route="growth"><span class="green">${svg.growthLeaf}</span><b>成长总结</b></button>
-          <button data-action="route" data-route="treasure-box"><span class="violet">${svg.gift}</span><b>百宝箱</b></button>
+          <button data-action="route" data-route="treasure-box"><span class="violet">${svg.treasureBox}</span><b>百宝箱</b></button>
         </div>
       </section>
 
@@ -7184,7 +7190,7 @@ function renderCardSceneV90(face='back',card=null,interactive=true){const data=c
 function renderSavePromptV90(){return `<div class="v90-save-prompt"><b>要把这张卡留下来吗？</b><p>保存后，可以在「我的 → 百宝箱」里随时回来看看。</p><div class="inline-actions"><button class="inline-main" data-action="card-save">存入百宝箱</button><button class="inline-alt" data-action="card-skip">先不保存</button></div></div>`;}
 function renderRevealStageV90(face='back',historical=false,runId=''){const run=state.cards.sessions.find(x=>x.id===runId)||activeCardRunV90();const data=defaultInterpretCardV90(run);return `<section class="v90-card-reveal-wrap"><div class="v90-reveal-kicker">${svg.check} ${face==='back'?'解读完成':'这次最值得留下的理解'}</div>${face==='back'?'<p class="v90-reveal-copy">我们把这件事看得更清楚了一些。<br>我也为你留下了一张这次的解读卡。</p>':''}${renderCardSceneV90(face,data,!historical&&face==='back')}<div class="v90-flip-note">${face==='back'&&!historical?'点击翻开看看':''}</div><div class="v90-card-save-slot">${!historical&&face==='front'?renderSavePromptV90():''}</div></section>`;}
 function renderToolboxMiniV90(card){const type=card.type||'interpretation';return `<div class="v90-mini-card ${type}"><span class="type">${esc(cardTypeLabelV90(type))}</span><b>${esc(card.title||'一张卡片')}</b><p>${esc((card.summary||[])[0]||'')}</p><time>${esc((card.savedAt||card.createdAt||'').slice(0,10)||'')}</time></div>`;}
-function renderTreasureBoxV90(){migrateCardsV90();const filter=state.cards.filter||'all';const cards=state.cards.toolbox.slice().sort((a,b)=>String(b.savedAt||b.createdAt).localeCompare(String(a.savedAt||a.createdAt))).filter(c=>filter==='all'||c.type===filter);return `<div class="secondary-page v90-toolbox-page">${titleBar('百宝箱',{back:'home'})}<div class="page-body"><section class="v90-toolbox-hero"><span><i>${svg.gift}</i><h1>把值得留下的理解，收在这里</h1></span><p>翻开的卡片只有在你确认保存后才会进入百宝箱。</p></section><div class="v90-filter-row">${[['all','全部'],['interpretation','解读'],['action','行动'],['strength','优势'],['mirror','镜子'],['repair','修复']].map(([k,l])=>`<button class="${filter===k?'active':''}" data-action="treasure-filter" data-value="${k}">${l}</button>`).join('')}</div>${cards.length?`<div class="v90-toolbox-grid">${cards.map(c=>`<button class="v90-tool-card" data-action="treasure-card-open" data-id="${esc(c.id)}">${renderToolboxMiniV90(c)}</button>`).join('')}</div>`:`<div class="v90-toolbox-empty"><i>${svg.gift}</i><h3>${filter==='all'?'百宝箱还是空的':'这里还没有这类卡片'}</h3><p>${filter==='all'?'完成一次解读并选择“存入百宝箱”，第一张卡就会出现在这里。':'保存对应类型的卡片后，会自动归到这里。'}</p></div>`}</div></div>`;}
+function renderTreasureBoxV90(){migrateCardsV90();const filter=state.cards.filter||'all';const cards=state.cards.toolbox.slice().sort((a,b)=>String(b.savedAt||b.createdAt).localeCompare(String(a.savedAt||a.createdAt))).filter(c=>filter==='all'||c.type===filter);return `<div class="secondary-page v90-toolbox-page">${titleBar('百宝箱',{back:'home'})}<div class="page-body"><section class="v90-toolbox-hero"><span><i>${svg.treasureBox}</i><h1>把值得留下的理解，收在这里</h1></span><p>翻开的卡片只有在你确认保存后才会进入百宝箱。</p></section><div class="v90-filter-row">${[['all','全部'],['interpretation','解读'],['action','行动'],['strength','优势'],['mirror','镜子'],['repair','修复']].map(([k,l])=>`<button class="${filter===k?'active':''}" data-action="treasure-filter" data-value="${k}">${l}</button>`).join('')}</div>${cards.length?`<div class="v90-toolbox-grid">${cards.map(c=>`<button class="v90-tool-card" data-action="treasure-card-open" data-id="${esc(c.id)}">${renderToolboxMiniV90(c)}</button>`).join('')}</div>`:`<div class="v90-toolbox-empty"><i>${svg.treasureBox}</i><h3>${filter==='all'?'百宝箱还是空的':'这里还没有这类卡片'}</h3><p>${filter==='all'?'完成一次解读并选择“存入百宝箱”，第一张卡就会出现在这里。':'保存对应类型的卡片后，会自动归到这里。'}</p></div>`}</div></div>`;}
 function renderTreasureCardDetailV90(id){migrateCardsV90();const card=state.cards.toolbox.find(c=>c.id===id);if(!card)return `<div class="secondary-page">${titleBar('卡牌详情',{back:'treasure-box'})}<div class="page-body"><div class="v90-toolbox-empty"><h3>没有找到这张卡</h3><p>它可能尚未保存。</p></div></div></div>`;return `<div class="secondary-page v90-toolbox-page">${titleBar('卡牌详情',{back:'treasure-box'})}<div class="page-body v90-card-detail">${renderCardSceneV90('front',card,false)}<div class="v90-card-meta"><div><span>卡牌类型</span><b>${esc(cardTypeLabelV90(card.type))}</b></div><div><span>来源</span><b>${esc(card.source?.eventTitle||'和小亲的对话')}</b></div><div><span>保存时间</span><b>${esc((card.savedAt||'').replace('T',' ').slice(0,16)||'—')}</b></div></div><button class="primary-btn full-btn" data-action="treasure-back-chat" data-id="${esc(card.id)}" style="margin-top:14px">回到原对话</button></div></div>`;}
 function setTreasureFilterV90(value){state.cards.filter=['all',...V90_CARD_TYPES].includes(value)?value:'all';saveState();renderRoute(currentRoute);}
 function returnToCardSourceV90(id){const card=state.cards.toolbox.find(c=>c.id===id);navigate('home');setTimeout(()=>{const area=document.getElementById('aiScroll');if(area)area.scrollTo({top:area.scrollHeight,behavior:'smooth'});toast(card?.source?.conversationId&&card.source.conversationId===state.chat.conversationId?'已回到这张卡所在的当前对话':'已回到对话；Demo 暂不恢复已经结束的历史会话快照');},80);}
