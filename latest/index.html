@@ -5133,7 +5133,7 @@ function renderHomeIdle(){
     </section>
 
     <nav class="v6-quick-strip three v63-quick-strip" aria-label="快捷功能">
-      <button data-action="route" data-route="guides"><span>${svg.guide}</span>教育指南</button>
+      <button data-action="route" data-route="guides"><span>${svg.guide}</span>家长社区</button>
       <button data-action="route" data-route="assessments"><span>${svg.assessment}</span>我的测评</button>
       <button data-action="route" data-route="archive"><span>${svg.familyArchive}</span>家庭档案</button>
     </nav>
@@ -5469,7 +5469,7 @@ function renderGuideTopicStrip(active){
 function renderGuides(){
   const filtered=state.guides.query?GUIDES.filter(g=>(g.title+g.category+g.desc).includes(state.guides.query)):GUIDES;
   if(state.guides.query){
-    return `<div class="secondary-page guide-page v64-guide-page">${titleBar('教育指南',{back:'home',forceBack:true})}<div class="page-body">
+    return `<div class="secondary-page guide-page v64-guide-page">${titleBar('家长社区',{back:'home',forceBack:true})}<div class="page-body">
       <div class="search-box guide-search v64-guide-search">${svg.search}<input id="guideSearch" value="${esc(state.guides.query)}" placeholder="搜索你正在经历的问题"></div>
       <div class="v64-section-head"><div><small>搜索结果</small><h2>找到更贴近的内容</h2></div><span>${filtered.length} 篇</span></div>
       <div class="v64-guide-feed">${filtered.map(renderGuideFeed).join('')}</div>
@@ -5477,7 +5477,7 @@ function renderGuides(){
     </div></div>`;
   }
   const active=state.guides.activeCategory||'推荐';
-  return `<div class="secondary-page guide-page v64-guide-page">${titleBar('教育指南',{back:'home',forceBack:true})}<div class="page-body">
+  return `<div class="secondary-page guide-page v64-guide-page">${titleBar('家长社区',{back:'home',forceBack:true})}<div class="page-body">
     <div class="search-box guide-search v64-guide-search">${svg.search}<input id="guideSearch" value="" placeholder="搜索你正在经历的问题"></div>
     ${renderGuideTopicStrip(active)}
     <div id="guideInlineContent">${active==='推荐'?renderGuideLandingContent():renderGuideFilteredContent(active)}</div>
@@ -5545,7 +5545,7 @@ function renderGuideCard(g){return renderGuideFeed(g);}
 function renderGuideDetail(id){
   const g=GUIDES.find(x=>x.id===id)||GUIDES[0];
   const fav=state.guides.favorites.includes(g.id);
-  return `<div class="screen article v64-article-screen"><div class="secondary-page guide-detail-page v64-guide-detail" id="articleScroll">${titleBar('教育指南',{back:'guides'})}<div class="article-progress"><i id="articleProgress"></i></div>
+  return `<div class="screen article v64-article-screen"><div class="secondary-page guide-detail-page v64-guide-detail" id="articleScroll">${titleBar('家长社区',{back:'guides'})}<div class="article-progress"><i id="articleProgress"></i></div>
     <article class="v64-article-body">
       <header class="v64-article-head"><span>${esc(g.category)}</span><h1>${esc(g.title)}</h1><p>${esc(g.desc)}</p><div class="v64-article-meta">${g.minutes} 分钟阅读 · 小亲推荐</div></header>
       <div class="v64-article-cover tone-${guideTone(g.category)}"><span class="orb a"></span><span class="orb b"></span><i>${guideIcon(g.category)}</i><img src="${ASSETS.mascotHero||ASSETS.mascotHome||ASSETS.mascot}" alt="小亲"></div>
@@ -5714,7 +5714,7 @@ function renderDrawer(){
         <div class="v6-section-heading"><h3>常用功能</h3><span>更多 ${svg.back}</span></div>
         <div class="v6-tool-orbit">
           <button data-action="route" data-route="assessments"><span class="blue">${svg.assessment}</span><b>我的测评</b></button>
-          <button data-action="route" data-route="guides"><span class="peach">${svg.guide}</span><b>教育指南</b></button>
+          <button data-action="route" data-route="guides"><span class="peach">${svg.guide}</span><b>家长社区</b></button>
           <button data-action="route" data-route="growth"><span class="green">${svg.growthLeaf}</span><b>成长总结</b></button>
           <button data-action="route" data-route="treasure-box"><span class="violet">${svg.treasureBox}</span><b>百宝箱</b></button>
         </div>
@@ -6399,7 +6399,7 @@ function handleOverlayClick(e){
   }
   else if(action==='member-selected'){closeOverlay();toast('已选择小明');}
   else if(action==='member-add'){closeOverlay();showMemberAdd();}
-  else if(action==='guide-action-add'){let a=state.actions.find(x=>x.id==='guide-action');if(!a){a={id:'guide-action',date:'2026-09-03',title:'第一次提醒时，先问清孩子卡在哪里',source:'教育指南',why:'先问卡点，能把提醒从命令变成共同解决问题。',script:'“你现在是哪里卡住了，需要我帮你一起看一下吗？”',observe:'孩子是否更愿意描述困难，而不是立刻反驳提醒。',status:'pending',result:null,resultText:'待尝试'};state.actions.push(a);}saveState();closeOverlay();toast('已加入今天行动');}
+  else if(action==='guide-action-add'){let a=state.actions.find(x=>x.id==='guide-action');if(!a){a={id:'guide-action',date:'2026-09-03',title:'第一次提醒时，先问清孩子卡在哪里',source:'家长社区',why:'先问卡点，能把提醒从命令变成共同解决问题。',script:'“你现在是哪里卡住了，需要我帮你一起看一下吗？”',observe:'孩子是否更愿意描述困难，而不是立刻反驳提醒。',status:'pending',result:null,resultText:'待尝试'};state.actions.push(a);}saveState();closeOverlay();toast('已加入今天行动');}
   else if(action==='payment-success')completePayment(true);
   else if(action==='payment-fail')completePayment(false);
   else if(action==='payment-done'){closeOverlay();navigate('membership',{replace:true});}
@@ -6594,7 +6594,7 @@ renderHomeIdle=function(){
     <div class="qzl-home-layout">
     <nav class="qzl-home-primary" aria-label="常用功能">
       <button data-action="route" data-route="growth"><span><b>我的成长</b><small>看看最近的变化</small></span><i aria-hidden="true">${svg.back}</i></button>
-      <button data-action="route" data-route="guides"><span><b>教育指南</b><small>找方法、学经验</small></span><i aria-hidden="true">${svg.back}</i></button>
+      <button data-action="route" data-route="guides"><span><b>家长社区</b><small>找方法、学经验</small></span><i aria-hidden="true">${svg.back}</i></button>
     </nav>
     <section class="v67-starters" aria-label="你可以这样开始"><div class="v67-starter-grid">
       <button class="v67-starter green" data-action="start-scenario" data-scenario="homework"><i>${svg.conflict}</i><span><b>刚刚发生什么了？</b><small>帮我梳理这件事</small></span><em aria-hidden="true">${svg.back}</em></button>
