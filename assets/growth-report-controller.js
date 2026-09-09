@@ -3,6 +3,7 @@ function installGrowthReports() {
   const model = window.QZLGrowthModel;
   const view = window.QZLGrowthView;
   if (!model || !view) return;
+  let milestones = null;
   const day = () => {
     const now = new Date();
     return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
@@ -75,9 +76,9 @@ function installGrowthReports() {
       ...Object.fromEntries(newActions.map(action => [action.id,
         {date:day(), provenance:'personal', createdAt:new Date().toISOString()}]))};
   }
-  saveState = function () { captureRecords(); originalSave(); };
+  saveState = function () { captureRecords(); milestones?.reconcile(); originalSave(); };
   const originalReset = resetDemo;
-  resetDemo = function () { originalReset(); settings(); };
+  resetDemo = function () { milestones?.reset(); originalReset(); settings(); };
   const originalAcceptAction = acceptAction;
   acceptAction = function (alternative) {
     originalAcceptAction(alternative);
@@ -114,7 +115,10 @@ function installGrowthReports() {
     const recordsView = settings().screen === 'records';
     const {report,ui} = build(recordsView);
     activeReport = report;
-    return recordsView ? view.renderRecords(report,ui,deps) : view.render(report,ui,deps);
+    if (recordsView) return view.renderRecords(report,ui,deps);
+    const navigation = milestones?.renderNavigation() || '';
+    return navigation + (ui.section === 'milestones' && milestones ? milestones.render() :
+      view.render(report,ui,{...deps,renderMilestones:report=>milestones?.summary(report) || ''}));
   }
   function shell() {
     const gr = settings();
@@ -162,7 +166,8 @@ function installGrowthReports() {
     display(`<h2>${esc(action.title)}</h2><p class="gr-muted">${esc(action.date)} · ${settings().source === 'example' ? '示例行动' : '行动记录'}</p>
       ${[['来源',action.source],['为什么这样做',action.why],['可以怎么说',action.script],['观察什么',action.observe],['反馈结果',action.resultText || '待尝试']]
         .map(([label,text]) => `<section><h3>${label}</h3><p>${esc(text || '还没有记录')}</p></section>`).join('')}
-      <button class="gr-primary" data-gr-action="feedback" data-id="${esc(id)}">${action.status === 'done' ? '修改反馈' : '记录这次尝试'}</button>`);
+      <button class="gr-primary" data-gr-action="feedback" data-id="${esc(id)}">${action.status === 'done' ? '修改反馈' : '记录这次尝试'}</button>
+      ${milestones?.sourceButton(id,'action') || ''}`);
   }
   function feedback(id) {
     const action = findAction(id);
@@ -191,7 +196,7 @@ function installGrowthReports() {
       ...report.cards.map(card => ({...card,date:card.savedDate || localDate(card.savedAt),summary:(card.summary || []).join?.(' ') || card.summary}))];
     const selected = ids.split(',').map(id => all.find(item => String(item.id) === id)).filter(Boolean);
     if (!selected.length) return toast('这条来源暂时不可用');
-    display(view.renderSources(selected,deps));
+    display(selected.map(record=>view.renderSources([record],deps) + (milestones?.sourceButton(String(record.id),report.actions.some(action=>action.id === record.id) ? 'action' : 'conversation') || '')).join(''));
   }
   function correctTopic(id, value) {
     const report = activeReport;
@@ -236,7 +241,7 @@ function installGrowthReports() {
   function handle(event) {
     if (event.target.closest('[data-action="clear-chat"]')) {
       event.preventDefault();event.stopImmediatePropagation();
-      showConfirm('清除对话数据','将删除聊天内容及成长总结中的对话片段，保留行动记录和家庭档案。',() => {
+      showConfirm('清除对话数据','将删除聊天内容、回顾中的对话片段，以及里程碑引用的对话原文。保留你另写的里程碑内容、行动记录和家庭档案。',() => {
         clearTimers();state.chat=cloneDefault().chat;
         const gr=settings();gr.records=[];
         gr.corrections=Object.fromEntries(Object.entries(gr.corrections).filter(([key]) => key.startsWith('example:')));
@@ -252,6 +257,7 @@ function installGrowthReports() {
     event.preventDefault(); event.stopImmediatePropagation();
     const gr = settings(), data = button.dataset;
     const action = data.grAction;
+    if (milestones?.handle(data)) return;
     if (action === 'close') return closeOverlay();
     if (action === 'action') return actionDetail(data.id);
     if (action === 'feedback') return feedback(data.id);
@@ -286,6 +292,8 @@ function installGrowthReports() {
     else return;
     saveState(); refresh({top:action === 'report' ? reportScroll : ['subject','record-date','record-view'].includes(action) ? undefined : 0,focus:true});
   }
+  milestones = installGrowthMilestones({settings,day,validDate,localDate,reportModel:model,display,refresh,deps});
+  milestones?.reconcile();
   document.addEventListener('click',handle,true);
 }
 installGrowthReports();

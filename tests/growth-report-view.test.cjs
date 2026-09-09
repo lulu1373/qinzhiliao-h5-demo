@@ -139,3 +139,14 @@ test('timestamps without valid feedback result do not create calendar events',()
  const list=view.renderRecords(report,{...ui,recordView:'list'},{});
  assert.doesNotMatch(list,/本期反馈/);
 });
+test('month does not label ordinary conversation records as confirmed milestones',()=>{
+ const report=model.build({mode:'month',anchor:'2026-08-26',source:'example'});
+ const html=view.render(report,{...ui,mode:'month',source:'example'},{});
+ assert.doesNotMatch(html,/本月留下的具体时刻/);
+ assert.match(html,/成长时间线/);
+});
+test('confirmed milestone slot is included even if personal report has no other activity',()=>{
+ const report=model.build({mode:'month',anchor:'2026-08-26',source:'personal'});
+ const html=view.render(report,{...ui,mode:'month'},{renderMilestones:()=>'<section>本期里程碑：独立记录的时刻</section>'});
+ assert.match(html,/本期里程碑：独立记录的时刻/);
+});

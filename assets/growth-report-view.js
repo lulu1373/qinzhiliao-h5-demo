@@ -30,7 +30,10 @@
   function render(report, ui, deps) {
     report = report || {}; ui = ui || {}; deps = deps || {};
     const empty = report.hasData === false || report.empty === true || (report.hasData == null && !(report.records || []).length && !(report.actions || []).length);
-    return `<div class="gr-report">${controls(report,ui)}${sourceBar(report,ui)}${empty ? emptyState(report,deps) : populatedReport(report,ui,deps)}</div>`;
+    return `<div class="gr-report">${controls(report,ui)}${sourceBar(report,ui)}${empty ? milestoneSummary(report,ui,deps) + emptyState(report,deps) : populatedReport(report,ui,deps)}</div>`;
+  }
+  function milestoneSummary(report,ui,deps) {
+    return ['week','month'].includes(ui.mode || report.period?.mode) && deps.renderMilestones ? deps.renderMilestones(report) : '';
   }
   function recordRows(records,deps) {
     return records.map(record => `<article class="gr-record"><div class="gr-record-heading">${icon(record.kind === 'action' ? 'action' : 'chat',deps)}<div><span class="gr-meta">${esc(record.date || '日期待补充')}</span><h3>${esc(record.title || '一条记录')}</h3></div></div><p>${esc(record.excerpt || record.summary || record.text || record.body || '')}</p></article>`).join('');
@@ -105,8 +108,6 @@
     return section('值得回看的片段',highlight('parent','你这边的尝试') + highlight('child','孩子这边的回应')) + practicePanel + actionSection(report,'练习与反馈',deps);
   }
   function monthly(report,ui,deps) {
-    const events = (report.timeline || []).filter(item=>item.subject === 'parent').slice(-2);
-    const milestones = events.length ? section('本月留下的具体时刻',`<div class="gr-panel">${events.map(item=>`<div class="gr-milestone"><span class="gr-date-label">${esc(item.date.slice(5).replace('-','.'))}</span><div><h3>${esc(item.title)}</h3>${sourceLink([item.sourceId])}</div></div>`).join('')}</div>`) : '';
     const emotions = section('情绪与相处',`<div class="gr-panel gr-emotion-empty">${icon('growth',deps)}<h3>情绪记录还不够</h3><p>先留下几次当时的感受，再一起看变化。没有记录的日子，我们留白。</p></div>`);
     const topics = (report.topics || []).map(topic => {
       const correction = (ui.corrections || {})[topic.id], value = typeof correction === 'string' ? correction : (correction || {}).value;
@@ -114,7 +115,7 @@
       return `<article class="gr-panel gr-topic"><div class="gr-row"><h3>${esc(topic.title)}</h3>${value === 'disagree' ? '<span class="gr-badge">待核验</span>' : ''}</div><p>${esc(updated || topic.body)}</p>${sourceLink(topic.sources)}<div class="gr-correction" aria-label="这段理解贴近吗？">${button('topic-correct','符合我的情况',{id:topic.id,value:'agree'},`gr-chip${value === 'agree' ? ' is-active' : ''}`,` aria-pressed="${value === 'agree'}"`)}${button('topic-correct','不太贴近',{id:topic.id,value:'disagree'},`gr-chip${value === 'disagree' ? ' is-active' : ''}`,` aria-pressed="${value === 'disagree'}"`)}</div>${updated ? '<p class="gr-meta">已保留你的补充，不会自动覆盖。</p>' : ''}</article>`;
     }).join('');
     const related = `<div class="gr-related">${button('route',icon('assessment',deps)+'<span>看看相关测评</span><span aria-hidden="true">›</span>',{route:'assessments'},'gr-related-link')}${button('route',icon('archive',deps)+'<span>回看家庭档案</span><span aria-hidden="true">›</span>',{route:'archive'},'gr-related-link')}</div>`;
-    return milestones + emotions + (topics ? section('可以继续观察的课题',topics) : '') + section('成长时间线',timeline(report,ui)) + related;
+    return emotions + (topics ? section('可以继续观察的课题',topics) : '') + section('成长时间线',timeline(report,ui)) + related;
   }
   function timeline(report,ui) {
     const subject = ui.subject || 'parent';
@@ -135,7 +136,7 @@
     const content = mode === 'day' ? daily(report,deps) : mode === 'month' ? monthly(report,ui,deps) : weekly(report,deps);
     const reminder = `<aside class="gr-reminder">${icon('growth',deps)}<div><h3>小亲提醒</h3><p>先留意一次具体回应。顺一点、没变化，或暂时没试，都可以如实记下来。</p></div></aside>`;
     const note = `<div class="gr-report-notes">${report.updatedAt ? `<p class="gr-meta">记录更新于 ${esc(report.updatedAt.slice(0,10))} · 反馈补充后同步回顾</p>` : ''}${report.undatedCount ? `<p class="gr-meta">${esc(report.undatedCount)} 条旧记录缺少日期，未纳入本期统计。</p>` : ''}<p class="gr-meta">回顾来自留下的记录，不是对你或孩子的评分。</p></div>`;
-    return summaryCard(report,{...ui,mode},deps) + content + reminder + button('recap',`和小亲复盘${PERIODS[mode]}`,{},'gr-primary gr-recap') + note;
+    return summaryCard(report,{...ui,mode},deps) + milestoneSummary(report,{...ui,mode},deps) + content + reminder + button('recap',`和小亲复盘${PERIODS[mode]}`,{},'gr-primary gr-recap') + note;
   }
   function renderMethod(method,deps) {
     if (!method) return '<div class="gr-page gr-detail"><p>暂时找不到这个方法。</p></div>';
