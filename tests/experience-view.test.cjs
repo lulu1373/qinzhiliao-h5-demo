@@ -1,9 +1,16 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const path = require('node:path');
 const view = require('../assets/experience-view.js');
 const post = {id:'p1',title:'我把催促换成一次约定',body:'先听他说完。',result:'第二天我们愿意再试一次',author:'一位妈妈',group:'screen',scene:'screen'};
 const model = {POSTS:[post],GROUPS:[{id:'screen',title:'屏幕与约定',description:'把冲突变成可以一起商量的事'}],STAGES:[{id:'nursery',title:'入园准备',items:['熟悉接送路线']}],SCENES:{screen:{title:'屏幕时间的争执',phrases:['我们一起定个结束时间。','我想先听听你还想玩什么。']}},actionFor:()=>({title:'少提醒一次',script:'一起约好结束时间'})};
 const ctx = (extra={}) => ({model,data:{posts:[],comments:[],saved:[],joined:[],draft:{},ui:{}},...extra});
+test('community back button keeps its 44px touch target without a persistent circular background',()=>{
+  const css=fs.readFileSync(path.join(__dirname,'../assets/experience.css'),'utf8');
+  assert.match(css,/\.xp-back,\.xp-header-spacer\{width:44px;height:44px/);
+  assert.match(css,/\.xp-back:hover\{background:transparent\}/);
+});
 test('community offers readable experience stream and three navigation tabs',()=>{const html=view.render('experience/community',ctx());assert.match(html,/家长社区/);assert.match(html,/我把催促/);assert.match(html,/data-value="groups"/);assert.match(html,/示例/);});
 test('post details preserve author story and provide adoption and local comments',()=>{const html=view.render('experience/post/p1',ctx());assert.match(html,/带回我的情况/);assert.match(html,/data-xp-action="adopt"/);assert.match(html,/id="xpComment"/);});
 test('user supplied draft and comments cannot inject markup',()=>{const data={posts:[],comments:[{postId:'p1',body:'<img onerror="bad()">'}],saved:[],joined:[],draft:{title:'<script>bad()</script>',body:'<img src=x>'},ui:{}};assert.doesNotMatch(view.render('experience/preview',ctx({data})),/<script>/);assert.doesNotMatch(view.render('experience/post/p1',ctx({data})),/<img onerror/);});
