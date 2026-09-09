@@ -116,7 +116,16 @@ function installExperience() {
     refresh();
   }
   function saveDraft() {
-    commit(model.updateDraft(read(),{title:value('xpTitle'),body:value('xpBody'),group:value('xpGroup')}));
+    const current = read().draft || {};
+    commit(model.updateDraft(read(),{
+      ...current,
+      title:value('xpTitle'),
+      body:value('xpBody'),
+      group:value('xpGroup'),
+      postType:value('xpPostType'),
+      stage:value('xpStage'),
+      topic:value('xpTopic')
+    }));
   }
   function publish() {
     const data = read(), draft = data.draft;
@@ -237,8 +246,15 @@ function installExperience() {
         return go('experience/preview');
       }
       if (action === 'draft-publish') return publish();
-      if (action === 'save-post' || action === 'join') {
-        commit(model.toggle(read(),action === 'join' ? 'joined' : 'saved',id));
+      if (action === 'save-post' || action === 'like-post' || action === 'join') {
+        const field = action === 'join' ? 'joined' : action === 'like-post' ? 'liked' : 'saved';
+        commit(model.toggle(read(),field,id));
+        return refresh(button.closest('.xp-page')?.scrollTop || 0);
+      }
+      if (action === 'remove-image') {
+        saveDraft();
+        const data = read(), images = Array.isArray(data.draft.images) ? data.draft.images : [];
+        commit(model.updateDraft(data,{images:images.filter((_,index)=>index!==Number(val))}));
         return refresh(button.closest('.xp-page')?.scrollTop || 0);
       }
       if (action === 'comment') {
@@ -264,7 +280,7 @@ function installExperience() {
     if (!target.id?.startsWith('xp')) return;
     try {
       const data = read(), route = routeParts(currentRoute), id = route[2];
-      if (['xpTitle','xpBody','xpGroup'].includes(target.id)) return saveDraft();
+      if (['xpTitle','xpBody','xpGroup','xpPostType','xpStage','xpTopic'].includes(target.id)) return saveDraft();
       if (['xpCardEvent','xpCardNote'].includes(target.id)) return card(id,{event:value('xpCardEvent'),note:value('xpCardNote')});
       if (target.id === 'xpComment') return commit({...data,commentDrafts:{...data.commentDrafts,[id]:target.value}});
       const fields = {xpDescription:'description',xpPhrase:'phrase',xpActionTitle:'actionTitle',xpActionScript:'actionScript',xpFeedbackNote:'feedbackNote'};
@@ -276,7 +292,50 @@ function installExperience() {
       }
     } catch (error) { showError(error); }
   });
+  document.addEventListener('change',async event => {
+    const input = event.target;
+    if (input.id !== 'xpImages' || !input.files?.length) return;
+    try {
+      saveDraft();
+      const data = read(), existing = Array.isArray(data.draft.images) ? data.draft.images : [];
+      const files = [...input.files];
+      if (existing.length + files.length > 9) throw new Error('一条动态最多选择9张图片');
+      const added = [];
+      for (const file of files) added.push(await prepareCommunityImage(file));
+      const publishedBytes = data.posts.reduce((total,item)=>total+(Array.isArray(item.images)?item.images.reduce((sum,image)=>sum+(typeof image==='string'?image.length:0),0):0),0);
+      if (publishedBytes + [...existing,...added].reduce((total,image)=>total+image.length,0) > 3600000) throw new Error('本机图片空间已满，请减少图片后再试');
+      commit(model.updateDraft(read(),{images:[...existing,...added]}));
+      refresh(input.closest('.xp-page')?.scrollTop || 0);
+    } catch (error) { showError(error); }
+    finally { input.value = ''; }
+  });
   installExperienceHome({read,toolsSheet});
+}
+
+function prepareCommunityImage(file) {
+  if (!/^image\/(?:png|jpeg|webp)$/i.test(file.type)) return Promise.reject(new Error('请选择 JPG、PNG 或 WebP 图片'));
+  if (file.size > 8 * 1024 * 1024) return Promise.reject(new Error('单张图片请控制在8MB以内'));
+  const read = blob => new Promise((resolve,reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(String(reader.result));
+    reader.onerror = () => reject(new Error('图片读取失败，请重新选择'));
+    reader.readAsDataURL(blob);
+  });
+  return read(file).then(source => new Promise((resolve,reject) => {
+    const image = new Image();
+    image.onload = () => {
+      const scale = Math.min(1,1080/Math.max(image.width,image.height));
+      const canvas = document.createElement('canvas');
+      canvas.width = Math.max(1,Math.round(image.width*scale));
+      canvas.height = Math.max(1,Math.round(image.height*scale));
+      canvas.getContext('2d').drawImage(image,0,0,canvas.width,canvas.height);
+      const result = canvas.toDataURL('image/webp',.72);
+      if (result.length > 520000) reject(new Error('图片压缩后仍然较大，请换一张再试'));
+      else resolve(result);
+    };
+    image.onerror = () => reject(new Error('图片格式无法识别，请换一张再试'));
+    image.src = source;
+  }));
 }
 
 function installExperienceHome({read}) {

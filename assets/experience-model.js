@@ -58,11 +58,23 @@
     ['p11','大人也可以说“我需要缓一缓”','play','method','全年龄','自我照顾','表达自己的状态，同时避免让对方负责安抚。可以说明何时再继续谈。','说需要，而不是指责。','若仍不适合继续，保留暂停的空间。'],
     ['p12','一起核对接送安排，让准备更具体','nursery','method','入园期','共同照顾','把谁接送、临时变动联系谁、重要物品放哪写清，和共同照顾的人确认。','选一个安排先核对。','不同家庭可以有不同分工，没有统一标准答案。']
   ];
-  const POSTS = postRows.map((r, i) => ({ id:r[0], title:r[1], group:r[2], kind:r[3], stage:r[4], topic:r[5], body:r[6], attempt:r[7], result:r[8], author:['小禾的笔记','慢慢来','一起试试'][i % 3] + ' · 示例', scene:r[2], demo:true }));
+  const postVisuals = {
+    p1:{images:['assets/community-screen-time.webp'],likeCount:86,commentCount:12,hotComment:'原来提醒的时机也很重要，我今晚想试试先约定。',publishedLabel:'今天 09:18'},
+    p4:{images:['assets/community-school-ready.webp'],likeCount:64,commentCount:9,hotComment:'我们也先去门口转了一圈，孩子回来一直说那棵大树。',publishedLabel:'昨天 18:42'},
+    p8:{images:['assets/community-family-walk.webp'],likeCount:51,commentCount:7,hotComment:'并排走的时候不追问，反而更容易等到一句真心话。',publishedLabel:'周一 20:06'}
+  };
+  const POSTS = postRows.map((r, i) => ({ id:r[0], title:r[1], group:r[2], kind:r[3], postType:r[3]==='method'?'method':'dynamic', stage:r[4], topic:r[5], body:r[6], attempt:r[7], result:r[8], author:['小禾的笔记','慢慢来','一起试试'][i % 3] + ' · 示例', scene:r[2], demo:true, images:[], likeCount:18+i*3, commentCount:2+i%5, publishedLabel:'本周', ...postVisuals[r[0]] }));
+  const OFFICIAL_NEWS = [
+    {id:'gz-primary-public-2026',title:'2026年广州公办小学招生：报名、审核与注册时间',source:'广州市教育局',sourceUrl:'https://jyj.gz.gov.cn/yw/zsks/content/post_10791639.html',publishedAt:'2026-04-29',status:'已结束',stage:'幼升小',audience:'计划在广州报名公办小学一年级的家庭',summary:'官方公布了网上报名、资料审核、录取结果与注册的完整时间安排。',keyPoints:['网上报名已于5月7日至11日完成','资料审核安排在5月16日至18日','6月27日办理注册，7月6日起可查询录取结果'],timeline:['5月7—11日｜网上报名','5月16—18日｜资料审核','6月27日｜学校注册','7月6日起｜查询录取结果']},
+    {id:'gz-primary-private-2026',title:'2026年广州民办小学招生：志愿、摇号与补录安排',source:'广州市教育局',sourceUrl:'https://jyj.gz.gov.cn/gk/shgysyjs/content/post_10799485.html',publishedAt:'2026-05-06',status:'已结束',stage:'幼升小',audience:'考虑报名广州民办小学一年级的家庭',summary:'从信息采集、填报志愿到电脑派位、确认录取和两轮补录，一页看清关键节点。',keyPoints:['5月11日至15日完成信息采集','5月30日至6月4日填报志愿','报名人数超过招生计划的学校按规定组织电脑派位'],timeline:['5月11—15日｜信息采集','5月30日—6月4日｜填报志愿','6月12日｜电脑派位','6月18—21日｜确认录取','7月13—17日、8月21—26日｜补录']},
+    {id:'gz-middle-private-2026',title:'2026年广州民办初中招生：报名与补录关键节点',source:'广州市教育局',sourceUrl:'https://jyj.gz.gov.cn/yw2/jyfw/ywjy/content/post_10814831.html',publishedAt:'2026-05-18',status:'已结束',stage:'小升初',audience:'准备报名广州民办初中的小学毕业生家庭',summary:'官方明确了网上报名、志愿填报、确认录取、注册和补录时间。',keyPoints:['5月21日至25日网上报名','6月13日至17日填报志愿','6月29日至7月1日确认录取'],timeline:['5月21—25日｜网上报名','6月13—17日｜填报志愿','6月29日—7月1日｜确认录取','7月4日｜新生注册','7月17—21日、8月21—26日｜补录']},
+    {id:'gz-kindergarten-2026',title:'2026年广州幼儿园招生：市属公办园报名提示',source:'广州市教育局',sourceUrl:'https://jyj.gz.gov.cn/gkmlpt/content/10/10782/post_10782083.html',publishedAt:'2026-04-24',status:'已结束',stage:'入园',audience:'关注广州公办幼儿园招生安排的家庭',summary:'官方招生工作通知明确，公办幼儿园集中报名通常安排在5月第三周。',keyPoints:['先核对孩子年龄、户籍与园所招生简章','市属与区属园所的报名入口和材料可能不同','以目标园所公布的招生简章和区教育局通知为准'],timeline:['4月下旬起｜关注各区与园所招生简章','5月第三周｜公办幼儿园集中报名','录取后｜按园所通知核验材料']},
+    {id:'gz-class-query-2026',title:'广州义务教育学校新生编班结果已可查询',source:'广州市教育局',sourceUrl:'https://jyj.gz.gov.cn/yw2/jydd/content/post_10977431.html',publishedAt:'2026-08-25',status:'结果可查询',stage:'入学',audience:'已完成广州义务教育阶段新生报名的家庭',summary:'完成报名后，可按官方指引查询新生编班结果和后续报到安排。',keyPoints:['查询前准备好学生身份与报名信息','以学校通知的报到时间、地点和材料为准','查不到结果时优先联系录取学校核对'],timeline:['8月25日起｜按官方入口查询结果','开学前｜核对学校报到通知与材料']}
+  ];
   function object(value) { return value && typeof value === 'object' && !Array.isArray(value) ? value : {}; }
   function normalize(raw) {
     const data = object(raw);
-    return { ...data, version:1, journeys:Array.isArray(data.journeys) ? data.journeys.filter(x=>x && typeof x==='object') : [], posts:Array.isArray(data.posts) ? data.posts.filter(x=>x && typeof x==='object') : [], comments:Array.isArray(data.comments) ? data.comments.filter(x=>x && typeof x==='object') : [], saved:Array.isArray(data.saved) ? data.saved.filter(x=>typeof x==='string') : [], joined:Array.isArray(data.joined) ? data.joined.filter(x=>typeof x==='string') : [], draft:{...object(data.draft)}, ui:{...object(data.ui)} };
+    return { ...data, version:1, journeys:Array.isArray(data.journeys) ? data.journeys.filter(x=>x && typeof x==='object') : [], posts:Array.isArray(data.posts) ? data.posts.filter(x=>x && typeof x==='object') : [], comments:Array.isArray(data.comments) ? data.comments.filter(x=>x && typeof x==='object') : [], saved:Array.isArray(data.saved) ? data.saved.filter(x=>typeof x==='string') : [], liked:Array.isArray(data.liked) ? data.liked.filter(x=>typeof x==='string') : [], joined:Array.isArray(data.joined) ? data.joined.filter(x=>typeof x==='string') : [], draft:{...object(data.draft)}, ui:{...object(data.ui)} };
   }
   function text(value, label, max, optional) {
     const result = typeof value === 'string' ? value.trim() : '';
@@ -97,7 +109,16 @@
     if (data.posts.some(p=>p.id===id)) return data;
     const group = input.group || 'play';
     if (!GROUPS.some(g=>g.id===group)) throw new Error('请选择一个小组');
-    const post = { id, title:text(input.title,'标题',60), body:text(input.body,'正文',2000), group, scene:group, author:'我的本机演示', kind:'experience', demo:true, local:true, createdAt:input.now || new Date().toISOString() };
+    const images = Array.isArray(input.images) ? input.images : [];
+    if (images.length > 9) throw new Error('最多选择9张图片');
+    const safeImages = images.map(image => {
+      if (typeof image !== 'string' || !/^data:image\/(?:png|jpeg|webp);base64,[a-z0-9+/=]+$/i.test(image) || image.length > 520000) throw new Error('图片格式不支持或文件过大');
+      return image;
+    });
+    const storedImageBytes = data.posts.reduce((total,item)=>total+(Array.isArray(item.images)?item.images.reduce((sum,image)=>sum+(typeof image==='string'?image.length:0),0):0),0);
+    if (storedImageBytes + safeImages.reduce((total,image)=>total+image.length,0) > 3600000) throw new Error('本机图片空间已满，请减少图片后再发布');
+    const postType = ['dynamic','question','method'].includes(input.postType) ? input.postType : 'dynamic';
+    const post = { id, title:text(input.title,'标题',60), body:text(input.body,'正文',2000), group, scene:group, author:'我的本机记录', kind:postType==='method'?'method':'experience', postType, stage:text(input.stage,'阶段',20,true), topic:text(input.topic,'话题',30,true), images:safeImages, likeCount:0, commentCount:0, demo:true, local:true, createdAt:input.now || new Date().toISOString(), publishedLabel:'刚刚' };
     return {...data, posts:[post,...data.posts]};
   }
   function addComment(raw, options) {
@@ -108,7 +129,7 @@
     return {...data, comments:[...data.comments,comment]};
   }
   function toggle(raw, field, id) {
-    if (!['saved','joined'].includes(field)) throw new Error('无效的收藏或小组操作');
+    if (!['saved','liked','joined'].includes(field)) throw new Error('无效的收藏、点赞或小组操作');
     const data = normalize(raw), key = text(id,'编号',120);
     return {...data,[field]:data[field].includes(key) ? data[field].filter(item=>item!==key) : [...data[field],key]};
   }
@@ -120,5 +141,5 @@
     if (relationship==='自己') return { title:input.scene==='play'?'留十五分钟给自己':'先做一件照顾自己的小事', why:'让行动从自己能决定的范围开始，不要求立刻改变感受。', script:scene.phrases.自己[0], observe:'记录做了什么、当时什么感受，没做也可以如实写下。' };
     return { title:relationship==='伴侣'?'约一小段双方方便的时间':'先征询意愿，再谈一件具体的事', why:relationship==='伴侣'?'把分工和需要放到平等的讨论里。':'尊重彼此的经验和选择，先确认是否愿意讨论。', script:scene.phrases[relationship][0], observe:'记录双方是否愿意继续、共同确认了什么，也可以暂时没有共识。' };
   }
-  return { normalize, start, patchJourney, savePost, addComment, toggle, updateDraft, actionFor, SCENES, POSTS, GROUPS, STAGES };
+  return { normalize, start, patchJourney, savePost, addComment, toggle, updateDraft, actionFor, SCENES, POSTS, OFFICIAL_NEWS, GROUPS, STAGES };
 });

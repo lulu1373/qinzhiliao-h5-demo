@@ -79,6 +79,40 @@ class ExperienceTests(unittest.TestCase):
         self.page.reload(wait_until='networkidle')
         self.assertIn('我想再试一次。', self.page.locator('.xp-page').inner_text())
 
+    def test_dynamic_feed_like_save_and_photo_publish_persist_locally(self):
+        import base64
+        self.page.goto(self.url + '#/guides')
+        first=self.page.locator('.xp-story').first
+        first.locator('[data-xp-action="like-post"]').click()
+        self.assertIn('p1', self.stored()['experience']['liked'])
+        first.locator('[data-xp-action="save-post"]').click()
+        self.assertIn('p1', self.stored()['experience']['saved'])
+        self.page.locator('[data-xp-action="compose"]').click()
+        self.page.locator('#xpTitle').fill('今天一起准备了入园书包')
+        self.page.locator('#xpBody').fill('孩子选了自己的水杯，我只帮忙确认了一次。')
+        png=base64.b64decode('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=')
+        self.page.locator('#xpImages').set_input_files({'name':'school.png','mimeType':'image/png','buffer':png})
+        self.page.wait_for_selector('.xp-compose-media img')
+        self.xp('draft-preview')
+        self.page.wait_for_selector('.xp-story-media img:visible')
+        self.assertEqual(self.page.locator('.xp-story-media img:visible').count(),1)
+        self.xp('draft-publish')
+        self.page.wait_for_selector('#xpComment:visible')
+        self.page.reload(wait_until='networkidle')
+        saved=self.stored()['experience']['posts'][0]
+        self.assertEqual(saved['title'],'今天一起准备了入园书包')
+        self.assertEqual(len(saved['images']),1)
+
+    def test_official_news_has_status_timeline_and_real_source_link(self):
+        self.page.goto(self.url + '#/guides')
+        self.xp('tab','[data-value="news"]')
+        self.assertIn('广州市教育局',self.page.locator('.xp-page').inner_text())
+        self.page.locator('[data-xp-action="route"][data-route^="experience/news/"]').first.click()
+        self.page.wait_for_selector('.xp-official:visible')
+        self.assertIn('关键时间',self.page.locator('.xp-official:visible').inner_text())
+        source=self.page.locator('a.xp-official-link:visible')
+        self.assertTrue((source.get_attribute('href') or '').startswith('https://jyj.gz.gov.cn/'))
+
     def test_stage_checklist_persists_without_creating_milestone(self):
         self.page.goto(self.url + '#/experience/stages')
         self.page.locator('[data-xp-action="route"][data-route^="experience/stage/"]').first.click()

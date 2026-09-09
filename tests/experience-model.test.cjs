@@ -82,3 +82,29 @@ test('UMD exposes browser module and accepts valid empty draft updates', () => {
  assert.throws(()=>M.toggle({},'saved',' '));
  assert.throws(()=>M.savePost({}, {id:'p',title:'x'.repeat(61),body:'ok'}));
 });
+
+test('community supports likes, image posts and immutable social state', () => {
+ const raw=M.normalize();
+ assert.deepEqual(raw.liked,[]);
+ const liked=M.toggle(raw,'liked','p1');
+ assert.deepEqual(liked.liked,['p1']);
+ assert.deepEqual(raw.liked,[]);
+ const posted=M.savePost(raw,{id:'photo-post',title:'入园前的小准备',body:'今天一起收拾了书包',group:'nursery',postType:'dynamic',stage:'入园期',topic:'入园准备',images:['data:image/png;base64,AAAA'],now:'2026-09-09'});
+ assert.deepEqual(posted.posts[0].images,['data:image/png;base64,AAAA']);
+ assert.equal(posted.posts[0].postType,'dynamic');
+ assert.equal(posted.posts[0].stage,'入园期');
+ assert.throws(()=>M.savePost(raw,{id:'bad-image',title:'标题',body:'正文',images:['javascript:alert(1)']}));
+ assert.throws(()=>M.savePost(raw,{id:'too-many-bytes',title:'标题',body:'正文',images:Array(8).fill('data:image/png;base64,'+'A'.repeat(460000))}),/空间|图片/);
+});
+
+test('official news exposes verified source, dates, status and action steps', () => {
+ assert.equal(M.OFFICIAL_NEWS.length,5);
+ for(const item of M.OFFICIAL_NEWS){
+  assert.match(item.sourceUrl,/^https:\/\/jyj\.gz\.gov\.cn\//);
+  assert.equal(item.source,'广州市教育局');
+  assert.ok(item.publishedAt);
+  assert.ok(['已结束','结果可查询','长期有效'].includes(item.status));
+  assert.ok(item.keyPoints.length>=2);
+  assert.ok(item.timeline.length>=1);
+ }
+});
