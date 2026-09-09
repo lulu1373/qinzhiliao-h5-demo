@@ -1,4 +1,6 @@
 /* Injected inside the existing H5 closure by tools/build_growth_reports.py. */
+let openGrowthMilestoneFromExperience = null;
+let openExperienceFeedback = null;
 function installGrowthReports() {
   const model = window.QZLGrowthModel;
   const view = window.QZLGrowthView;
@@ -124,8 +126,9 @@ function installGrowthReports() {
     const gr = settings();
     if (gr.source === 'personal' && gr.lastOpened !== day()) gr.anchor = day();
     gr.lastOpened = day();
-    return `<div class="secondary-page growth-page gr-page">${titleBar('成长总结',{back:'home'})}
+    return `<div class="secondary-page growth-page gr-page">${titleBar('成长记录',{back:'home'})}
       <button class="gr-top-records" data-gr-action="records" ${gr.screen === 'records' ? 'hidden' : ''}>行动记录</button>
+      <div class="xp-growth-entry"><button data-xp-action="route" data-route="experience/history">我的练习 <span aria-hidden="true">›</span></button><button data-xp-action="route" data-route="experience/stages">阶段准备 <span aria-hidden="true">›</span></button><button data-gr-action="milestone-new">记一笔 <span aria-hidden="true">＋</span></button></div>
       <div id="grContent" aria-live="polite">${content()}</div></div>`;
   }
   renderGrowth = shell;
@@ -172,6 +175,7 @@ function installGrowthReports() {
   function feedback(id) {
     const action = findAction(id);
     if (!action) return toast('这条记录已不存在');
+    if (action.journeyId && openExperienceFeedback?.(action.journeyId)) return;
     activeFeedback = {id, source:settings().source};
     display(`<h2>记录这次尝试</h2><p class="gr-muted">${esc(action.title)}</p>
       ${activeFeedback.source === 'example' ? '<p class="gr-demo-note">这是示例操作，不会写入你的行动记录。</p>' : ''}
@@ -243,6 +247,7 @@ function installGrowthReports() {
       event.preventDefault();event.stopImmediatePropagation();
       showConfirm('清除对话数据','将删除聊天内容、回顾中的对话片段，以及里程碑引用的对话原文。保留你另写的里程碑内容、行动记录和家庭档案。',() => {
         clearTimers();state.chat=cloneDefault().chat;
+        if (state.experience) state.experience = {...state.experience,journeys:[]};
         const gr=settings();gr.records=[];
         gr.corrections=Object.fromEntries(Object.entries(gr.corrections).filter(([key]) => key.startsWith('example:')));
         saveState();
@@ -293,6 +298,7 @@ function installGrowthReports() {
     saveState(); refresh({top:action === 'report' ? reportScroll : ['subject','record-date','record-view'].includes(action) ? undefined : 0,focus:true});
   }
   milestones = installGrowthMilestones({settings,day,validDate,localDate,reportModel:model,display,refresh,deps});
+  openGrowthMilestoneFromExperience = id => milestones?.handle({grAction:'milestone-from-source',id,kind:'action'});
   milestones?.reconcile();
   document.addEventListener('click',handle,true);
 }

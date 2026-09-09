@@ -129,7 +129,8 @@
   function actionRow(action,deps) {
     const labels = {better:'顺一点',same:'没变化',worse:'更糟',pending:'待尝试'};
     const hasFeedback = !!action.result && action.result !== 'pending';
-    return `<article class="gr-action"><div class="gr-row"><h3>${button('action',esc(action.title),{id:action.id},'gr-action-title')}</h3><span class="gr-status${hasFeedback ? ' is-recorded' : ''}">${esc(labels[action.result] || (action.status === 'done' ? '待补反馈' : '待尝试'))}</span></div>${action.source ? `<p class="gr-meta">来自：${esc(action.source)}</p>` : ''}${action.feedbackNote ? `<p>${esc(action.feedbackNote)}</p>` : ''}<div class="gr-action-buttons">${button('feedback',hasFeedback ? '补充反馈' : '试过了',{id:action.id},'gr-chip')}${!hasFeedback ? button('not-tried','还没试',{id:action.id},'gr-chip') : ''}${button('action','查看详情 <span aria-hidden="true">›</span>',{id:action.id},'gr-evidence')}</div></article>`;
+    const decision = action.decision === 'declined' ? '决定不做' : action.decision === 'not_tried' ? '还没有试' : '';
+    return `<article class="gr-action"><div class="gr-row"><h3>${button('action',esc(action.title),{id:action.id},'gr-action-title')}</h3><span class="gr-status${hasFeedback ? ' is-recorded' : ''}">${esc(labels[action.result] || decision || (action.status === 'done' ? '待补反馈' : '待尝试'))}</span></div>${action.source ? `<p class="gr-meta">来自：${esc(action.source)}</p>` : ''}${action.feedbackNote ? `<p>${esc(action.feedbackNote)}</p>` : ''}<div class="gr-action-buttons">${button('feedback',hasFeedback ? '补充反馈' : decision ? '更新这次选择' : '试过了',{id:action.id},'gr-chip')}${!hasFeedback && !decision ? button('not-tried','还没试',{id:action.id},'gr-chip') : ''}${button('action','查看详情 <span aria-hidden="true">›</span>',{id:action.id},'gr-evidence')}</div></article>`;
   }
   function populatedReport(report,ui,deps) {
     const mode = ui.mode || (report.period || {}).mode || 'week';

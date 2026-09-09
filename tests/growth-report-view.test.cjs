@@ -6,6 +6,11 @@ const target = path.join(__dirname, '../assets/growth-report-view.js');
 const view = fs.existsSync(target) ? require(target) : {};
 const ui = {mode:'week',anchor:'2026-08-26',source:'personal',recordView:'list',subject:'parent',corrections:{}};
 const empty = {mode:'week',source:'personal',empty:true,period:{label:'8月24日—8月30日',start:'2026-08-24',end:'2026-08-30',inProgress:true},stats:{},records:[],actions:[],days:[]};
+test('declined actions retain the users decision without claiming a feedback result',()=>{
+  const html=view.renderRecords({...empty,actions:[{id:'personal-x',title:'留一点时间',date:'2026-08-26',status:'pending',result:null,decision:'declined'}]},ui,{});
+  assert.match(html,/决定不做/);
+  assert.doesNotMatch(html,/is-recorded/);
+});
 test('personal empty report provides source switch and honest zero-record state', () => {
   assert.equal(typeof view.render, 'function', 'render must be implemented');
   const html = view.render(empty, ui, {});
