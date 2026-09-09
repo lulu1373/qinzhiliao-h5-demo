@@ -4376,6 +4376,23 @@ svg{vertical-align:middle}
 .v6-tool-orbit .qzl-treasure-icon{width:34px!important;height:34px!important}
 .v90-toolbox-hero i .qzl-treasure-icon{width:32px;height:32px}
 .v90-toolbox-empty i .qzl-treasure-icon{width:36px;height:36px}
+
+/* Home entry layout: two compact destinations above three full-width prompts. */
+.qzl-home-layout{padding:18px 16px 8px}
+.qzl-home-primary{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-bottom:14px}
+.qzl-home-primary>button{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:84px;padding:15px 16px;text-align:left;border:1px solid rgba(75,58,43,.055);border-radius:22px;background:#fff;box-shadow:0 2px 8px rgba(70,53,38,.032)}
+.qzl-home-primary>button>span{min-width:0}
+.qzl-home-primary b{display:block;font-size:18px;line-height:1.4;font-weight:650;color:var(--text)}
+.qzl-home-primary small{display:block;margin-top:5px;font-size:13px;line-height:1.5;color:var(--muted)}
+.qzl-home-primary i,.qzl-home-layout .v67-starter>em{display:grid;place-items:center;flex:0 0 16px;color:#9aa393}
+.qzl-home-primary i>svg,.qzl-home-layout .v67-starter>em>svg{width:16px;height:16px;transform:rotate(180deg)}
+.qzl-home-layout .v67-starters{padding:0}
+.qzl-home-layout .v67-starter-grid{grid-template-columns:minmax(0,1fr);gap:12px}
+.qzl-home-layout .v67-starter,.qzl-home-layout .v67-starter:last-child{grid-column:auto;grid-template-columns:42px minmax(0,1fr) 16px;min-height:84px;padding:15px 16px;gap:12px;border-radius:22px}
+.qzl-home-layout .v67-starter>span{min-width:0}
+.qzl-home-layout .v67-quick{padding:14px 0 4px;justify-content:center}
+.qzl-home-layout button:focus-visible{outline:2px solid var(--green);outline-offset:3px}
+@media(max-width:374px){.qzl-home-layout{padding-left:12px;padding-right:12px}.qzl-home-primary{gap:10px}.qzl-home-primary>button{padding-left:13px;padding-right:13px}.qzl-home-primary b{font-size:17px}}
 </style>
 <link rel="stylesheet" href="assets/growth-report.css"></head><body><div id="app" aria-live="polite"></div><script src="assets/growth-report-model.js"></script>
 <script src="assets/growth-report-view.js"></script>
@@ -6574,12 +6591,18 @@ renderHomeIdle=function(){
       <img class="v67-home-mascot" src="${ASSETS.mascotHome}" alt="小亲">
       <div class="v67-home-copy"><small>${svg.sparkle} 小亲在这里</small><h1>今天想和我<br>聊聊吗？</h1><p>不用想好怎么说，<br>从刚刚发生的事开始就好。</p></div>
     </section>
-    <section class="v67-starters"><div class="v67-section-head"><h2>你可以这样开始</h2><span>不用组织好语言</span></div><div class="v67-starter-grid">
-      <button class="v67-starter green" data-action="start-scenario" data-scenario="homework"><i>${svg.conflict}</i><span><b>刚刚发生什么了？</b><small>帮我梳理这件事</small></span></button>
-      <button class="v67-starter peach" data-action="start-scenario" data-scenario="emotion"><i>${svg.heart}</i><span><b>我有点情绪卡住了</b><small>陪我理理思路</small></span></button>
-      <button class="v67-starter blue" data-action="start-scenario" data-scenario="repeat"><i>${svg.repeat}</i><span><b>这个问题总是反复</b><small>帮我看看互动循环</small></span></button>
+    <div class="qzl-home-layout">
+    <nav class="qzl-home-primary" aria-label="常用功能">
+      <button data-action="route" data-route="growth"><span><b>我的成长</b><small>看看最近的变化</small></span><i aria-hidden="true">${svg.back}</i></button>
+      <button data-action="route" data-route="guides"><span><b>教育指南</b><small>找方法、学经验</small></span><i aria-hidden="true">${svg.back}</i></button>
+    </nav>
+    <section class="v67-starters" aria-label="你可以这样开始"><div class="v67-starter-grid">
+      <button class="v67-starter green" data-action="start-scenario" data-scenario="homework"><i>${svg.conflict}</i><span><b>刚刚发生什么了？</b><small>帮我梳理这件事</small></span><em aria-hidden="true">${svg.back}</em></button>
+      <button class="v67-starter peach" data-action="start-scenario" data-scenario="emotion"><i>${svg.heart}</i><span><b>我有点情绪卡住了</b><small>陪我理理思路</small></span><em aria-hidden="true">${svg.back}</em></button>
+      <button class="v67-starter blue" data-action="start-scenario" data-scenario="repeat"><i>${svg.repeat}</i><span><b>这个问题总是反复</b><small>帮我看看互动循环</small></span><em aria-hidden="true">${svg.back}</em></button>
     </div></section>
-    <nav class="v67-quick" aria-label="快捷功能"><button data-action="route" data-route="guides">${svg.guide} 教育指南</button><button data-action="route" data-route="assessments">${svg.assessment} 我的测评</button><button data-action="route" data-route="archive">${svg.familyArchive} 家庭档案</button></nav>
+    <nav class="v67-quick" aria-label="快捷功能"><button data-action="route" data-route="assessments">${svg.assessment} 我的测评</button><button data-action="route" data-route="archive">${svg.familyArchive} 家庭档案</button></nav>
+    </div>
   </div>`;
 };
 
