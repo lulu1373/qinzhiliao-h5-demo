@@ -45,6 +45,15 @@ test('community V2 exposes family context, social proof and chip-based publishin
  assert.match(compose,/id="xpStage"/); assert.match(compose,/小学高年级/);
 });
 
+test('publishing treats compose preview as transient so Back returns to community',()=>{
+ const controller=fs.readFileSync(path.join(__dirname,'../assets/experience-controller.js'),'utf8');
+ assert.match(controller,/navigate\('experience\/preview',\{replace:true\}\)/);
+ assert.match(controller,/navigate\('experience\/post\/' \+ id,\{replace:true\}\)/);
+ const preview=view.render('experience/preview',ctx({data:{draft:{title:'返回测试',body:'验证返回社区'}}}));
+ assert.match(preview,/data-xp-action="edit-draft"/);
+ assert.doesNotMatch(preview,/data-route="experience\/compose"/);
+});
+
 test('composer supports local image selection, preview and removal',()=>{
  const html=view.render('experience/compose',ctx({data:{draft:{images:['data:image/png;base64,AAAA']}}}));
  assert.match(html,/id="xpImages"[^>]*multiple/); assert.match(html,/accept="image\/\*"/);

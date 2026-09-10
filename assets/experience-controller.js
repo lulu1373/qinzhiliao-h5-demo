@@ -132,7 +132,7 @@ function installExperience() {
     const id = draft.id || uid('post');
     let next = model.savePost(data,{...draft,id,now:now()});
     next = {...next,draft:{}};
-    commit(next); go('experience/post/' + id);
+    commit(next); navigate('experience/post/' + id,{replace:true});
   }
   function card(type, patch) {
     const data = read();
@@ -244,11 +244,12 @@ function installExperience() {
         return refresh(button.closest('.xp-page')?.scrollTop || 0);
       }
       if (action === 'compose') return go('experience/compose');
+      if (action === 'edit-draft') return navigate('experience/compose',{replace:true});
       if (action === 'draft-preview') {
         saveDraft();
         const data = read();
         model.savePost(data,{...data.draft,id:'validation-only',now:now()});
-        return go('experience/preview');
+        return navigate('experience/preview',{replace:true});
       }
       if (action === 'draft-publish') return publish();
       if (action === 'save-post' || action === 'like-post' || action === 'join') {

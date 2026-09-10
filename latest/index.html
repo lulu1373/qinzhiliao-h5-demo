@@ -4399,7 +4399,7 @@ svg{vertical-align:middle}
 <script src="assets/growth-milestone-model.js?v=0a4020d2bc"></script>
 <script src="assets/growth-milestone-view.js?v=2492e9af08"></script>
 <script src="assets/experience-model.js?v=d39ee32bdd"></script>
-<script src="assets/experience-view.js?v=002c4c1fee"></script>
+<script src="assets/experience-view.js?v=e8ebc9272f"></script>
 <script src="assets/card-practice.js?v=f58d85522b"></script>
 <script>
 (function(){
@@ -7888,7 +7888,7 @@ function installExperience() {
     const id = draft.id || uid('post');
     let next = model.savePost(data,{...draft,id,now:now()});
     next = {...next,draft:{}};
-    commit(next); go('experience/post/' + id);
+    commit(next); navigate('experience/post/' + id,{replace:true});
   }
   function card(type, patch) {
     const data = read();
@@ -8000,11 +8000,12 @@ function installExperience() {
         return refresh(button.closest('.xp-page')?.scrollTop || 0);
       }
       if (action === 'compose') return go('experience/compose');
+      if (action === 'edit-draft') return navigate('experience/compose',{replace:true});
       if (action === 'draft-preview') {
         saveDraft();
         const data = read();
         model.savePost(data,{...data.draft,id:'validation-only',now:now()});
-        return go('experience/preview');
+        return navigate('experience/preview',{replace:true});
       }
       if (action === 'draft-publish') return publish();
       if (action === 'save-post' || action === 'like-post' || action === 'join') {
