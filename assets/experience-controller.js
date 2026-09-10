@@ -323,6 +323,12 @@ function installExperience() {
         const before=read(), wasOn=Array.isArray(before[field])&&before[field].includes(id);
         commit(model.toggle(before,field,id));
         const top=button.closest('.xp-page')?.scrollTop || 0; refresh(top);
+        if(action==='like-post'&&!wasOn){
+          requestAnimationFrame(()=>{
+            const target=[...document.querySelectorAll('[data-xp-action=\"like-post\"]')].find(el=>el.dataset.id===id);
+            if(target){target.classList.add('is-just-activated');setTimeout(()=>target.classList.remove('is-just-activated'),360);}
+          });
+        }
         if(action==='save-post') toast(wasOn?'已取消收藏':'已收藏');
         else if(action==='join') toast(wasOn?'已退出小组':'已加入小组');
         return;

@@ -111,13 +111,13 @@
 .xp-social-label{white-space:nowrap}.xp-social-count{color:#9ca3af;font-weight:450;font-variant-numeric:tabular-nums}
 .xp-social:active{transform:scale(.96);background:rgba(55,65,81,.055)}
 .xp-social.is-active{background:rgba(91,138,99,.10);color:#5b8a63}
-.xp-social.is-active .xp-social-count{color:#5b8a63}.xp-social.is-active .xp-action-icon{animation:xp-social-pop .28s cubic-bezier(.2,.9,.35,1.35)}
+.xp-social.is-active .xp-social-count{color:#5b8a63}.xp-social.is-just-activated .xp-action-icon{animation:xp-social-pop .28s cubic-bezier(.2,.9,.35,1.35)}
 @keyframes xp-social-pop{0%{transform:scale(.82)}55%{transform:scale(1.22)}100%{transform:scale(1)}}
 .xp-social-detail{margin-top:16px!important;padding-top:10px!important}.xp-social-detail .xp-social{min-height:46px}
 .xp-compose-fab .xp-action-icon{width:22px;height:22px;stroke-width:2}.xp-compose-fab:active{transform:scale(.94)}
 .xp-group-toolbar .xp-secondary .xp-action-icon{width:18px;height:18px}.xp-group-toolbar .xp-secondary{transition:transform .12s ease,background-color .16s ease,color .16s ease}.xp-group-toolbar .xp-secondary:active{transform:scale(.97)}
 .xp-danger-link .xp-action-icon{width:15px;height:15px;margin-right:4px;vertical-align:-2px}
-@media (prefers-reduced-motion:reduce){.xp-social,.xp-compose-fab,.xp-group-toolbar .xp-secondary{transition:none!important}.xp-social.is-active .xp-action-icon{animation:none!important}}
+@media (prefers-reduced-motion:reduce){.xp-social,.xp-compose-fab,.xp-group-toolbar .xp-secondary{transition:none!important}.xp-social.is-just-activated .xp-action-icon{animation:none!important}}
 .xp-social-count{white-space:nowrap!important;flex:none!important;min-width:max-content}.xp-social-label{white-space:nowrap!important;flex:none!important}
 .xp-owner-actions .xp-secondary .xp-action-icon,.xp-mine-actions .xp-action-icon,.xp-comment-delete .xp-action-icon,.xp-discover-row .xp-secondary .xp-action-icon{width:16px;height:16px;vertical-align:-3px}
 .xp-mine-actions .xp-link,.xp-mine-actions .xp-danger-link,.xp-comment-delete,.xp-discover-row .xp-secondary{display:inline-flex;align-items:center;gap:4px}
