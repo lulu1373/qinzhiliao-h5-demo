@@ -89,3 +89,17 @@
 .xp-page:has(.xp-compose-form) .xp-intro,.xp-page:has(.xp-group-toolbar) .xp-intro{padding-top:12px}.xp-page:has(.xp-official) .xp-official,.xp-page:has(.xp-article) .xp-article{margin-top:4px}
 .xp-compose-fab{background:#5b8a63!important;color:#fff!important;box-shadow:0 10px 26px rgba(60,90,67,.22)!important}
 @media(max-width:420px){.xp-community-hero{margin-left:-16px;margin-right:-16px;padding-left:16px;padding-right:16px}.xp-community-copy h2{font-size:23px}.xp-page:has(.xp-community-hero) .xp-story,.xp-page:has(.xp-group-toolbar) .xp-story{padding:17px!important}}
+
+/* Community reply UX V4.1: direct reply composer and immediate local feedback. */
+.xp-comments-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:12px}
+.xp-comments-head h3{margin:0!important;font-size:18px}.xp-comments-head h3 small{font-weight:400;color:#9ca3af;margin-left:4px}
+.xp-comments-head>span{font-size:12px;color:#9ca3af}
+.xp-reply-composer{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:end;gap:8px;padding:8px 8px 8px 12px;margin-bottom:16px;background:rgba(255,255,255,.86);border:1px solid #e5e7eb;border-radius:16px}
+.xp-reply-composer textarea{width:100%;min-height:44px!important;max-height:120px!important;height:44px;margin:0!important;padding:10px 2px!important;border:0!important;background:transparent!important;box-shadow:none!important;resize:none;overflow-y:auto;color:#374151!important;line-height:24px!important}
+.xp-reply-composer textarea:focus{outline:none!important;box-shadow:none!important}
+.xp-reply-send{min-width:62px;height:42px;padding:0 16px;border:0;border-radius:13px;background:#5b8a63;color:#fff;font-size:14px;font-weight:600}
+.xp-reply-send:disabled{background:#e5e7eb;color:#9ca3af;cursor:default}
+.xp-comment-list{display:flex;flex-direction:column}.xp-comment{padding:14px 0;margin:0!important;border-bottom:1px solid #eef0f2!important}.xp-comment:last-child{border-bottom:0!important}
+.xp-comment-head span{font-size:11px;color:#5b8a63;background:#ecf5ee;border-radius:10px;padding:2px 7px}
+.xp-comment-mine.is-new{animation:xp-reply-flash .9s ease}
+@keyframes xp-reply-flash{0%,35%{background:rgba(236,245,238,.8)}100%{background:transparent}}

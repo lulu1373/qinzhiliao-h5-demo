@@ -110,10 +110,17 @@ function installExperience() {
   renderRoute = function(route) {
     const previous = pageStack.querySelector('.xp-page');
     if (previous && lastRoute) scrolls.set(lastRoute,previous.scrollTop);
+    const focusReply = getQuery(route).reply === '1' && route !== lastRoute;
     originalRoute(route);
     const next = pageStack.querySelector('.xp-page');
     if (next) next.scrollTop = scrolls.get(route) || 0;
     lastRoute = route;
+    if (focusReply) requestAnimationFrame(()=>{
+      const input=document.getElementById('xpComment');
+      if(!input)return;
+      input.scrollIntoView({block:'center',behavior:'smooth'});
+      setTimeout(()=>input.focus({preventScroll:true}),120);
+    });
   };
 
   function accept(id) {
@@ -323,9 +330,19 @@ function installExperience() {
         return refresh(button.closest('.xp-page')?.scrollTop || 0);
       }
       if (action === 'comment') {
-        const next = model.addComment(read(),{id:uid('comment'),postId:id,body:value('xpComment'),now:now()});
+        const body=value('xpComment').trim();
+        if(!body){document.getElementById('xpComment')?.focus();return;}
+        const commentId=uid('comment'),top=button.closest('.xp-page')?.scrollTop||0;
+        const next = model.addComment(read(),{id:commentId,postId:id,body,now:now()});
         commit({...next,commentDrafts:{...next.commentDrafts,[id]:''}});
-        return refresh(button.closest('.xp-page')?.scrollTop || 0);
+        toast('回应已发送'); refresh(top);
+        requestAnimationFrame(()=>setTimeout(()=>{
+          const node=document.querySelector(`[data-comment-id="${commentId}"]`);
+          node?.scrollIntoView({block:'center',behavior:'smooth'});
+          node?.classList.add('is-new');
+          setTimeout(()=>node?.classList.remove('is-new'),900);
+        },20));
+        return;
       }
       const data = read();
       if (action === 'tab' || action === 'filter') {
@@ -347,7 +364,12 @@ function installExperience() {
       const data = read(), route = routeParts(currentRoute), id = route[2];
       if (['xpTitle','xpBody','xpGroup','xpPostType','xpStage','xpTopic'].includes(target.id)) return saveDraft();
       if (['xpCardEvent','xpCardNote'].includes(target.id)) return card(id,{event:value('xpCardEvent'),note:value('xpCardNote')});
-      if (target.id === 'xpComment') return commit({...data,commentDrafts:{...data.commentDrafts,[id]:target.value}});
+      if (target.id === 'xpComment') {
+        commit({...data,commentDrafts:{...data.commentDrafts,[id]:target.value}});
+        target.style.height='auto';target.style.height=Math.min(target.scrollHeight,120)+'px';
+        const send=document.querySelector('.xp-reply-send');if(send)send.disabled=!target.value.trim();
+        return;
+      }
       const fields = {xpDescription:'description',xpPhrase:'phrase',xpActionTitle:'actionTitle',xpActionScript:'actionScript',xpFeedbackNote:'feedbackNote'};
       if (fields[target.id] && getJourney(id)) return patchJourney(id,{[fields[target.id]]:target.value,...(target.id === 'xpPhrase' ? {actionScript:''} : {})});
       if (target.id === 'xpSearch') {

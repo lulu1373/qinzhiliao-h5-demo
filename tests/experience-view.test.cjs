@@ -92,3 +92,14 @@ test('community search follows the active tab and legacy demo news stays out of 
  assert.match(news,/编班结果/); assert.doesNotMatch(news,/公办小学招生/);
  assert.doesNotMatch(view.render('experience/group/nursery',ctx({model:real})),/入园前可向老师确认的三件事/);
 });
+
+test('community reply action enters focused reply mode and uses send language',()=>{
+  const real=require('../assets/experience-model.js');
+  const feed=view.render('experience/community',ctx({model:real}));
+  assert.match(feed,/data-route="experience\/post\/p1\?from=community&amp;reply=1"/);
+  const detail=view.render('experience/post/p1',ctx({model:real}));
+  assert.match(detail,/class="xp-reply-send"/);
+  assert.match(detail,/>发送<\/button>/);
+  assert.match(detail,/回应 <small>12<\/small>/);
+  assert.doesNotMatch(detail,/保存回应/);
+});
