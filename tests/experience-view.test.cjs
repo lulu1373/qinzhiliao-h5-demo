@@ -12,7 +12,7 @@ test('community back button keeps its 44px touch target without a persistent cir
   assert.match(css,/\.xp-back:hover\{background:transparent\}/);
 });
 test('community offers a Douban-inspired dynamic stream and three navigation tabs',()=>{const real=require('../assets/experience-model.js');const html=view.render('experience/community',ctx({model:real}));assert.match(html,/家长社区/);assert.match(html,/data-value="dynamic"/);assert.match(html,/data-value="groups"/);assert.match(html,/data-value="news"/);assert.match(html,/data-xp-action="like-post"/);assert.match(html,/data-xp-action="save-post"/);assert.match(html,/xp-story-media/);assert.match(html,/热门回复/); assert.match(html,/xp-social-label">点赞/); assert.match(html,/xp-social-label">回复/);});
-test('post details preserve author story and provide adoption and local comments',()=>{const html=view.render('experience/post/p1',ctx());assert.match(html,/我家也遇到类似问题/);assert.match(html,/结合我家情况问小亲/);assert.match(html,/data-xp-action="adopt"/);assert.match(html,/id="xpComment"/);});
+test('post details preserve author story and provide adoption and local comments',()=>{const html=view.render('experience/post/p1',ctx());assert.match(html,/我家也遇到类似问题/);assert.match(html,/问小亲：这适合我家吗？/);assert.match(html,/data-xp-action="adopt"/);assert.match(html,/id="xpComment"/);});
 test('user supplied draft and comments cannot inject markup',()=>{const data={posts:[],comments:[{postId:'p1',body:'<img onerror="bad()">'}],saved:[],joined:[],draft:{title:'<script>bad()</script>',body:'<img src=x>'},ui:{}};assert.doesNotMatch(view.render('experience/preview',ctx({data})),/<script>/);assert.doesNotMatch(view.render('experience/post/p1',ctx({data})),/<img onerror/);});
 test('all journey steps render deliberate next steps and exits',()=>{for(const step of ['context','support','phrase','action','feedback','done']){const html=view.render('experience/journey/j1',ctx({journey:{id:'j1',scene:'screen',step,description:'昨晚吵了一架'}}));assert.match(html,/data-xp-action=/);assert.ok(html.length>400,step);assert.doesNotMatch(html,/undefined|null/);}});
 test('feedback includes negative and no-action outcomes',()=>{const html=view.render('experience/journey/j1',ctx({journey:{id:'j1',scene:'screen',step:'feedback'}}));for(const value of ['better','same','worse','not_tried','declined'])assert.match(html,new RegExp('data-value="'+value+'"'));});
@@ -103,6 +103,18 @@ test('community reply action enters focused reply mode and uses send language',(
   assert.match(detail,/回复 <small>12<\/small>/);
   assert.doesNotMatch(detail,/保存回应/); assert.match(detail,/data-xp-action="focus-reply"/); assert.match(detail,/xp-social-label">收藏/);
 });
+
+test('light entry points go to chat and keep structured journey as an explicit tool',()=>{
+  const controller=fs.readFileSync(path.join(__dirname,'../assets/experience-controller.js'),'utf8');
+  assert.match(controller,/function startLightChat\(/);
+  assert.match(controller,/data-xp-action="chat-start" data-scene="emotion"/);
+  assert.match(controller,/data-xp-action="chat-start" data-scene="repeat"/);
+  assert.match(controller,/data-xp-action="chat-start" data-scene="play"/);
+  assert.match(controller,/return startLightChat\('post',post\)/);
+  assert.match(controller,/整理成一个小行动/);
+  assert.match(controller,/start\(scene,state\.chat\?\.sourcePostId\|\|''\)/);
+});
+
 
 test('community social actions use explicit icons and visible active states',()=>{
   const real=require('../assets/experience-model.js');

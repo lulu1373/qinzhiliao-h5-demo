@@ -78,6 +78,31 @@ function installExperience() {
     commit(data);
     go('experience/journey/' + id);
   }
+  function childContext() {
+    const child=state.family?.children?.[0]||{};
+    return [child.age?child.age+'岁':'',child.gender||'',child.grade||''].filter(Boolean).join(' · ');
+  }
+  function startLightChat(kind, post=null) {
+    const profile=childContext();
+    const sourceScene=post?.scene||post?.group||({emotion:'self',repeat:'repeat',play:'play'}[kind]||'self');
+    let seed='',reply='';
+    if(kind==='post'&&post){
+      const method=String(post.attempt||post.result||post.body||'').trim();
+      seed='我想问问，这条经验适不适合我家。';
+      reply=`我看到你是从社区这条经验过来的：<b>「${esc(post.title||'这条经验')}」</b>。${method?`<br>它的重点是：${esc(method)}`:''}${profile?`<br>结合你家目前的情况（${esc(profile)}），`: '<br>'}这套做法不用照搬。你们最近最接近的是哪一种情况？你直接说发生了什么就好，我会围绕你家的实际情况一起看。`;
+    }else if(kind==='play'){
+      seed='我现在想陪孩子一小段时间。';
+      reply=`可以，不用把这段时间安排成一次“教育任务”。${profile?`结合 ${esc(profile)} 的阶段，`:''}如果现在只有 10～15 分钟，可以先让孩子选一件他正在做、也愿意让你参与的小事。你先跟着，不教、不纠正。<br><br>如果你告诉我孩子现在在做什么，我可以直接给你一个更贴近当下的陪伴建议。`;
+    }else if(kind==='emotion'){
+      seed='我现在有点情绪卡住了，想先聊聊。';
+      reply='好，我们先不做练习，也不急着解决孩子的问题。你把最难受的那一小段说给我听就行，我先陪你把这一刻理清楚。';
+    }else{
+      seed='这个问题总是反复，我想先聊聊。';
+      reply='可以，我们先不进入步骤。就从最近一次说起：它是从哪个瞬间开始变得不对劲的？先把这一小段讲清楚就够了。';
+    }
+    state.chat={active:true,scenario:kind,node:'done',messages:[{role:'user',html:esc(seed),time:todayTime()},{role:'ai',html:reply,time:todayTime()}],typing:false,reviewResult:null,freeTurns:0,conversationId:uid('conv'),mode:'light',sourceScene,sourcePostId:post?.id||''};
+    pendingConversationStart=true;saveState();navigate('home');
+  }
   function showError(error) {
     let notice = document.getElementById('xpError');
     if (!notice) {
@@ -202,8 +227,9 @@ function installExperience() {
     refresh();
   }
   function toolsSheet() {
-    showBottomSheet(`<div class="xp-tools"><h2>这一刻，想用哪张卡？</h2><p>从一个具体片段开始，确认后再收藏。</p><div>${V90_CARD_TYPES.map(type =>
-      `<button data-xp-action="open-card" data-type="${type}"><i>${V90_CARD_DEFS[type].icon()}</i><span>${esc(V90_CARD_DEFS[type].label)}</span></button>`).join('')}</div><button class="xp-tool-archive" data-action="route" data-route="treasure-box">${svg.treasureBox} 打开百宝箱</button><button data-overlay-action="close" class="xp-tool-close">关闭</button></div>`);
+    const scene=state.chat?.sourceScene||'self';
+    showBottomSheet(`<div class="xp-tools"><h2>想把这一刻再整理一下吗？</h2><p>先聊天就够了；需要时，再用卡片或整理成一个小行动。</p><div>${V90_CARD_TYPES.map(type =>
+      `<button data-xp-action="open-card" data-type="${type}"><i>${V90_CARD_DEFS[type].icon()}</i><span>${esc(V90_CARD_DEFS[type].label)}</span></button>`).join('')}</div><button class="xp-tool-archive" data-xp-action="journey-start" data-scene="${esc(scene)}">${svg.sprout} 整理成一个小行动</button><button class="xp-tool-archive" data-action="route" data-route="treasure-box">${svg.treasureBox} 打开百宝箱</button><button data-overlay-action="close" class="xp-tool-close">关闭</button></div>`);
   }
   function context(id) {
     const description = value('xpDescription').trim();
@@ -245,10 +271,12 @@ function installExperience() {
         else go('experience/card/' + type);
         return;
       }
-      if (action === 'journey-start') return start(scene);
+      if (action === 'journey-start') return start(scene,state.chat?.sourcePostId||'');
+      if (action === 'chat-start') return startLightChat(scene);
       if (action === 'adopt') {
         const post = [...model.POSTS,...read().posts].find(item => item.id === id);
-        return start(scene || post?.scene || (post?.group === 'nursery' ? 'nursery' : post?.group === 'play' ? 'play' : 'screen'),id);
+        if(!post) throw new Error('没有找到这条经验');
+        return startLightChat('post',post);
       }
       if (action === 'journey-save-context') return context(id);
       if (action === 'relation') {
@@ -445,12 +473,12 @@ function installExperienceHome({read}) {
   renderHomeIdle = function() {
     return `<div class="xp-home"><section class="xp-home-hero"><div><small>小亲在这里</small><h1>今天想和我<br>聊聊吗？</h1><p>不用想好怎么说，<br>从此刻的感受开始就好。</p></div><img src="${ASSETS.mascotHome}" alt="小亲"></section>
       <nav class="xp-home-primary" aria-label="常用功能"><button data-action="route" data-route="growth"><b>成长记录</b><small>看看最近的变化</small>${svg.back}</button><button data-action="route" data-route="guides"><b>家长社区</b><small>听经历，也找方法</small>${svg.back}</button></nav>
-      <div class="xp-home-starters"><button data-action="start-scenario" data-scenario="homework"><i>${svg.conflict}</i><span><b>刚刚发生什么了？</b><small>从一件具体的事聊起</small></span>${svg.back}</button><button data-xp-action="journey-start" data-scene="self"><i>${svg.heart}</i><span><b>我有点情绪卡住了</b><small>先照顾此刻的自己</small></span>${svg.back}</button><button data-xp-action="journey-start" data-scene="repeat"><i>${svg.repeat}</i><span><b>这个问题总是反复</b><small>试着换一种回应</small></span>${svg.back}</button></div>
-      <div class="xp-home-light"><button data-xp-action="journey-start" data-scene="play">${svg.sprout} 今天怎么陪伴</button><button data-xp-action="route" data-route="experience/stages">${svg.guide} 阶段准备</button></div>
+      <div class="xp-home-starters"><button data-action="start-scenario" data-scenario="homework"><i>${svg.conflict}</i><span><b>刚刚发生什么了？</b><small>从一件具体的事聊起</small></span>${svg.back}</button><button data-xp-action="chat-start" data-scene="emotion"><i>${svg.heart}</i><span><b>我有点情绪卡住了</b><small>先聊聊，不急着做练习</small></span>${svg.back}</button><button data-xp-action="chat-start" data-scene="repeat"><i>${svg.repeat}</i><span><b>这个问题总是反复</b><small>先从最近一次聊起</small></span>${svg.back}</button></div>
+      <div class="xp-home-light"><button data-xp-action="chat-start" data-scene="play">${svg.sprout} 陪孩子一小段时间</button><button data-xp-action="route" data-route="experience/stages">${svg.guide} 阶段准备</button></div>
       <div class="xp-home-utilities"><button data-action="route" data-route="assessments">我的测评</button><span>·</span><button data-action="route" data-route="archive">家庭档案</button><span>·</span><button data-action="route" data-route="treasure-box">百宝箱</button></div></div>`;
   };
   renderComposer = function() {
-    return `<div class="composer xp-composer"><div class="composer-row"><button class="composer-btn" data-action="voice-start" aria-label="语音输入">${svg.mic}</button><div class="composer-input"><textarea id="chatInput" rows="1" placeholder="${state.chat.active ? '继续和小亲说…' : '和小亲说说…'}"></textarea></div><button class="composer-btn xp-tool-button" data-xp-action="tools" aria-label="打开亲子卡牌">${svg.sparkle}</button><button class="composer-btn" data-action="attachment-sheet" aria-label="添加附件">${svg.plus}</button><button class="composer-btn" id="chatSendBtn" data-action="chat-send" aria-label="发送">${svg.send}</button></div></div>`;
+    return `<div class="composer xp-composer"><div class="composer-row"><button class="composer-btn" data-action="voice-start" aria-label="语音输入">${svg.mic}</button><div class="composer-input"><textarea id="chatInput" rows="1" placeholder="${state.chat.active ? '继续和小亲说…' : '和小亲说说…'}"></textarea></div><button class="composer-btn xp-tool-button" data-xp-action="tools" aria-label="打开聊天工具">${svg.sparkle}</button><button class="composer-btn" data-action="attachment-sheet" aria-label="添加附件">${svg.plus}</button><button class="composer-btn" id="chatSendBtn" data-action="chat-send" aria-label="发送">${svg.send}</button></div></div>`;
   };
 }
 installExperience();
