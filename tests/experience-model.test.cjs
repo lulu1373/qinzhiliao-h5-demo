@@ -108,3 +108,15 @@ test('official news exposes verified source, dates, status and action steps', ()
   assert.ok(item.timeline.length>=1);
  }
 });
+
+
+test('owned posts can be edited and deleted without touching demo fixtures', () => {
+ const created=M.savePost({}, {id:'mine',title:'原标题',body:'原正文',group:'screen',postType:'dynamic',now:'2026-09-10T00:00:00Z'});
+ assert.equal(created.posts[0].authorId,'self'); assert.equal(created.posts[0].status,'published');
+ const edited=M.updatePost(created,'mine',{title:'新标题',body:'新正文',group:'play',postType:'question',now:'2026-09-10T01:00:00Z'});
+ assert.equal(edited.posts[0].title,'新标题'); assert.equal(edited.posts[0].group,'play'); assert.equal(edited.posts[0].updatedAt,'2026-09-10T01:00:00Z');
+ const commented=M.addComment(edited,{id:'mine-c',postId:'mine',body:'回应'}); const marked=M.toggle(M.toggle(commented,'saved','mine'),'liked','mine');
+ const noComment=M.deleteComment(marked,'mine-c'); assert.equal(noComment.comments.length,0);
+ const deleted=M.deletePost(marked,'mine'); assert.equal(deleted.posts.length,0); assert.deepEqual(deleted.saved,[]); assert.deepEqual(deleted.liked,[]); assert.equal(deleted.comments.length,0);
+ assert.throws(()=>M.updatePost({},'missing',{title:'x'})); assert.throws(()=>M.deletePost({},'missing')); assert.throws(()=>M.deleteComment({},'missing'));
+});

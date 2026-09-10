@@ -38,6 +38,35 @@ function installExperience() {
     if (page) page.scrollTop = top;
   }
   function go(route) { navigate(route); }
+  function encodeOrigin(origin){return encodeURIComponent(origin||'guides');}
+  function composeOrigin(route=currentRoute){
+    const base=routeBase(route), q=getQuery(route);
+    if(base.startsWith('experience/group/')) return base;
+    if(base==='experience/mine') return 'experience/mine';
+    if(base.startsWith('experience/post/')){
+      if(q.from==='group'&&q.group) return 'experience/group/'+q.group;
+      if(q.from==='mine') return 'experience/mine';
+    }
+    return 'guides';
+  }
+  function communityBackTarget(route){
+    const base=routeBase(route), q=getQuery(route);
+    if(base==='guides'||base==='experience/community') return 'home';
+    if(base==='experience/mine'||base.startsWith('experience/group/')||base.startsWith('experience/news/')) return 'guides';
+    if(base.startsWith('experience/post/')){
+      if(q.from==='group'&&q.group) return 'experience/group/'+q.group;
+      if(q.from==='mine') return 'experience/mine';
+      return 'guides';
+    }
+    if(base==='experience/compose') return q.origin||'guides';
+    if(base==='experience/preview') return 'experience/compose?origin='+encodeOrigin(q.origin||'guides');
+    return '';
+  }
+  function returnToOrigin(origin){
+    const target=origin||'guides';
+    if(routeStack.length&&routeStack[routeStack.length-1]===target&&history.length>1){history.back();return;}
+    navigate(target,{replace:true});
+  }
   function start(scene, originId = '') {
     const id = uid('journey');
     let data = model.start(read(),{id,scene,originId,now:now()});
@@ -66,7 +95,7 @@ function installExperience() {
           '<button class="primary-btn full-btn" data-xp-action="route" data-route="treasure-box" style="margin-top:14px">返回百宝箱</button>');
     }
     if (base === 'guides' || base.startsWith('experience/')) {
-      const data = read(), effective = base === 'guides' ? 'experience/community' : base;
+      const data = read(), effective = base === 'guides' ? 'experience/community' : route;
       if (effective.startsWith('experience/card/')) {
         const type = effective.split('/')[2];
         return window.QZLCardPractice?.render(type,data.cardDrafts?.[type] || {},esc) || originalRender('home');
@@ -128,11 +157,13 @@ function installExperience() {
     }));
   }
   function publish() {
-    const data = read(), draft = data.draft;
-    const id = draft.id || uid('post');
-    let next = model.savePost(data,{...draft,id,now:now()});
-    next = {...next,draft:{}};
-    commit(next); navigate('experience/post/' + id,{replace:true});
+    const data = read(), draft = data.draft, editing=!!draft.id;
+    const id = draft.id || uid('post'), origin=getQuery(currentRoute).origin||'guides';
+    let next = editing ? model.updatePost(data,id,{...draft,now:now()}) : model.savePost(data,{...draft,id,now:now()});
+    const ui={...next.ui};
+    if(origin==='guides'){ui.tab='dynamic';ui.filter='all';ui.query='';}
+    next = {...next,draft:{},ui};
+    commit(next); toast(editing?'修改已保存':'发布成功'); returnToOrigin(origin);
   }
   function card(type, patch) {
     const data = read();
@@ -186,8 +217,14 @@ function installExperience() {
           const previous = {support:'context',phrase:'support',action:'phrase',feedback:'action',done:journey?.ended ? 'support' : 'feedback'};
           patchJourney(journey.id,{step:previous[journey.step] || 'context'}); return refresh();
         }
-        if (routeBase(currentRoute) === 'guides' || routeBase(currentRoute) === 'experience/community') return goBack('home',true);
-        return goBack('guides');
+        const target=communityBackTarget(currentRoute);
+        if(target){
+          const q=getQuery(currentRoute);
+          if(routeBase(currentRoute).startsWith('experience/post/')&&q.from==='mine'&&q.tab){const data=read();commit({...data,ui:{...data.ui,mineTab:q.tab}});}
+          if(routeBase(currentRoute)==='experience/compose') return returnToOrigin(target);
+          return navigate(target,{replace:true});
+        }
+        return goBack('home');
       }
       if (action === 'tools') return toolsSheet();
       if (action === 'open-card') {
@@ -243,15 +280,31 @@ function installExperience() {
         commit(model.updateDraft(data,{postType:val}));
         return refresh(button.closest('.xp-page')?.scrollTop || 0);
       }
-      if (action === 'compose') return go('experience/compose');
-      if (action === 'edit-draft') return navigate('experience/compose',{replace:true});
+      if (action === 'compose') {const origin=composeOrigin();return go('experience/compose?origin='+encodeOrigin(origin));}
+      if (action === 'edit-draft') {const origin=getQuery(currentRoute).origin||'guides';return navigate('experience/compose?origin='+encodeOrigin(origin),{replace:true});}
+      if (action === 'resume-draft') return go('experience/compose?origin='+encodeOrigin('experience/mine'));
       if (action === 'draft-preview') {
         saveDraft();
         const data = read();
         model.savePost(data,{...data.draft,id:'validation-only',now:now()});
-        return navigate('experience/preview',{replace:true});
+        const origin=getQuery(currentRoute).origin||'guides'; return navigate('experience/preview?origin='+encodeOrigin(origin),{replace:true});
       }
       if (action === 'draft-publish') return publish();
+      if (action === 'mine-tab') {const data=read();commit({...data,ui:{...data.ui,mineTab:val}});return refresh();}
+      if (action === 'edit-post') {
+        const data=read(), post=data.posts.find(p=>p.id===id&&(p.local||p.authorId==='self'));
+        if(!post) throw new Error('没有找到可编辑的帖子');
+        const origin=composeOrigin();
+        commit({...data,draft:{id:post.id,title:post.title,body:post.body,group:post.group,postType:post.postType||'dynamic',stage:post.stage||'',topic:post.topic||'',images:[...(post.images||[])]}});
+        return navigate('experience/compose?origin='+encodeOrigin(origin),{replace:true});
+      }
+      if (action === 'delete-post') {
+        const origin=composeOrigin();
+        showConfirm('删除这条帖子？','删除后，这条帖子和你在其中留下的本机回应都会移除。',()=>{try{commit(model.deletePost(read(),id));toast('帖子已删除');navigate(origin,{replace:true});}catch(error){showError(error);}});return;
+      }
+      if (action === 'delete-comment') {
+        showConfirm('删除这条回应？','删除后无法恢复。',()=>{try{commit(model.deleteComment(read(),id));toast('回应已删除');refresh();}catch(error){showError(error);}});return;
+      }
       if (action === 'save-post' || action === 'like-post' || action === 'join') {
         const field = action === 'join' ? 'joined' : action === 'like-post' ? 'liked' : 'saved';
         commit(model.toggle(read(),field,id));

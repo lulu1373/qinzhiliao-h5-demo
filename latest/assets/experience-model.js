@@ -132,8 +132,34 @@
     const storedImageBytes = data.posts.reduce((total,item)=>total+(Array.isArray(item.images)?item.images.reduce((sum,image)=>sum+(typeof image==='string'?image.length:0),0):0),0);
     if (storedImageBytes + safeImages.reduce((total,image)=>total+image.length,0) > 3600000) throw new Error('本机图片空间已满，请减少图片后再发布');
     const postType = ['dynamic','question','method'].includes(input.postType) ? input.postType : 'dynamic';
-    const post = { id, title:text(input.title,'标题',60), body:text(input.body,'正文',2000), group, scene:group, author:'我的本机记录', kind:postType==='method'?'method':'experience', postType, stage:text(input.stage,'阶段',20,true), topic:text(input.topic,'话题',30,true), images:safeImages, likeCount:0, commentCount:0, demo:true, local:true, createdAt:input.now || new Date().toISOString(), publishedLabel:'刚刚' };
+    const post = { id, title:text(input.title,'标题',60), body:text(input.body,'正文',2000), group, scene:group, author:'我的本机记录', authorId:'self', kind:postType==='method'?'method':'experience', postType, stage:text(input.stage,'阶段',20,true), topic:text(input.topic,'话题',30,true), images:safeImages, likeCount:0, commentCount:0, demo:true, local:true, status:'published', createdAt:input.now || new Date().toISOString(), updatedAt:null, publishedLabel:'刚刚' };
     return {...data, posts:[post,...data.posts]};
+  }
+  function updatePost(raw, id, patch) {
+    const data = normalize(raw), input = object(patch), key = text(id,'帖子编号',120);
+    const current = data.posts.find(p=>p.id===key && (p.local || p.authorId==='self'));
+    if (!current) throw new Error('没有找到可编辑的帖子');
+    const group = input.group ?? current.group;
+    if (!GROUPS.some(g=>g.id===group)) throw new Error('请选择一个小组');
+    const postType = ['dynamic','question','method'].includes(input.postType) ? input.postType : current.postType || 'dynamic';
+    const images = input.images===undefined ? (current.images||[]) : input.images;
+    if (!Array.isArray(images) || images.length > 9) throw new Error('最多选择9张图片');
+    const safeImages = images.map(image => {
+      if (typeof image !== 'string' || !/^data:image\/(?:png|jpeg|webp);base64,[a-z0-9+/=]+$/i.test(image) || image.length > 520000) throw new Error('图片格式不支持或文件过大');
+      return image;
+    });
+    const updated = {...current,title:text(input.title ?? current.title,'标题',60),body:text(input.body ?? current.body,'正文',2000),group,scene:group,postType,kind:postType==='method'?'method':'experience',stage:text(input.stage ?? current.stage,'阶段',20,true),topic:text(input.topic ?? current.topic,'话题',30,true),images:safeImages,authorId:'self',local:true,status:'published',updatedAt:input.now || new Date().toISOString()};
+    return {...data,posts:data.posts.map(p=>p.id===key?updated:p)};
+  }
+  function deletePost(raw, id) {
+    const data=normalize(raw), key=text(id,'帖子编号',120);
+    if(!data.posts.some(p=>p.id===key && (p.local || p.authorId==='self'))) throw new Error('没有找到可删除的帖子');
+    return {...data,posts:data.posts.filter(p=>p.id!==key),comments:data.comments.filter(c=>c.postId!==key),saved:data.saved.filter(x=>x!==key),liked:data.liked.filter(x=>x!==key)};
+  }
+  function deleteComment(raw, id) {
+    const data=normalize(raw), key=text(id,'评论编号',120);
+    if(!data.comments.some(c=>c.id===key)) throw new Error('没有找到这条回应');
+    return {...data,comments:data.comments.filter(c=>c.id!==key)};
   }
   function addComment(raw, options) {
     const data = normalize(raw), input = object(options), id = text(input.id,'评论编号',120);
@@ -155,5 +181,5 @@
     if (relationship==='自己') return { title:input.scene==='play'?'留十五分钟给自己':'先做一件照顾自己的小事', why:'让行动从自己能决定的范围开始，不要求立刻改变感受。', script:scene.phrases.自己[0], observe:'记录做了什么、当时什么感受，没做也可以如实写下。' };
     return { title:relationship==='伴侣'?'约一小段双方方便的时间':'先征询意愿，再谈一件具体的事', why:relationship==='伴侣'?'把分工和需要放到平等的讨论里。':'尊重彼此的经验和选择，先确认是否愿意讨论。', script:scene.phrases[relationship][0], observe:'记录双方是否愿意继续、共同确认了什么，也可以暂时没有共识。' };
   }
-  return { normalize, start, patchJourney, savePost, addComment, toggle, updateDraft, actionFor, SCENES, POSTS, OFFICIAL_NEWS, GROUPS, STAGES };
+  return { normalize, start, patchJourney, savePost, updatePost, deletePost, addComment, deleteComment, toggle, updateDraft, actionFor, SCENES, POSTS, OFFICIAL_NEWS, GROUPS, STAGES };
 });

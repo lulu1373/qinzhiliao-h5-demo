@@ -45,13 +45,23 @@ test('community V2 exposes family context, social proof and chip-based publishin
  assert.match(compose,/id="xpStage"/); assert.match(compose,/小学高年级/);
 });
 
-test('publishing treats compose preview as transient so Back returns to community',()=>{
+test('publishing uses a community transaction and returns to its origin feed',()=>{
  const controller=fs.readFileSync(path.join(__dirname,'../assets/experience-controller.js'),'utf8');
- assert.match(controller,/navigate\('experience\/preview',\{replace:true\}\)/);
- assert.match(controller,/navigate\('experience\/post\/' \+ id,\{replace:true\}\)/);
- const preview=view.render('experience/preview',ctx({data:{draft:{title:'返回测试',body:'验证返回社区'}}}));
+ assert.match(controller,/communityBackTarget/); assert.match(controller,/returnToOrigin\(origin\)/);
+ assert.match(controller,/experience\/preview\?origin=/); assert.doesNotMatch(controller,/navigate\('experience\/post\/' \+ id/);
+ const preview=view.render('experience/preview?origin=guides',ctx({data:{draft:{title:'返回测试',body:'验证返回社区'}}}));
  assert.match(preview,/data-xp-action="edit-draft"/);
- assert.doesNotMatch(preview,/data-route="experience\/compose"/);
+});
+
+test('my community manages posts, saves, responses and likes in one page',()=>{
+ const real=require('../assets/experience-model.js');
+ const minePost=real.savePost({}, {id:'mine-1',title:'我的帖子',body:'这是我发布的内容',group:'screen',stage:'小学高年级'}).posts[0];
+ const data={posts:[minePost],saved:['p1'],liked:['p4'],comments:[{id:'c1',postId:'p1',body:'我的回应'}],joined:['screen'],draft:{title:'还没发'},ui:{mineTab:'published'}};
+ const html=view.render('experience/mine',ctx({model:real,data}));
+ assert.match(html,/我的社区/); assert.match(html,/我的发布/); assert.match(html,/收藏/); assert.match(html,/回应/); assert.match(html,/同感/);
+ assert.match(html,/我的帖子/); assert.match(html,/data-xp-action="edit-post"/); assert.match(html,/data-xp-action="delete-post"/); assert.match(html,/草稿箱/);
+ const comments=view.render('experience/mine',ctx({model:real,data:{...data,ui:{mineTab:'comments'}}}));
+ assert.match(comments,/我的回应/); assert.match(comments,/data-xp-action="delete-comment"/); assert.match(comments,/from=mine/);
 });
 
 test('composer supports local image selection, preview and removal',()=>{
