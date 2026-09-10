@@ -4435,6 +4435,15 @@ html,body,#app{background:var(--qzl-canvas)!important;}
 .sheet-option,.settings-group,.message-panel,.feedback-list,.feedback-block,.profile-list,.order-card{background:rgba(255,255,255,.92)!important;}
 .composer{background:linear-gradient(180deg,rgba(248,245,241,0),rgba(248,245,241,.90) 34%,rgba(248,245,241,.97) 100%)!important;}
 </style>
+<style id="v94-chat-grid-alignment">
+/* V9.4 — deterministic two-column alignment for continuous AI conversation. */
+.v36-conversation .message-line.ai{display:grid!important;grid-template-columns:38px minmax(0,1fr)!important;column-gap:10px!important;align-items:start!important;padding-right:10px!important;}
+.v36-conversation .message-line.ai>.ai-avatar{grid-column:1!important;grid-row:1!important;align-self:start!important;margin:0!important;}
+.v36-conversation .message-line.ai>.message-stack{grid-column:2!important;grid-row:1!important;width:100%!important;max-width:none!important;min-width:0!important;align-items:flex-start!important;}
+.v36-conversation .message-line.ai .message-tools{padding-left:0!important;margin:6px 0 0!important;align-self:flex-start!important;}
+.v36-conversation .message-line.ai .chat-message{margin:0!important;}
+.v36-conversation .message-line.user .chat-message{margin:0!important;}
+</style>
 </head><body><div id="app" aria-live="polite"></div><script src="assets/growth-report-model.js?v=c66b2046b7"></script>
 <script src="assets/growth-report-view.js?v=9e5a405290"></script>
 <script src="assets/growth-milestone-model.js?v=0a4020d2bc"></script>
