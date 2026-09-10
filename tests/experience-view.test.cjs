@@ -62,6 +62,13 @@ test('my community manages posts, saves, responses and likes in one page',()=>{
  assert.match(html,/我的帖子/); assert.match(html,/data-xp-action="edit-post"/); assert.match(html,/data-xp-action="delete-post"/); assert.match(html,/草稿箱/);
  const comments=view.render('experience/mine',ctx({model:real,data:{...data,ui:{mineTab:'comments'}}}));
  assert.match(comments,/我的回应/); assert.match(comments,/data-xp-action="delete-comment"/); assert.match(comments,/from=mine/);
+ assert.match(html,/data-route="experience\/mine\/groups"/); assert.match(html,/data-route="experience\/mine\/drafts"/);
+ const groups=view.render('experience/mine/groups',ctx({model:real,data}));
+ assert.match(groups,/我加入的小组/); assert.match(groups,/屏幕与规则/); assert.match(groups,/from=mine-groups/);
+ const drafts=view.render('experience/mine/drafts',ctx({model:real,data}));
+ assert.match(drafts,/草稿箱/); assert.match(drafts,/还没发/); assert.match(drafts,/data-xp-action="resume-draft"/); assert.match(drafts,/data-xp-action="clear-draft"/);
+ const emptyDraft=view.render('experience/mine/drafts',ctx({model:real,data:{...data,draft:{}}}));
+ assert.match(emptyDraft,/暂无草稿/); assert.match(emptyDraft,/data-xp-action="compose"/);
 });
 
 test('composer supports local image selection, preview and removal',()=>{

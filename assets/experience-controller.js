@@ -41,10 +41,10 @@ function installExperience() {
   function encodeOrigin(origin){return encodeURIComponent(origin||'guides');}
   function composeOrigin(route=currentRoute){
     const base=routeBase(route), q=getQuery(route);
-    if(base.startsWith('experience/group/')) return base;
-    if(base==='experience/mine') return 'experience/mine';
+    if(base.startsWith('experience/group/')) return base+(q.from==='mine-groups'?'?from=mine-groups':'');
+    if(base.startsWith('experience/mine')) return base;
     if(base.startsWith('experience/post/')){
-      if(q.from==='group'&&q.group) return 'experience/group/'+q.group;
+      if(q.from==='group'&&q.group) return 'experience/group/'+q.group+(q.groupFrom==='mine-groups'?'?from=mine-groups':'');
       if(q.from==='mine') return 'experience/mine';
     }
     return 'guides';
@@ -52,9 +52,12 @@ function installExperience() {
   function communityBackTarget(route){
     const base=routeBase(route), q=getQuery(route);
     if(base==='guides'||base==='experience/community') return 'home';
-    if(base==='experience/mine'||base.startsWith('experience/group/')||base.startsWith('experience/news/')) return 'guides';
+    if(base==='experience/mine') return 'guides';
+    if(base.startsWith('experience/mine/')) return 'experience/mine';
+    if(base.startsWith('experience/group/')) return q.from==='mine-groups'?'experience/mine/groups':'guides';
+    if(base.startsWith('experience/news/')) return 'guides';
     if(base.startsWith('experience/post/')){
-      if(q.from==='group'&&q.group) return 'experience/group/'+q.group;
+      if(q.from==='group'&&q.group) return 'experience/group/'+q.group+(q.groupFrom==='mine-groups'?'?from=mine-groups':'');
       if(q.from==='mine') return 'experience/mine';
       return 'guides';
     }
@@ -161,9 +164,11 @@ function installExperience() {
     const id = draft.id || uid('post'), origin=getQuery(currentRoute).origin||'guides';
     let next = editing ? model.updatePost(data,id,{...draft,now:now()}) : model.savePost(data,{...draft,id,now:now()});
     const ui={...next.ui};
+    let target=origin;
     if(origin==='guides'){ui.tab='dynamic';ui.filter='all';ui.query='';}
+    if(origin==='experience/mine/drafts'){ui.mineTab='published';target='experience/mine';}
     next = {...next,draft:{},ui};
-    commit(next); toast(editing?'修改已保存':'发布成功'); returnToOrigin(origin);
+    commit(next); toast(editing?'修改已保存':'发布成功'); returnToOrigin(target);
   }
   function card(type, patch) {
     const data = read();
@@ -282,7 +287,8 @@ function installExperience() {
       }
       if (action === 'compose') {const origin=composeOrigin();return go('experience/compose?origin='+encodeOrigin(origin));}
       if (action === 'edit-draft') {const origin=getQuery(currentRoute).origin||'guides';return navigate('experience/compose?origin='+encodeOrigin(origin),{replace:true});}
-      if (action === 'resume-draft') return go('experience/compose?origin='+encodeOrigin('experience/mine'));
+      if (action === 'resume-draft') return go('experience/compose?origin='+encodeOrigin(routeBase(currentRoute)==='experience/mine/drafts'?'experience/mine/drafts':'experience/mine'));
+      if (action === 'clear-draft') {showConfirm('删除这条草稿？','删除后无法恢复。',()=>{const data=read();commit({...data,draft:{}});toast('草稿已删除');refresh();});return;}
       if (action === 'draft-preview') {
         saveDraft();
         const data = read();
