@@ -89,7 +89,8 @@ class ExperienceTests(unittest.TestCase):
         self.page.goto(self.url + '?quickbar=post#/experience/post/p1', wait_until='networkidle')
         self.page.wait_for_selector('[data-xp-action="adopt"]:visible')
         self.xp('adopt')
-        self.page.wait_for_selector('.v36-conversation.active')
+        self.page.wait_for_function("JSON.parse(localStorage.getItem('qzl-h5-app-demo-v3-state')).chat.sourcePostId === 'p1'")
+        self.page.wait_for_function("document.querySelector('.v36-conversation')?.innerText.includes('先约好怎么结束')")
         self.assertIn('先约好怎么结束', self.page.locator('.v36-conversation').inner_text())
         self.assertEqual(self.page.locator('#xpDescription').count(), 0)
         pills=self.page.locator('.v90-card-pill:visible')
@@ -283,6 +284,25 @@ class ExperienceTests(unittest.TestCase):
         self.assertIsNone(journeys[-1]['actionId'])
         after = [a for a in self.stored()['actions'] if a['id'] == before['id']][0]
         self.assertEqual(after, before)
+
+    def test_message_helpful_is_visual_toggle_and_persists_on_the_message(self):
+        self.page.goto(self.url + '#/home')
+        self.page.locator('[data-action="start-scenario"][data-scenario="homework"]').click()
+        self.page.wait_for_selector('.message-helpful-btn:visible')
+        heart=self.page.locator('.message-helpful-btn:visible')
+        self.assertEqual(heart.get_attribute('aria-pressed'), 'false')
+        heart.click()
+        self.assertEqual(self.page.locator('.message-helpful-btn.is-helpful:visible').count(), 1)
+        self.assertTrue(self.stored()['chat']['messages'][-1].get('helpful'))
+        self.assertTrue(bool(self.stored()['chat']['messages'][-1].get('helpfulAt')))
+        self.assertEqual(len(self.stored().get('chatFeedbacks', [])), 1)
+        self.assertEqual(self.stored()['chatFeedbacks'][0]['kind'], 'helpful')
+        self.page.reload(wait_until='networkidle')
+        self.assertEqual(self.page.locator('.message-helpful-btn.is-helpful:visible').count(), 1)
+        self.page.locator('#chatInput').fill('我想再补充一点。')
+        self.page.locator('[data-action="chat-send"]').click()
+        self.page.wait_for_selector('.message-helpful-mark')
+        self.assertGreaterEqual(self.page.locator('.message-helpful-mark').count(), 1)
 
     def test_mobile_routes_fit_and_forms_remain_reachable(self):
         for width in (360, 390, 430):

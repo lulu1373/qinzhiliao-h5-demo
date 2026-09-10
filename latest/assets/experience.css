@@ -142,3 +142,9 @@
 .xp-mine-tab.is-active:after{background:#59616c!important}.xp-mine-actions .xp-link{color:var(--xp-blue)!important}.xp-draft-meta span{background:#f2f4f7!important;color:#59616c!important}
 @media(prefers-reduced-motion:reduce){.xp-social-like,.xp-social-save,.xp-social-reply{transition:none!important}}
 .xp-page:has(.xp-community-hero) .xp-header-action{width:auto!important;min-width:58px;padding:0 3px!important;white-space:nowrap!important;font-size:13px!important;gap:4px!important}
+
+/* Message feedback: persistent per-message helpful state. */
+.message-tools .message-helpful-btn.is-helpful{color:#E57A72!important;background:#FFF0EE!important}
+.message-tools .message-helpful-btn.is-helpful svg{fill:currentColor!important;stroke:currentColor!important}
+.message-helpful-mark{width:28px;height:28px;margin-top:4px;display:grid;place-items:center;color:#E57A72}
+.message-helpful-mark svg{width:16px!important;height:16px!important;fill:currentColor!important;stroke:currentColor!important}

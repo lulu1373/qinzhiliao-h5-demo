@@ -4393,7 +4393,7 @@ svg{vertical-align:middle}
 .qzl-home-layout button:focus-visible{outline:2px solid var(--green);outline-offset:3px}
 @media(max-width:374px){.qzl-home-layout{padding-left:12px;padding-right:12px}.qzl-home-primary{gap:10px}.qzl-home-primary>button{padding-left:13px;padding-right:13px}.qzl-home-primary b{font-size:17px}}
 </style>
-<link rel="stylesheet" href="assets/growth-report.css?v=51e3e566e1"><link rel="stylesheet" href="assets/growth-milestone.css?v=a067d8629a"><link rel="stylesheet" href="assets/experience.css?v=a70cf70902"><link rel="stylesheet" href="assets/experience-home.css?v=06b7234bae"><link rel="stylesheet" href="assets/card-practice.css?v=b565f79b67"><style id="v92-one-canvas">
+<link rel="stylesheet" href="assets/growth-report.css?v=51e3e566e1"><link rel="stylesheet" href="assets/growth-milestone.css?v=a067d8629a"><link rel="stylesheet" href="assets/experience.css?v=aa3a4e8b5f"><link rel="stylesheet" href="assets/experience-home.css?v=06b7234bae"><link rel="stylesheet" href="assets/card-practice.css?v=b565f79b67"><style id="v92-one-canvas">
 /* V9.2 / Visual V5 — one continuous atmospheric canvas behind the whole app. */
 :root{--qzl-canvas:#F8F5F1;--qzl-canvas-2:#F6F5F1;--qzl-card:rgba(255,255,255,.92);--qzl-card-border:rgba(255,255,255,.88);}
 html,body,#app{background:var(--qzl-canvas)!important;}
@@ -4635,6 +4635,7 @@ const DEFAULT_STATE={
   feedback:{type:'',text:'',contact:'',image:true},
   tasks:{tab:'pending'},
   messages:{readIds:['assessment-resume']},
+  chatFeedbacks:[],
   debug:false
 };
 
@@ -5228,7 +5229,9 @@ function renderConversationItem(m,index,total){
   if(m.kind==='action-saved'){
     return `<div class="action-card v36-persisted-card saved">${renderSavedActionBody(!!m.alt)}<div class="v36-confirmed-state">${svg.check}<span>已加入成长总结</span></div></div>`;
   }
-  return `<div class="message-line ${m.role}">${m.role==='ai'?`<span class="ai-avatar"><img src="${ASSETS.mascotAvatar}" alt="小亲"></span>`:''}<div class="message-stack"><div class="chat-message ${m.role}">${m.html}${m.time?`<small>${m.time}</small>`:''}</div>${m.role==='ai'&&index===total-1?`<div class="message-tools"><button aria-label="复制" data-action="message-copy">${svg.file}</button><button aria-label="有帮助" data-action="message-helpful">${svg.heart}</button><button aria-label="重新生成" data-action="message-regenerate">${svg.repeat}</button></div>`:''}</div></div>`;
+  const latestAi=m.role==='ai'&&index===total-1;
+  const helpfulMark=m.role==='ai'&&m.helpful&&!latestAi?`<span class="message-helpful-mark" aria-label="这条回复已标记为有帮助">${svg.heart}</span>`:'';
+  return `<div class="message-line ${m.role}">${m.role==='ai'?`<span class="ai-avatar"><img src="${ASSETS.mascotAvatar}" alt="小亲"></span>`:''}<div class="message-stack"><div class="chat-message ${m.role}">${m.html}${m.time?`<small>${m.time}</small>`:''}</div>${latestAi?`<div class="message-tools"><button aria-label="复制" data-action="message-copy">${svg.file}</button><button class="message-helpful-btn ${m.helpful?'is-helpful':''}" aria-label="${m.helpful?'取消有帮助':'标记这条回复有帮助'}" aria-pressed="${m.helpful?'true':'false'}" data-action="message-helpful" data-message-index="${index}">${svg.heart}</button><button aria-label="重新生成" data-action="message-regenerate">${svg.repeat}</button></div>`:helpfulMark}</div></div>`;
 }
 function renderChat(){
   const c=state.chat;
@@ -5994,7 +5997,24 @@ function handleClick(e){
   else if(action==='voice-start')startVoiceMock();
   else if(action==='scroll-latest')scrollLatest();
   else if(action==='message-copy'){navigator.clipboard?.writeText(document.querySelector('.message-line.ai:last-of-type .chat-message')?.innerText||'').catch(()=>{});toast('已复制小亲的回复');}
-  else if(action==='message-helpful')toast('已记录：这条回复有帮助');
+  else if(action==='message-helpful'){
+    const index=Number(el.dataset.messageIndex);
+    const message=state.chat.messages?.[index];
+    if(message?.role==='ai'){
+      const feedbackId=message.feedbackId||uid('msgfb');
+      const feedbackAt=new Date().toISOString();
+      message.feedbackId=feedbackId;
+      message.helpful=!message.helpful;
+      message.helpfulAt=message.helpful?feedbackAt:'';
+      const existing=Array.isArray(state.chatFeedbacks)?state.chatFeedbacks:[];
+      state.chatFeedbacks=message.helpful
+        ?[...existing.filter(item=>item.id!==feedbackId),{id:feedbackId,conversationId:state.chat.conversationId||'',kind:'helpful',createdAt:feedbackAt}]
+        :existing.filter(item=>item.id!==feedbackId);
+      saveState();
+      refreshConversation({scroll:'auto'});
+      toast(message.helpful?'已标记为有帮助':'已取消标记');
+    }
+  }
   else if(action==='message-regenerate'){toast('小亲正在重新整理');scheduleAI('我换一种更清楚的方式说：先不用判断谁对谁错，我们只看刚才压力是怎样一步步升高的。',state.chat.node||'done',320);}
   else if(action==='growth-weekly'||action==='weekly-to-chat'){if(action==='growth-weekly')selectGrowthView('week');else weeklyToChat();}
   else if(action==='growth-view')selectGrowthView(el.dataset.value||'week');
