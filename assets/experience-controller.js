@@ -316,12 +316,16 @@ function installExperience() {
         showConfirm('删除这条帖子？','删除后，这条帖子和你在其中留下的本机回应都会移除。',()=>{try{commit(model.deletePost(read(),id));toast('帖子已删除');navigate(origin,{replace:true});}catch(error){showError(error);}});return;
       }
       if (action === 'delete-comment') {
-        showConfirm('删除这条回应？','删除后无法恢复。',()=>{try{commit(model.deleteComment(read(),id));toast('回应已删除');refresh();}catch(error){showError(error);}});return;
+        showConfirm('删除这条回复？','删除后无法恢复。',()=>{try{commit(model.deleteComment(read(),id));toast('回复已删除');refresh();}catch(error){showError(error);}});return;
       }
       if (action === 'save-post' || action === 'like-post' || action === 'join') {
         const field = action === 'join' ? 'joined' : action === 'like-post' ? 'liked' : 'saved';
-        commit(model.toggle(read(),field,id));
-        return refresh(button.closest('.xp-page')?.scrollTop || 0);
+        const before=read(), wasOn=Array.isArray(before[field])&&before[field].includes(id);
+        commit(model.toggle(before,field,id));
+        const top=button.closest('.xp-page')?.scrollTop || 0; refresh(top);
+        if(action==='save-post') toast(wasOn?'已取消收藏':'已收藏');
+        else if(action==='join') toast(wasOn?'已退出小组':'已加入小组');
+        return;
       }
       if (action === 'remove-image') {
         saveDraft();
@@ -329,13 +333,19 @@ function installExperience() {
         commit(model.updateDraft(data,{images:images.filter((_,index)=>index!==Number(val))}));
         return refresh(button.closest('.xp-page')?.scrollTop || 0);
       }
+      if (action === 'focus-reply') {
+        const input=document.getElementById('xpComment');
+        input?.scrollIntoView({behavior:'smooth',block:'center'});
+        setTimeout(()=>input?.focus({preventScroll:true}),180);
+        return;
+      }
       if (action === 'comment') {
         const body=value('xpComment').trim();
         if(!body){document.getElementById('xpComment')?.focus();return;}
         const commentId=uid('comment'),top=button.closest('.xp-page')?.scrollTop||0;
         const next = model.addComment(read(),{id:commentId,postId:id,body,now:now()});
         commit({...next,commentDrafts:{...next.commentDrafts,[id]:''}});
-        toast('回应已发送'); refresh(top);
+        toast('回复已发送'); refresh(top);
         requestAnimationFrame(()=>setTimeout(()=>{
           const node=document.querySelector(`[data-comment-id="${commentId}"]`);
           node?.scrollIntoView({block:'center',behavior:'smooth'});

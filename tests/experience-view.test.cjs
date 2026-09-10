@@ -11,7 +11,7 @@ test('community back button keeps its 44px touch target without a persistent cir
   assert.match(css,/\.xp-back,\.xp-header-spacer\{width:44px;height:44px/);
   assert.match(css,/\.xp-back:hover\{background:transparent\}/);
 });
-test('community offers a Douban-inspired dynamic stream and three navigation tabs',()=>{const real=require('../assets/experience-model.js');const html=view.render('experience/community',ctx({model:real}));assert.match(html,/家长社区/);assert.match(html,/data-value="dynamic"/);assert.match(html,/data-value="groups"/);assert.match(html,/data-value="news"/);assert.match(html,/data-xp-action="like-post"/);assert.match(html,/data-xp-action="save-post"/);assert.match(html,/xp-story-media/);assert.match(html,/热门回应/);});
+test('community offers a Douban-inspired dynamic stream and three navigation tabs',()=>{const real=require('../assets/experience-model.js');const html=view.render('experience/community',ctx({model:real}));assert.match(html,/家长社区/);assert.match(html,/data-value="dynamic"/);assert.match(html,/data-value="groups"/);assert.match(html,/data-value="news"/);assert.match(html,/data-xp-action="like-post"/);assert.match(html,/data-xp-action="save-post"/);assert.match(html,/xp-story-media/);assert.match(html,/热门回复/); assert.match(html,/xp-social-label">点赞/); assert.match(html,/xp-social-label">回复/);});
 test('post details preserve author story and provide adoption and local comments',()=>{const html=view.render('experience/post/p1',ctx());assert.match(html,/我家也遇到类似问题/);assert.match(html,/结合我家情况问小亲/);assert.match(html,/data-xp-action="adopt"/);assert.match(html,/id="xpComment"/);});
 test('user supplied draft and comments cannot inject markup',()=>{const data={posts:[],comments:[{postId:'p1',body:'<img onerror="bad()">'}],saved:[],joined:[],draft:{title:'<script>bad()</script>',body:'<img src=x>'},ui:{}};assert.doesNotMatch(view.render('experience/preview',ctx({data})),/<script>/);assert.doesNotMatch(view.render('experience/post/p1',ctx({data})),/<img onerror/);});
 test('all journey steps render deliberate next steps and exits',()=>{for(const step of ['context','support','phrase','action','feedback','done']){const html=view.render('experience/journey/j1',ctx({journey:{id:'j1',scene:'screen',step,description:'昨晚吵了一架'}}));assert.match(html,/data-xp-action=/);assert.ok(html.length>400,step);assert.doesNotMatch(html,/undefined|null/);}});
@@ -37,7 +37,7 @@ test('news tab renders official utility cards and a sourced detail page',()=>{
 test('community V2 exposes family context, social proof and chip-based publishing',()=>{
  const real=require('../assets/experience-model.js');
  const feed=view.render('experience/community',ctx({model:real,data:{ui:{tab:'dynamic'}}}));
- assert.match(feed,/小禾妈妈/); assert.match(feed,/广州 · 10岁男孩 · 四年级/); assert.match(feed,/同感 <span>86<\/span>/);
+ assert.match(feed,/小禾妈妈/); assert.match(feed,/广州 · 10岁男孩 · 四年级/); assert.match(feed,/xp-social-label">点赞<\/span><span class="xp-social-count">86/);
  const groups=view.render('experience/community',ctx({model:real,data:{ui:{tab:'groups'}}}));
  assert.match(groups,/1,286 位家长/); assert.match(groups,/今天 23 条新讨论/); assert.match(groups,/最近在聊/);
  const compose=view.render('experience/compose',ctx({model:real,data:{draft:{postType:'question'}}}));
@@ -58,10 +58,10 @@ test('my community manages posts, saves, responses and likes in one page',()=>{
  const minePost=real.savePost({}, {id:'mine-1',title:'我的帖子',body:'这是我发布的内容',group:'screen',stage:'小学高年级'}).posts[0];
  const data={posts:[minePost],saved:['p1'],liked:['p4'],comments:[{id:'c1',postId:'p1',body:'我的回应'}],joined:['screen'],draft:{title:'还没发'},ui:{mineTab:'published'}};
  const html=view.render('experience/mine',ctx({model:real,data}));
- assert.match(html,/我的社区/); assert.match(html,/我的发布/); assert.match(html,/收藏/); assert.match(html,/回应/); assert.match(html,/同感/);
+ assert.match(html,/我的社区/); assert.match(html,/我的发布/); assert.match(html,/收藏/); assert.match(html,/回复/); assert.match(html,/点赞/);
  assert.match(html,/我的帖子/); assert.match(html,/data-xp-action="edit-post"/); assert.match(html,/data-xp-action="delete-post"/); assert.match(html,/草稿箱/);
  const comments=view.render('experience/mine',ctx({model:real,data:{...data,ui:{mineTab:'comments'}}}));
- assert.match(comments,/我的回应/); assert.match(comments,/data-xp-action="delete-comment"/); assert.match(comments,/from=mine/);
+ assert.match(comments,/我回复了/); assert.match(comments,/data-xp-action="delete-comment"/); assert.match(comments,/from=mine/);
  assert.match(html,/data-route="experience\/mine\/groups"/); assert.match(html,/data-route="experience\/mine\/drafts"/);
  const groups=view.render('experience/mine/groups',ctx({model:real,data}));
  assert.match(groups,/我加入的小组/); assert.match(groups,/屏幕与规则/); assert.match(groups,/from=mine-groups/);
@@ -100,6 +100,18 @@ test('community reply action enters focused reply mode and uses send language',(
   const detail=view.render('experience/post/p1',ctx({model:real}));
   assert.match(detail,/class="xp-reply-send"/);
   assert.match(detail,/>发送<\/button>/);
-  assert.match(detail,/回应 <small>12<\/small>/);
-  assert.doesNotMatch(detail,/保存回应/);
+  assert.match(detail,/回复 <small>12<\/small>/);
+  assert.doesNotMatch(detail,/保存回应/); assert.match(detail,/data-xp-action="focus-reply"/); assert.match(detail,/xp-social-label">收藏/);
+});
+
+test('community social actions use explicit icons and visible active states',()=>{
+  const real=require('../assets/experience-model.js');
+  const data={posts:[],comments:[],saved:['p1'],liked:['p1'],joined:[],draft:{},ui:{tab:'dynamic'}};
+  const feed=view.render('experience/community',ctx({model:real,data}));
+  assert.match(feed,/xp-social-label">点赞/);
+  assert.match(feed,/xp-social-label">回复/);
+  assert.match(feed,/xp-social-label">已收藏/);
+  assert.match(feed,/fill="currentColor"/);
+  assert.match(feed,/class="xp-header-icon-action"[^>]*aria-label="发布"|aria-label="发布"[^>]*class="xp-header-icon-action"/);
+  assert.doesNotMatch(feed,/xp-compose-fab/);
 });

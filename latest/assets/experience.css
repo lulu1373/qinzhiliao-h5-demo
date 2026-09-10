@@ -103,3 +103,24 @@
 .xp-comment-head span{font-size:11px;color:#5b8a63;background:#ecf5ee;border-radius:10px;padding:2px 7px}
 .xp-comment-mine.is-new{animation:xp-reply-flash .9s ease}
 @keyframes xp-reply-flash{0%,35%{background:rgba(236,245,238,.8)}100%{background:transparent}}
+
+/* Community Social Action System V1 */
+.xp-story-actions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;padding-top:8px;border-top:1px solid #eef0f2}
+.xp-social{min-height:44px;padding:0 8px;border:0;border-radius:12px;background:transparent;color:#6b7280;display:inline-flex;align-items:center;justify-content:center;gap:5px;font-size:13px;font-weight:550;transition:transform .12s ease,background-color .16s ease,color .16s ease}
+.xp-social .xp-action-icon{width:20px;height:20px;flex:none;stroke-width:1.8}
+.xp-social-label{white-space:nowrap}.xp-social-count{color:#9ca3af;font-weight:450;font-variant-numeric:tabular-nums}
+.xp-social:active{transform:scale(.96);background:rgba(55,65,81,.055)}
+.xp-social.is-active{background:rgba(91,138,99,.10);color:#5b8a63}
+.xp-social.is-active .xp-social-count{color:#5b8a63}.xp-social.is-active .xp-action-icon{animation:xp-social-pop .28s cubic-bezier(.2,.9,.35,1.35)}
+@keyframes xp-social-pop{0%{transform:scale(.82)}55%{transform:scale(1.22)}100%{transform:scale(1)}}
+.xp-social-detail{margin-top:16px!important;padding-top:10px!important}.xp-social-detail .xp-social{min-height:46px}
+.xp-compose-fab .xp-action-icon{width:22px;height:22px;stroke-width:2}.xp-compose-fab:active{transform:scale(.94)}
+.xp-group-toolbar .xp-secondary .xp-action-icon{width:18px;height:18px}.xp-group-toolbar .xp-secondary{transition:transform .12s ease,background-color .16s ease,color .16s ease}.xp-group-toolbar .xp-secondary:active{transform:scale(.97)}
+.xp-danger-link .xp-action-icon{width:15px;height:15px;margin-right:4px;vertical-align:-2px}
+@media (prefers-reduced-motion:reduce){.xp-social,.xp-compose-fab,.xp-group-toolbar .xp-secondary{transition:none!important}.xp-social.is-active .xp-action-icon{animation:none!important}}
+.xp-social-count{white-space:nowrap!important;flex:none!important;min-width:max-content}.xp-social-label{white-space:nowrap!important;flex:none!important}
+.xp-owner-actions .xp-secondary .xp-action-icon,.xp-mine-actions .xp-action-icon,.xp-comment-delete .xp-action-icon,.xp-discover-row .xp-secondary .xp-action-icon{width:16px;height:16px;vertical-align:-3px}
+.xp-mine-actions .xp-link,.xp-mine-actions .xp-danger-link,.xp-comment-delete,.xp-discover-row .xp-secondary{display:inline-flex;align-items:center;gap:4px}
+.xp-page:has(.xp-community-hero) .xp-header{position:relative}.xp-page:has(.xp-community-hero) .xp-header>h1{position:absolute;left:50%;transform:translateX(-50%);width:max-content;pointer-events:none}
+.xp-header-actions{margin-left:auto;display:flex;align-items:center;gap:4px}.xp-header-icon-action{width:40px;height:40px;border:0;border-radius:50%;background:rgba(255,255,255,.76);color:#5b8a63;display:grid;place-items:center;box-shadow:0 4px 14px rgba(45,53,41,.04)}
+.xp-header-icon-action .xp-action-icon{width:20px;height:20px;stroke-width:2}.xp-header-icon-action:active{transform:scale(.94);background:rgba(236,245,238,.92)}

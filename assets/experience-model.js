@@ -158,7 +158,7 @@
   }
   function deleteComment(raw, id) {
     const data=normalize(raw), key=text(id,'评论编号',120);
-    if(!data.comments.some(c=>c.id===key)) throw new Error('没有找到这条回应');
+    if(!data.comments.some(c=>c.id===key)) throw new Error('没有找到这条回复');
     return {...data,comments:data.comments.filter(c=>c.id!==key)};
   }
   function addComment(raw, options) {
