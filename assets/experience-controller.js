@@ -227,9 +227,8 @@ function installExperience() {
     refresh();
   }
   function toolsSheet() {
-    const scene=state.chat?.sourceScene||'self';
-    showBottomSheet(`<div class="xp-tools"><h2>想把这一刻再整理一下吗？</h2><p>先聊天就够了；需要时，再用卡片或整理成一个小行动。</p><div>${V90_CARD_TYPES.map(type =>
-      `<button data-xp-action="open-card" data-type="${type}"><i>${V90_CARD_DEFS[type].icon()}</i><span>${esc(V90_CARD_DEFS[type].label)}</span></button>`).join('')}</div><button class="xp-tool-archive" data-xp-action="journey-start" data-scene="${esc(scene)}">${svg.sprout} 整理成一个小行动</button><button class="xp-tool-archive" data-action="route" data-route="treasure-box">${svg.treasureBox} 打开百宝箱</button><button data-overlay-action="close" class="xp-tool-close">关闭</button></div>`);
+    showBottomSheet(`<div class="xp-tools"><h2>选择一张卡</h2><p>五张卡会一直放在输入框上方，这里只保留备用入口。</p><div>${V90_CARD_TYPES.map(type =>
+      `<button data-xp-action="open-card" data-type="${type}"><i>${V90_CARD_DEFS[type].icon()}</i><span>${esc(V90_CARD_DEFS[type].label)}</span></button>`).join('')}</div><button class="xp-tool-archive" data-action="route" data-route="treasure-box">${svg.treasureBox} 打开百宝箱</button><button data-overlay-action="close" class="xp-tool-close">关闭</button></div>`);
   }
   function context(id) {
     const description = value('xpDescription').trim();
@@ -478,7 +477,7 @@ function installExperienceHome({read}) {
       <div class="xp-home-utilities"><button data-action="route" data-route="assessments">我的测评</button><span>·</span><button data-action="route" data-route="archive">家庭档案</button><span>·</span><button data-action="route" data-route="treasure-box">百宝箱</button></div></div>`;
   };
   renderComposer = function() {
-    return `<div class="composer xp-composer"><div class="composer-row"><button class="composer-btn" data-action="voice-start" aria-label="语音输入">${svg.mic}</button><div class="composer-input"><textarea id="chatInput" rows="1" placeholder="${state.chat.active ? '继续和小亲说…' : '和小亲说说…'}"></textarea></div><button class="composer-btn xp-tool-button" data-xp-action="tools" aria-label="打开聊天工具">${svg.sparkle}</button><button class="composer-btn" data-action="attachment-sheet" aria-label="添加附件">${svg.plus}</button><button class="composer-btn" id="chatSendBtn" data-action="chat-send" aria-label="发送">${svg.send}</button></div></div>`;
+    return `<div class="composer xp-composer">${renderCardQuickBarV90()}<div class="composer-row"><button class="composer-btn" data-action="voice-start" aria-label="语音输入">${svg.mic}</button><div class="composer-input"><textarea id="chatInput" rows="1" placeholder="${state.chat.active ? '继续和小亲说…' : '和小亲说说…'}"></textarea></div><button class="composer-btn" data-action="attachment-sheet" aria-label="添加附件">${svg.plus}</button><button class="composer-btn" id="chatSendBtn" data-action="chat-send" aria-label="发送">${svg.send}</button></div></div>`;
   };
 }
 installExperience();

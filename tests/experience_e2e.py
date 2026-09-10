@@ -13,6 +13,18 @@ class ExperienceTests(unittest.TestCase):
     def xp(self, action, extra=''):
         self.page.locator(f'[data-xp-action="{action}"]{extra}:visible').first.click()
 
+    def start_internal_journey(self, scene):
+        self.page.evaluate("""scene => {
+          const b=document.createElement('button');
+          b.dataset.xpAction='journey-start';
+          b.dataset.scene=scene;
+          b.style.display='none';
+          document.getElementById('pageStack').appendChild(b);
+          b.click();
+          b.remove();
+        }""", scene)
+        self.page.wait_for_selector('#xpDescription:visible')
+
     def test_community_to_action_feedback_is_persistent_and_unique(self):
         self.assertEqual(self.page.locator('.xp-home').count(), 1, 'home must mount the new experience shell')
         self.page.locator('.xp-home [data-route="guides"]').click()
@@ -20,8 +32,7 @@ class ExperienceTests(unittest.TestCase):
         self.xp('adopt')
         self.page.wait_for_selector('.v36-conversation.active')
         self.assertIn('不用照搬', self.page.locator('.v36-conversation').inner_text())
-        self.xp('tools')
-        self.xp('journey-start', '[data-scene="screen"]')
+        self.start_internal_journey('screen')
         self.page.locator('#xpDescription').fill('今天约定的时间到了，我又提高了声音。')
         self.xp('journey-save-context')
         self.xp('journey-next', '[data-step="phrase"]')
@@ -53,8 +64,7 @@ class ExperienceTests(unittest.TestCase):
         self.xp('chat-start', '[data-scene="emotion"]')
         self.page.wait_for_selector('.v36-conversation.active')
         self.assertEqual(self.page.locator('#xpDescription').count(), 0)
-        self.xp('tools')
-        self.xp('journey-start', '[data-scene="self"]')
+        self.start_internal_journey('self')
         self.page.locator('#xpDescription').fill('我今天很累，只想先停一下。')
         self.xp('journey-save-context')
         self.xp('journey-end')
@@ -76,13 +86,19 @@ class ExperienceTests(unittest.TestCase):
         self.page.wait_for_timeout(500)
         self.assertNotIn('正面解读', self.page.locator('.v36-conversation').inner_text())
         self.assertEqual(len(self.stored()['experience']['journeys']), 0)
-        self.page.goto(self.url + '#/experience/post/p1')
+        self.page.goto(self.url + '?quickbar=post#/experience/post/p1', wait_until='networkidle')
+        self.page.wait_for_selector('[data-xp-action="adopt"]:visible')
         self.xp('adopt')
         self.page.wait_for_selector('.v36-conversation.active')
         self.assertIn('先约好怎么结束', self.page.locator('.v36-conversation').inner_text())
         self.assertEqual(self.page.locator('#xpDescription').count(), 0)
-        self.xp('tools')
-        self.assertGreater(self.page.locator('[data-xp-action="journey-start"]:visible').count(), 0)
+        pills=self.page.locator('.v90-card-pill:visible')
+        self.assertEqual(pills.count(), 5)
+        self.assertEqual([pills.nth(i).inner_text() for i in range(5)], ['解读卡','行动卡','优势卡','镜子卡','修复卡'])
+        self.assertEqual(self.page.locator('[data-xp-action="tools"]:visible').count(), 0)
+        self.assertNotIn('整理成一个小行动', self.page.locator('body').inner_text())
+        self.page.locator('.v90-card-pill.action:visible').click()
+        self.assertIn('行动卡', self.page.locator('.v36-conversation').inner_text())
 
     def test_community_back_returns_home_when_opened_from_a_direct_link(self):
         self.page.goto('about:blank')
@@ -201,8 +217,7 @@ class ExperienceTests(unittest.TestCase):
         self.xp('adopt')
         self.page.wait_for_selector('.v36-conversation.active')
         self.assertEqual(self.page.locator('#xpDescription').count(), 0)
-        self.xp('tools')
-        self.xp('journey-start', '[data-scene="nursery"]')
+        self.start_internal_journey('nursery')
         self.page.locator('#xpDescription').fill('我想和伴侣商量接送。')
         self.xp('relation', '[data-value="伴侣"]')
         self.assertEqual(self.page.locator('#xpDescription').input_value(), '我想和伴侣商量接送。')
@@ -223,8 +238,7 @@ class ExperienceTests(unittest.TestCase):
     def test_clear_conversations_removes_private_journeys(self):
         self.page.goto(self.url + '#/home')
         self.xp('chat-start', '[data-scene="emotion"]')
-        self.xp('tools')
-        self.xp('journey-start', '[data-scene="self"]')
+        self.start_internal_journey('self')
         self.page.locator('#xpDescription').fill('这句只在私人练习里。')
         self.xp('journey-save-context')
         self.page.goto(self.url + '#/settings/privacy')
@@ -241,8 +255,7 @@ class ExperienceTests(unittest.TestCase):
         self.page.wait_for_selector('.v36-conversation.active')
         self.assertIn('先说清自己的责任', self.page.locator('.v36-conversation').inner_text())
         self.assertEqual(self.page.locator('#xpDescription').count(), 0)
-        self.xp('tools')
-        self.xp('journey-start', '[data-scene="screen"]')
+        self.start_internal_journey('screen')
         self.page.locator('#xpDescription').fill('这次是我先提高了声音。')
         self.xp('journey-save-context')
         self.xp('journey-next', '[data-step="phrase"]')
@@ -251,8 +264,7 @@ class ExperienceTests(unittest.TestCase):
 
     def test_resume_after_end_and_relation_change_preserve_completed_action(self):
         self.xp('chat-start', '[data-scene="emotion"]')
-        self.xp('tools')
-        self.xp('journey-start', '[data-scene="self"]')
+        self.start_internal_journey('self')
         self.page.locator('#xpDescription').fill('我想先留两分钟给自己。')
         self.xp('journey-save-context')
         self.xp('journey-end')
