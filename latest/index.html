@@ -4443,6 +4443,13 @@ html,body,#app{background:var(--qzl-canvas)!important;}
 .v36-conversation .message-line.ai .chat-message{margin:0!important;}
 .v36-conversation .message-line.user .chat-message{margin:0!important;}
 </style>
+
+<style id="v101-archive-sticky-stack-fix">
+/* Family archive: title and sticky tabs are two stacked rows, never the same sticky layer. */
+.v79-archive-page>.page-titlebar{z-index:20!important;}
+.v79-archive-page .v79-archive-tabs{top:64px!important;z-index:10!important;}
+.mobile-runtime .v79-archive-page .v79-archive-tabs{top:calc(64px + var(--safe-top))!important;}
+</style>
 </head><body><div id="app" aria-live="polite"></div><script src="assets/growth-report-model.js?v=c66b2046b7"></script>
 <script src="assets/growth-report-view.js?v=9e5a405290"></script>
 <script src="assets/growth-milestone-model.js?v=0a4020d2bc"></script>
