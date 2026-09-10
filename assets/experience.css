@@ -71,3 +71,21 @@
 .xp-page:has(.xp-compose-form) .xp-intro p,.xp-page:has(.xp-compose-form) .xp-footnote{color:#6b7280!important}
 .xp-page:has(.xp-article) .xp-byline small,.xp-page:has(.xp-article) .xp-footnote{color:#6b7280!important}
 .xp-page:has(.xp-mine-summary) .xp-mine-empty p,.xp-page:has(.xp-mine-summary) .xp-footnote,.xp-page:has(.xp-mine-group-list) .xp-footnote,.xp-page:has(.xp-draft-card) .xp-footnote{color:#6b7280!important}
+
+/* Community Visual V5 — One Canvas: atmospheric shell + white content surfaces. */
+.xp-page:has(.xp-community-hero),.xp-page:has(.xp-group-toolbar),.xp-page:has(.xp-article),.xp-page:has(.xp-compose-form),.xp-page:has(.xp-official),.xp-page:has(.xp-mine-summary),.xp-page:has(.xp-mine-group-list),.xp-page:has(.xp-mine-discover),.xp-page:has(.xp-draft-card),.xp-page:has(.xp-mine-empty){background:transparent!important;}
+.xp-page .xp-header{background:transparent!important;border:0!important;box-shadow:none!important;}
+.xp-community-hero{margin:0 -20px 14px;padding:4px 20px 10px;background:transparent;}
+.xp-community-copy{padding:4px 2px 14px}.xp-community-copy>span{display:block;font-size:11px;color:#6f8d6c;margin-bottom:5px}.xp-community-copy h2{font-size:24px;line-height:1.42;letter-spacing:-.4px;color:#1f2937;margin:0 0 5px}.xp-community-copy p{font-size:13px;line-height:1.65;color:#6b7280;margin:0}
+.xp-community-search{margin:0 0 4px}.xp-community-search input{background:rgba(255,255,255,.88)!important;border:1px solid rgba(255,255,255,.94)!important;box-shadow:0 6px 22px rgba(45,53,41,.045)!important;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.xp-page:has(.xp-community-hero) .xp-tabs{margin:0!important;padding:0 2px!important;background:transparent!important;border:0!important}.xp-page:has(.xp-community-hero) .xp-tab{min-height:44px;padding-top:7px;padding-bottom:11px}.xp-page:has(.xp-community-hero) .xp-tab.is-active:after{bottom:1px}
+.xp-page:has(.xp-community-hero) .xp-filters{padding:0 0 12px}.xp-page:has(.xp-community-hero) .xp-chip{background:rgba(255,255,255,.82);border-color:rgba(255,255,255,.92);box-shadow:0 4px 16px rgba(45,53,41,.035)}
+.xp-page:has(.xp-community-hero) .xp-feed,.xp-page:has(.xp-group-toolbar) .xp-feed{margin:0!important;gap:12px!important}.xp-page:has(.xp-community-hero) .xp-story,.xp-page:has(.xp-group-toolbar) .xp-story{background:rgba(255,255,255,.94)!important;border:1px solid rgba(255,255,255,.92)!important;border-radius:18px!important;padding:18px!important;box-shadow:0 7px 24px rgba(45,53,41,.045)!important}
+.xp-group-list,.xp-news-list,.xp-mine-list,.xp-mine-group-list{gap:12px}.xp-group,.xp-news-card,.xp-mine-card,.xp-my-comment,.xp-mine-group-card,.xp-draft-card,.xp-mine-empty{background:rgba(255,255,255,.94)!important;border-color:rgba(255,255,255,.92)!important;box-shadow:0 7px 24px rgba(45,53,41,.045)!important}
+.xp-mine-summary{background:rgba(255,255,255,.9);border:1px solid rgba(255,255,255,.92);border-radius:20px;padding:18px 8px;margin:4px 0 14px;box-shadow:0 7px 24px rgba(45,53,41,.045)}
+.xp-mine-tabs{border:0!important}.xp-mine-secondary{border-top-color:rgba(65,75,61,.07)}.xp-mine-row{background:rgba(255,255,255,.8);padding-left:12px;padding-right:12px;border-radius:14px;margin-bottom:8px;border:1px solid rgba(255,255,255,.86)}
+.xp-article,.xp-official,.xp-compose-form,.xp-comments{background:rgba(255,255,255,.94);border:1px solid rgba(255,255,255,.92);border-radius:20px;box-shadow:0 7px 24px rgba(45,53,41,.045)}
+.xp-article,.xp-official{padding:18px}.xp-comments{padding:20px 18px 12px;margin-top:12px;border-top:1px solid rgba(255,255,255,.92)}.xp-compose-form{padding:18px;margin-bottom:14px}
+.xp-page:has(.xp-compose-form) .xp-intro,.xp-page:has(.xp-group-toolbar) .xp-intro{padding-top:12px}.xp-page:has(.xp-official) .xp-official,.xp-page:has(.xp-article) .xp-article{margin-top:4px}
+.xp-compose-fab{background:#5b8a63!important;color:#fff!important;box-shadow:0 10px 26px rgba(60,90,67,.22)!important}
+@media(max-width:420px){.xp-community-hero{margin-left:-16px;margin-right:-16px;padding-left:16px;padding-right:16px}.xp-community-copy h2{font-size:23px}.xp-page:has(.xp-community-hero) .xp-story,.xp-page:has(.xp-group-toolbar) .xp-story{padding:17px!important}}

@@ -1,4 +1,4 @@
-<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#FFFFFF"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="亲智聊"><meta name="format-detection" content="telephone=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><title>亲智聊</title><style>
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#F8F5F1"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="亲智聊"><meta name="format-detection" content="telephone=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><title>亲智聊</title><style>
 :root{
   --bg:#f7eee2;
   --bg-soft:#fffaf3;
@@ -4394,19 +4394,33 @@ svg{vertical-align:middle}
 .qzl-home-layout button:focus-visible{outline:2px solid var(--green);outline-offset:3px}
 @media(max-width:374px){.qzl-home-layout{padding-left:12px;padding-right:12px}.qzl-home-primary{gap:10px}.qzl-home-primary>button{padding-left:13px;padding-right:13px}.qzl-home-primary b{font-size:17px}}
 </style>
-<link rel="stylesheet" href="assets/growth-report.css?v=51e3e566e1"><link rel="stylesheet" href="assets/growth-milestone.css?v=a067d8629a"><link rel="stylesheet" href="assets/experience.css?v=8a03c3e54e"><link rel="stylesheet" href="assets/experience-home.css?v=06b7234bae"><link rel="stylesheet" href="assets/card-practice.css?v=b565f79b67"><style id="v91-top-chrome-white">
-/* V9.1: unify the browser safe area/status bar and app headers as pure white. */
-html,body,#app,.app-frame{background:#FFFFFF!important;}
-.statusbar{background:#FFFFFF!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;border:0!important;box-shadow:none!important;}
-.topbar,.page-titlebar{background:#FFFFFF!important;border-bottom:0!important;box-shadow:none!important;}
-.xp-header{background:#FFFFFF!important;border:0!important;box-shadow:none!important;}
+<link rel="stylesheet" href="assets/growth-report.css?v=51e3e566e1"><link rel="stylesheet" href="assets/growth-milestone.css?v=a067d8629a"><link rel="stylesheet" href="assets/experience.css?v=cdbf9f7dc1"><link rel="stylesheet" href="assets/experience-home.css?v=06b7234bae"><link rel="stylesheet" href="assets/card-practice.css?v=b565f79b67"><style id="v92-one-canvas">
+/* V9.2 / Visual V5 — one continuous atmospheric canvas behind the whole app. */
+:root{--qzl-canvas:#F8F5F1;--qzl-canvas-2:#F6F5F1;--qzl-card:rgba(255,255,255,.92);--qzl-card-border:rgba(255,255,255,.88);}
+html,body,#app{background:var(--qzl-canvas)!important;}
+.app-frame{background:
+ radial-gradient(circle at 84% 8%,rgba(218,224,247,.48),transparent 31%),
+ radial-gradient(circle at 8% 22%,rgba(247,222,201,.40),transparent 29%),
+ radial-gradient(circle at 76% 45%,rgba(219,234,215,.31),transparent 34%),
+ linear-gradient(180deg,#FBF8F3 0%,#F8F6F2 48%,#F6F5F1 100%)!important;box-shadow:none!important;}
+.main-viewport,.screen-host,.screen{background:transparent!important;}
+.statusbar,.topbar,.page-titlebar{background:transparent!important;border:0!important;box-shadow:none!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;}
+.v67-home{background:transparent!important;position:relative;}
+.v67-home-hero{background:transparent!important;margin-top:0!important;border-radius:0!important;box-shadow:none!important;isolation:isolate;}
+.v67-home-hero:before{content:"";position:absolute;inset:-10px -30px 0;z-index:0;pointer-events:none;background:radial-gradient(circle at 78% 22%,rgba(211,230,207,.32),transparent 35%),radial-gradient(circle at 20% 64%,rgba(247,221,202,.28),transparent 36%);}
+.v67-home-hero:after{display:none!important;content:none!important;}
+.v67-home-copy,.v67-home-mascot{z-index:2;}
+.qzl-home-layout{position:relative;z-index:2;}
+.qzl-home-primary>button,.qzl-home-layout .v67-starter,.v67-quick button{background:var(--qzl-card)!important;border:1px solid var(--qzl-card-border)!important;box-shadow:0 8px 26px rgba(47,55,43,.055)!important;}
+.composer{background:linear-gradient(180deg,rgba(248,245,241,0),rgba(248,245,241,.68) 34%,rgba(248,245,241,.88) 100%)!important;}
+.composer-row{background:rgba(255,255,255,.94)!important;border-color:rgba(255,255,255,.9)!important;box-shadow:0 10px 30px rgba(43,51,40,.075)!important;}
 </style>
 </head><body><div id="app" aria-live="polite"></div><script src="assets/growth-report-model.js?v=c66b2046b7"></script>
 <script src="assets/growth-report-view.js?v=9e5a405290"></script>
 <script src="assets/growth-milestone-model.js?v=0a4020d2bc"></script>
 <script src="assets/growth-milestone-view.js?v=2492e9af08"></script>
 <script src="assets/experience-model.js?v=9e28b407f1"></script>
-<script src="assets/experience-view.js?v=5206e14f82"></script>
+<script src="assets/experience-view.js?v=744d14b4d6"></script>
 <script src="assets/card-practice.js?v=f58d85522b"></script>
 <script>
 (function(){
