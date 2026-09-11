@@ -17,3 +17,45 @@
 .xp-error{padding:12px 16px;color:#985333;background:#fff1e7;border-radius:12px;font-size:14px;line-height:1.6}.xp-calming .xp-breath{animation:xp-breathe 5s ease-in-out infinite}.xp-page .xp-bottom{padding-bottom:max(20px,env(safe-area-inset-bottom))}.xp-growth-entry{display:flex;justify-content:space-between;gap:12px;padding:0 22px 4px}.xp-growth-entry button{background:none;border:0;font:inherit;font-size:13px;color:#78866b;min-height:44px;cursor:pointer}.gr-page .gr-controls{padding-top:10px}.gr-page .gr-tabs{margin-bottom:6px}.gr-page .gr-period{margin-top:4px;margin-bottom:8px}.gr-page .gm-summary:has(.gm-summary-empty){display:none}.gr-page .gr-empty{padding-top:28px}
 @media(max-width:375px){.xp-home-hero{height:182px;padding-left:14px}.xp-home-hero img{width:126px;height:164px}.xp-home-hero h1{font-size:26px}.xp-home-primary button{padding-left:14px}.xp-home-primary b{font-size:17px}.xp-home-primary small{font-size:11px}.xp-home-starters{gap:9px}.xp-home-starters button{gap:10px}.xp-home-starters b{font-size:15px}}
 @media(prefers-reduced-motion:reduce){.xp-calming .xp-breath{animation:none}.xp-home *{transition:none!important}}
+
+/* Home Conversation First V1 — one primary action: start talking. */
+.xp-home{max-width:600px;margin:0 auto;padding:0 16px 22px;color:#354133;line-height:1.5}
+.xp-home-hero{height:126px;display:flex;align-items:center;justify-content:space-between;padding:9px 6px 6px 4px;gap:8px;background:transparent!important;margin:0 0 4px!important}
+.xp-home-hero>div{min-width:0;max-width:72%}.xp-home-hero small{display:none!important}.xp-home-hero h1{font-size:24px;line-height:1.32;letter-spacing:-.55px;margin:0 0 7px;font-weight:680;color:#2f312d;white-space:nowrap}.xp-home-hero p{font-size:13px;line-height:1.65;margin:0;color:#858c7f;max-width:22em}
+.xp-home-hero img{width:102px;height:122px;object-fit:contain;align-self:flex-end;filter:drop-shadow(0 7px 10px rgba(83,104,65,.08))}
+
+/* Idle composer is part of the first screen, directly below the hero. */
+.xp-home-chat-start{margin:0 0 14px}
+.xp-home-chat-start>.xp-composer{padding:0!important;background:none!important}
+.xp-home-chat-start .v90-card-quickbar{display:none!important}
+.xp-home-chat-start .composer-row{min-height:68px!important;border-radius:34px!important;padding:7px 8px!important;gap:4px!important;background:#fff!important;border:1px solid rgba(91,105,83,.08)!important;box-shadow:0 12px 32px rgba(48,61,43,.105)!important}
+.xp-home-chat-start .composer-btn{width:46px!important;height:46px!important;flex:0 0 46px!important;border-radius:23px!important}
+.xp-home-chat-start .composer-input{min-height:46px!important;padding:0 5px!important}
+.xp-home-chat-start .composer-input textarea{min-height:46px!important;padding:11px 0!important;font-size:16px!important;line-height:24px!important;color:#30352f!important}
+.xp-home-chat-start .composer-input textarea::placeholder{color:#90978d!important;font-size:15px!important}
+.xp-home-chat-start>p{margin:7px 7px 0;font-size:11px;line-height:1.55;color:#a0a59c}
+
+.xp-home-section-title{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin:0 3px 7px}.xp-home-section-title b{font-size:13px;font-weight:650;color:#5f665b}.xp-home-section-title span{font-size:11px;color:#a0a59c}
+.xp-home-starter-section{margin-top:2px}.xp-home-starters{display:block;border-radius:18px;background:rgba(255,255,255,.58);border:1px solid rgba(75,58,43,.045);overflow:hidden;box-shadow:none}
+.xp-home-starters button{display:grid;grid-template-columns:32px minmax(0,1fr) 15px;align-items:center;gap:11px;width:100%;min-height:58px;padding:9px 12px;text-align:left;border:0!important;border-bottom:1px solid rgba(75,58,43,.06)!important;background:transparent!important;border-radius:0!important;box-shadow:none!important}
+.xp-home-starters button:last-child{border-bottom:0!important}.xp-home-starters button>i{width:32px;height:32px;border-radius:11px}.xp-home-starters button>i svg{width:19px;height:19px}.xp-home-starters button>svg{width:15px;height:15px;margin:0;color:#a6ac9f;transform:rotate(180deg)}
+.xp-home-starters b{font-size:15px;font-weight:600;line-height:1.35}.xp-home-starters small{font-size:11px;line-height:1.4;color:#949b90;margin-top:2px}
+
+/* Growth/community are useful destinations, not the primary task. */
+.xp-home-space{margin-top:16px}.xp-home-primary{display:block;margin:0;border-top:1px solid rgba(75,58,43,.065);border-bottom:1px solid rgba(75,58,43,.065)}
+.xp-home-primary button{width:100%;min-height:58px;display:grid;grid-template-columns:minmax(0,1fr) 16px;align-items:center;gap:10px;padding:9px 4px;text-align:left;border:0!important;border-bottom:1px solid rgba(75,58,43,.055)!important;border-radius:0!important;background:transparent!important;box-shadow:none!important}
+.xp-home-primary button:last-child{border-bottom:0!important}.xp-home-primary button>span{min-width:0}.xp-home-primary b{display:block;font-size:15px;font-weight:600;line-height:1.35;white-space:normal}.xp-home-primary small{display:block;margin-top:2px;font-size:11px;line-height:1.4;color:#969d91;white-space:normal}.xp-home-primary button>svg{position:static!important;width:15px;height:15px;transform:rotate(180deg);color:#a6ac9f}
+
+.xp-home-light{margin-top:6px;justify-content:flex-start;gap:18px}.xp-home-light button{flex:0 0 auto;min-height:38px;font-size:12px;color:#8b9387;padding:2px 0}.xp-home-light svg{width:16px;height:16px}
+
+/* Cards remain available, but visually read as optional tools. */
+.xp-home-card-tools{margin-top:15px;padding-top:1px}.xp-home-card-tools .v90-card-quickbar{gap:2px;padding:0;opacity:.72}.xp-home-card-tools .v90-card-pill{height:27px;border:0!important;background:transparent!important;box-shadow:none!important;border-radius:10px;padding:0 2px;font-size:10.5px;color:#777d75}.xp-home-card-tools .v90-card-pill i{width:13px;height:13px}.xp-home-card-tools .v90-card-pill i svg{width:12px!important;height:12px!important}.xp-home-card-tools .v90-card-pill.active{background:rgba(255,255,255,.5)!important;box-shadow:none!important}
+.xp-home-utilities{margin-top:2px;opacity:.82}.xp-home-utilities button{font-size:11px;color:#979e94;min-height:38px}
+
+/* Once a conversation starts, the persistent bottom composer resumes its normal role. */
+.ai-shell.v36-conversation-active>.xp-composer,.ai-shell.v36-conversation-active>.composer{flex:0 0 auto}
+
+@media(max-width:375px){
+  .xp-home{padding-left:14px;padding-right:14px}.xp-home-hero{height:118px}.xp-home-hero>div{max-width:73%}.xp-home-hero h1{font-size:22px}.xp-home-hero p{font-size:12px}.xp-home-hero img{width:92px;height:112px}
+  .xp-home-chat-start .composer-row{min-height:64px!important}.xp-home-chat-start .composer-btn{width:43px!important;height:43px!important;flex-basis:43px!important}.xp-home-chat-start .composer-input textarea{font-size:15px!important}.xp-home-starters button,.xp-home-primary button{min-height:56px}
+}
