@@ -29,10 +29,19 @@ test('news tab renders official utility cards and a sourced detail page',()=>{
  const real=require('../assets/experience-model.js');
  const list=view.render('experience/community',ctx({model:real,data:{ui:{tab:'news'}}}));
  assert.match(list,/官方信息/); assert.match(list,/广州市教育局/); assert.doesNotMatch(list,/xp-compose-fab/); assert.match(list,/报名|编班/); assert.match(list,/data-route="experience\/news\//);
+ assert.match(list,/官方原文/); assert.match(list,/class="xp-news-action xp-news-original"/); assert.match(list,/target="_blank"/); assert.match(list,/rel="noopener noreferrer"/); assert.match(list,/href="https:\/\/jyj\.gz\.gov\.cn\//);
  const detail=view.render('experience/news/gz-primary-public-2026',ctx({model:real}));
  assert.match(detail,/关键时间/); assert.match(detail,/适用对象/); assert.match(detail,/打开官方原文/); assert.match(detail,/rel="noopener noreferrer"/);
 });
 
+
+
+test('education news list keeps official source links visible and hides them when unavailable',()=>{
+ const item={id:'local-news',title:'测试资讯',summary:'摘要',source:'教育部门',publishedAt:'2026-09-11',status:'已结束',stage:'入学'};
+ const modelWithNoUrl={OFFICIAL_NEWS:[item],POSTS:[],GROUPS:[]};
+ const html=view.render('experience/community',ctx({model:modelWithNoUrl,data:{ui:{tab:'news'}},educationRegion:{city:'广州市',district:'天河区',confirmed:true}}));
+ assert.match(html,/查看要点/); assert.doesNotMatch(html,/xp-news-original/);
+});
 
 test('community V2 exposes family context, social proof and chip-based publishing',()=>{
  const real=require('../assets/experience-model.js');
