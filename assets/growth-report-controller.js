@@ -118,18 +118,17 @@ function installGrowthReports() {
     const {report,ui} = build(recordsView);
     activeReport = report;
     if (recordsView) return view.renderRecords(report,ui,deps);
-    const navigation = milestones?.renderNavigation() || '';
-    return navigation + (ui.section === 'milestones' && milestones ? milestones.render() :
-      view.render(report,ui,{...deps,renderMilestones:report=>milestones?.summary(report) || ''}));
+    return ui.section === 'milestones' && milestones ? milestones.render() :
+      view.render(report,ui,{...deps,renderMilestones:report=>milestones?.summary(report) || ''});
   }
   function shell() {
     const gr = settings();
     if (gr.source === 'personal' && gr.lastOpened !== day()) gr.anchor = day();
     gr.lastOpened = day();
-    return `<div class="secondary-page growth-page gr-page">${titleBar('成长记录',{back:'home'})}
-      <button class="gr-top-records" data-gr-action="records" ${gr.screen === 'records' ? 'hidden' : ''}>行动记录</button>
-      <div class="xp-growth-entry"><button data-xp-action="route" data-route="experience/history">我的练习 <span aria-hidden="true">›</span></button><button data-xp-action="route" data-route="experience/stages">阶段准备 <span aria-hidden="true">›</span></button><button data-gr-action="milestone-new">记一笔 <span aria-hidden="true">＋</span></button></div>
-      <div id="grContent" aria-live="polite">${content()}</div></div>`;
+    return `<div class="secondary-page growth-page gr-page qzl-stacked-page ${gr.screen === 'records' ? 'is-records' : ''}">${titleBar('成长记录',{back:'home',right:{label:'行动记录',action:'growth-records'}})}
+      <div class="qzl-page-subnav qzl-growth-subnav" id="grSubnav" ${gr.screen === 'records' ? 'hidden' : ''}>${gr.screen === 'records' ? '' : (milestones?.renderNavigation() || '')}</div>
+      <div class="qzl-page-scroll qzl-growth-scroll"><div class="xp-growth-entry" id="grUtilityEntry" ${gr.screen === 'records' ? 'hidden' : ''}><button data-xp-action="route" data-route="experience/history">我的练习 <span aria-hidden="true">›</span></button><button data-xp-action="route" data-route="experience/stages">阶段准备 <span aria-hidden="true">›</span></button><button data-gr-action="milestone-new">记一笔 <span aria-hidden="true">＋</span></button></div>
+      <div id="grContent" aria-live="polite">${content()}</div></div></div>`;
   }
   renderGrowth = shell;
   // Existing weekly links remain useful entry points into the report.
@@ -137,12 +136,15 @@ function installGrowthReports() {
   function refresh(options = {}) {
     const slot = document.getElementById('grContent');
     if (!slot) return;
-    const page = slot.closest('.gr-page'), top = page.scrollTop;
+    const page = slot.closest('.gr-page'), scroller = slot.closest('.qzl-page-scroll') || page, top = scroller.scrollTop;
     const focus = document.activeElement?.dataset;
     slot.innerHTML = content();
-    page.scrollTop = options.top !== undefined ? options.top : top;
-    const button = page.querySelector('.gr-top-records');
-    if (button) button.hidden = settings().screen === 'records';
+    const subnav=document.getElementById('grSubnav');
+    if(subnav){subnav.hidden=settings().screen === 'records';subnav.innerHTML=subnav.hidden?'':(milestones?.renderNavigation() || '');}
+    const utility=document.getElementById('grUtilityEntry');if(utility)utility.hidden=settings().screen === 'records';
+    page.classList.toggle('is-records',settings().screen === 'records');
+    const right=page.querySelector('.right-action[data-action="growth-records"]');if(right)right.hidden=settings().screen === 'records';
+    scroller.scrollTop = options.top !== undefined ? options.top : top;
     if (focus?.grAction && options.focus) {
       const matching = [...slot.querySelectorAll('[data-gr-action]')].find(item =>
         item.dataset.grAction === focus.grAction && item.dataset.value === focus.value);
@@ -257,11 +259,11 @@ function installGrowthReports() {
       });
       return;
     }
-    const button = event.target.closest('[data-gr-action]');
+    const button = event.target.closest('[data-gr-action],[data-action="growth-records"]');
     if (!button) return;
     event.preventDefault(); event.stopImmediatePropagation();
     const gr = settings(), data = button.dataset;
-    const action = data.grAction;
+    const action = data.grAction || (data.action === 'growth-records' ? 'records' : '');
     if (milestones?.handle(data)) return;
     if (action === 'close') return closeOverlay();
     if (action === 'action') return actionDetail(data.id);
@@ -279,7 +281,7 @@ function installGrowthReports() {
     if (action === 'route' && ['assessments','archive','treasure-box'].includes(data.route)) return navigate(data.route);
     if (action === 'not-tried') return toast('仍保留为待尝试，不用急着完成');
     if (action === 'records') {
-      reportScroll = document.querySelector('.gr-page')?.scrollTop || 0;
+      reportScroll = document.querySelector('.qzl-growth-scroll')?.scrollTop || 0;
       gr.screen = 'records'; gr.recordAnchor = gr.anchor; gr.recordDate = null;
     } else if (action === 'report') gr.screen = 'report';
     else if (action === 'mode' && ['day','week','month'].includes(data.value)) gr.mode = data.value;
