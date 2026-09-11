@@ -128,7 +128,7 @@ function installExperience() {
         const type = effective.split('/')[2];
         return window.QZLCardPractice?.render(type,data.cardDrafts?.[type] || {},esc) || originalRender('home');
       }
-      return view.render(effective,{data,model,journey:getJourney(effective.split('/')[2]),esc,icons:svg});
+      return view.render(effective,{data,model,journey:getJourney(effective.split('/')[2]),esc,icons:svg,educationRegion:educationContext().educationRegion});
     }
     return originalRender(route);
   };
@@ -264,6 +264,7 @@ function installExperience() {
         return goBack('home');
       }
       if (action === 'tools') return toolsSheet();
+      if (action === 'education-region') { showEducationRegionSelector(); return; }
       if (action === 'open-card') {
         closeOverlay();
         if (type === 'interpretation') { navigate('home',{replace:true}); startQuickCardV90(type); }
@@ -303,7 +304,7 @@ function installExperience() {
         const journey = getJourney(id), a = state.actions.find(item => item.id === journey?.actionId);
         state.growthReports = {...state.growthReports,source:'personal',screen:'report',section:'milestones',anchor:date()};
         navigate('growth',{replace:true});
-        if (a && ['better','same','worse'].includes(a.result)) openGrowthMilestoneFromExperience?.(`${a.id}@${a.createdAt || 'legacy'}`);
+        if (a && ['better','same','worse'].includes(a.result)) openGrowthMilestoneFromExperience?.(a.id);
         else document.querySelector('[data-gr-action="milestone-new"]')?.click();
         return;
       }
@@ -389,7 +390,9 @@ function installExperience() {
       }
       const data = read();
       if (action === 'tab' || action === 'filter') {
-        commit({...data,ui:{...data.ui,[action]:val}}); return refresh();
+        commit({...data,ui:{...data.ui,[action]:val}}); refresh();
+        if(action==='tab'&&val==='news')requestAnimationFrame(()=>maybePromptEducationRegion());
+        return;
       }
       if (action === 'stage-toggle') {
         const checks = data.ui.stageChecks || {}, key = id + ':' + val;

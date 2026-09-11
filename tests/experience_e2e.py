@@ -155,6 +155,8 @@ class ExperienceTests(unittest.TestCase):
     def test_official_news_has_status_timeline_and_real_source_link(self):
         self.page.goto(self.url + '#/guides')
         self.xp('tab','[data-value="news"]')
+        if self.page.locator('.qzl-region-sheet:visible').count():
+            self.page.locator('[data-overlay-action="close"]').click()
         self.assertIn('广州市教育局',self.page.locator('.xp-page').inner_text())
         self.page.locator('[data-xp-action="route"][data-route^="experience/news/"]').first.click()
         self.page.wait_for_selector('.xp-official:visible')
@@ -303,6 +305,56 @@ class ExperienceTests(unittest.TestCase):
         self.page.locator('[data-action="chat-send"]').click()
         self.page.wait_for_selector('.message-helpful-mark')
         self.assertGreaterEqual(self.page.locator('.message-helpful-mark').count(), 1)
+
+    def test_education_region_manual_selection_filters_and_persists(self):
+        self.page.goto(self.url + '?education=manual#/guides', wait_until='networkidle')
+        self.xp('tab', '[data-value="news"]')
+        self.page.wait_for_selector('.qzl-region-sheet:visible')
+        self.assertIn('看看你家所在地区的教育资讯', self.page.locator('.qzl-region-sheet').inner_text())
+        self.page.locator('[data-overlay-action="education-region-manual"]').click()
+        self.page.locator('[data-region-id="sz-nanshan"]').click()
+        self.page.wait_for_selector('.xp-education-region-bar:visible')
+        self.assertIn('深圳市 · 南山区', self.page.locator('.xp-education-region-bar').inner_text())
+        self.assertEqual(self.page.locator('.xp-news-card').count(), 0)
+        self.assertIn('暂未接入 Demo 资讯', self.page.locator('.xp-news-region-empty').inner_text())
+        self.assertNotIn('广州市教育局', self.page.locator('.xp-page').inner_text())
+        stored = self.stored()['locationContext']
+        self.assertEqual(stored['educationRegion']['id'], 'sz-nanshan')
+        self.assertEqual(stored['educationRegion']['source'], 'manual')
+        self.assertTrue(stored['educationRegion']['confirmed'])
+        self.page.reload(wait_until='networkidle')
+        self.assertIn('深圳市 · 南山区', self.page.locator('.xp-education-region-bar').inner_text())
+        self.page.goto(self.url + '?education=settings#/settings/location', wait_until='networkidle')
+        self.assertIn('深圳市 · 南山区', self.page.locator('.location-settings-page').inner_text())
+        self.page.goto(self.url + '?education=archive#/archive', wait_until='networkidle')
+        self.assertIn('深圳市 · 南山区', self.page.locator('.qzl-education-region-panel').inner_text())
+
+    def test_education_geolocation_requires_confirmation_and_stores_no_coordinates(self):
+        self.page.goto(self.url + '#/settings/location')
+        self.page.locator('[data-action="education-region-open"]').click()
+        self.page.locator('[data-region-id="sz-nanshan"]').click()
+        self.assertEqual(self.stored()['locationContext']['educationRegion']['id'], 'sz-nanshan')
+        origin = self.url.rstrip('/')
+        self.page.context.grant_permissions(['geolocation'], origin=origin)
+        self.page.context.set_geolocation({'latitude': 23.1247, 'longitude': 113.3612})
+        self.page.locator('[data-action="education-location-use-current"]').click()
+        self.page.wait_for_selector('[data-overlay-action="education-region-confirm"]:visible')
+        self.assertIn('广州市 · 天河区', self.page.locator('.qzl-region-sheet').inner_text())
+        before = self.stored()['locationContext']
+        self.assertEqual(before['educationRegion']['id'], 'sz-nanshan', 'GPS candidate must not auto-switch the education region')
+        self.assertEqual(before['currentLocation']['matchedRegionId'], 'gz-tianhe')
+        self.assertEqual(before['currentLocation']['status'], 'matched')
+        self.assertNotIn('lat', before['currentLocation'])
+        self.assertNotIn('lng', before['currentLocation'])
+        self.page.locator('[data-overlay-action="education-region-confirm"]').click()
+        after = self.stored()['locationContext']
+        self.assertEqual(after['educationRegion']['id'], 'gz-tianhe')
+        self.assertEqual(after['educationRegion']['source'], 'gps')
+        self.page.goto(self.url + '?education=gps#/guides', wait_until='networkidle')
+        if self.page.locator('[data-xp-action="tab"][data-value="news"].is-active').count() == 0:
+            self.xp('tab', '[data-value="news"]')
+        self.assertIn('广州市 · 天河区', self.page.locator('.xp-education-region-bar').inner_text())
+        self.assertEqual(self.page.locator('.xp-news-card').count(), 5)
 
     def test_mobile_routes_fit_and_forms_remain_reachable(self):
         for width in (360, 390, 430):

@@ -77,7 +77,7 @@ function installGrowthMilestones({settings,day,validDate,localDate,reportModel,d
   }
   function openEditor(id, sourceId, kind) {
     const provenance = config().source;
-    const source = sourceId ? sourceList(provenance).find(item=>item.id === sourceId && item.kind === kind) : null;
+    const source = sourceId ? sourceList(provenance).find(item=>item.kind === kind && (item.id === sourceId || item.originalId === sourceId)) : null;
     if (sourceId && !source) return toast('这条来源已不可用');
     const existing = source && model.findBySource(items(provenance),source,{familyId:owner(provenance),provenance});
     if (existing) return detail(existing.id);

@@ -128,3 +128,13 @@ test('community social actions use explicit icons and visible active states',()=
   assert.match(feed,/class="xp-header-icon-action"[^>]*aria-label="发布"|aria-label="发布"[^>]*class="xp-header-icon-action"/);
   assert.doesNotMatch(feed,/xp-compose-fab/);
 });
+
+
+test('education news follows education region and never fills another city policy',()=>{
+  const real=require('../assets/experience-model.js');
+  const guangzhou=view.render('experience/community',ctx({model:real,data:{ui:{tab:'news'}},educationRegion:{city:'广州市',district:'天河区',confirmed:true}}));
+  assert.match(guangzhou,/教育资讯/); assert.match(guangzhou,/教育地区/); assert.match(guangzhou,/广州市 · 天河区/); assert.match(guangzhou,/广州市教育局/);
+  const shenzhen=view.render('experience/community',ctx({model:real,data:{ui:{tab:'news'}},educationRegion:{city:'深圳市',district:'南山区',confirmed:true}}));
+  assert.match(shenzhen,/深圳市 · 南山区/); assert.match(shenzhen,/暂未接入 Demo 资讯/); assert.match(shenzhen,/data-xp-action="education-region"/); assert.doesNotMatch(shenzhen,/广州市教育局/);
+  assert.ok(real.OFFICIAL_NEWS.every(item=>item.regionCity==='广州市'));
+});
