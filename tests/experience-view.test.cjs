@@ -113,14 +113,14 @@ test('community reply action enters focused reply mode and uses send language',(
   assert.doesNotMatch(detail,/保存回应/); assert.match(detail,/data-xp-action="focus-reply"/); assert.match(detail,/xp-social-label">收藏/);
 });
 
-test('light entry points stay in chat and restore the always-visible card quickbar',()=>{
+test('clean home keeps only core chat starters and restores card quickbar after chat starts',()=>{
   const controller=fs.readFileSync(path.join(__dirname,'../assets/experience-controller.js'),'utf8');
   assert.match(controller,/function startLightChat\(/);
   assert.match(controller,/data-xp-action="chat-start" data-scene="emotion"/);
   assert.match(controller,/data-xp-action="chat-start" data-scene="repeat"/);
-  assert.match(controller,/data-xp-action="chat-start" data-scene="play"/);
+  assert.doesNotMatch(controller,/xp-home-light/);
   assert.match(controller,/return startLightChat\('post',post\)/);
-  assert.match(controller,/renderCardQuickBarV90\(\)/);
+  assert.match(controller,/state\.chat\.active\?renderCardQuickBarV90\(\):''/);
   assert.doesNotMatch(controller,/整理成一个小行动/);
   assert.doesNotMatch(controller,/xp-tool-button/);
 });

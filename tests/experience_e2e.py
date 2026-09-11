@@ -27,7 +27,8 @@ class ExperienceTests(unittest.TestCase):
 
     def test_community_to_action_feedback_is_persistent_and_unique(self):
         self.assertEqual(self.page.locator('.xp-home').count(), 1, 'home must mount the new experience shell')
-        self.page.locator('.xp-home [data-route="guides"]').click()
+        self.page.locator('[data-action="drawer-open"]').click()
+        self.page.locator('.v6-tool-orbit [data-route="guides"]:visible').click()
         self.page.locator('[data-xp-action="route"][data-route^="experience/post/"]').first.click()
         self.xp('adopt')
         self.page.wait_for_selector('.v36-conversation.active')
@@ -74,9 +75,9 @@ class ExperienceTests(unittest.TestCase):
 
     def test_light_home_and_post_entries_stay_in_chat_until_user_asks_for_structure(self):
         self.page.goto(self.url + '#/home')
-        self.xp('chat-start', '[data-scene="play"]')
+        self.xp('chat-start', '[data-scene="emotion"]')
         self.page.wait_for_selector('.v36-conversation.active')
-        self.assertIn('10～15 分钟', self.page.locator('.v36-conversation').inner_text())
+        self.assertIn('先不做练习', self.page.locator('.v36-conversation').inner_text())
         self.assertEqual(self.page.locator('#xpDescription').count(), 0)
         self.page.locator('#chatInput').fill('孩子正在搭积木。')
         self.page.locator('[data-action="chat-send"]').click()
@@ -359,6 +360,27 @@ class ExperienceTests(unittest.TestCase):
             self.xp('tab', '[data-value="news"]')
         self.assertIn('广州市 · 天河区', self.page.locator('.xp-education-region-bar').inner_text())
         self.assertEqual(self.page.locator('.xp-news-card').count(), 5)
+
+    def test_home_clean_layout_keeps_composer_bottom_and_removes_feature_hub(self):
+        self.page.goto(self.url + '#/home')
+        self.page.wait_for_selector('.xp-home-clean:visible')
+        home = self.page.locator('.xp-home-clean')
+        self.assertEqual(home.locator('.xp-home-primary').count(), 0)
+        self.assertEqual(home.locator('.xp-home-light').count(), 0)
+        self.assertEqual(home.locator('.xp-home-utilities').count(), 0)
+        self.assertEqual(home.locator('.xp-home-starters > button').count(), 3)
+        self.assertEqual(self.page.locator('.v90-card-pill:visible').count(), 0)
+        self.assertEqual(self.page.locator('#chatInput').count(), 1)
+        composer = self.page.locator('.ai-shell > .composer:visible').bounding_box()
+        hero = self.page.locator('.xp-home-hero:visible').bounding_box()
+        starters = self.page.locator('.xp-home-starters:visible').bounding_box()
+        self.assertLessEqual(hero['height'], 160)
+        self.assertGreater(starters['y'], hero['y'])
+        self.assertGreater(composer['y'], starters['y'] + starters['height'])
+        self.assertGreater(composer['y'], 620)
+        self.page.locator('.xp-home-starters > button').first.click()
+        self.page.wait_for_selector('.v36-conversation.active')
+        self.assertEqual(self.page.locator('.v90-card-pill:visible').count(), 5)
 
     def test_drawer_common_tools_has_no_placeholder_more_entry(self):
         self.page.goto(self.url + '#/home')
