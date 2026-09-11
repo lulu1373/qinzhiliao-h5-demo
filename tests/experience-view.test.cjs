@@ -138,3 +138,16 @@ test('education news follows education region and never fills another city polic
   assert.match(shenzhen,/深圳市 · 南山区/); assert.match(shenzhen,/暂未接入 Demo 资讯/); assert.match(shenzhen,/data-xp-action="education-region"/); assert.doesNotMatch(shenzhen,/广州市教育局/);
   assert.ok(real.OFFICIAL_NEWS.every(item=>item.regionCity==='广州市'));
 });
+
+
+test('card intros use the clean mascot without changing the chat avatar',()=>{
+  const html=fs.readFileSync(path.join(__dirname,'../index.html'),'utf8');
+  assert.match(html,/mascotCard:'assets\/mascot-clean-v90\.png'/);
+  const introStart=html.indexOf("function renderCardIntroV90(type='interpretation')");
+  const introEnd=html.indexOf('function renderCardInviteV90',introStart);
+  const intro=html.slice(introStart,introEnd);
+  assert.match(intro,/class="v105-card-mascot" src="\${ASSETS\.mascotCard}"/);
+  assert.doesNotMatch(intro,/ASSETS\.mascotAvatar/);
+  assert.match(html,/class="ai-avatar"><img src="\${ASSETS\.mascotAvatar}"/);
+  assert.match(html,/\.v90-card-intro-visual img\.v105-card-mascot\{[^}]*filter:none!important/);
+});
