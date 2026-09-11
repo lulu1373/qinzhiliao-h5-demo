@@ -360,6 +360,14 @@ class ExperienceTests(unittest.TestCase):
         self.assertIn('广州市 · 天河区', self.page.locator('.xp-education-region-bar').inner_text())
         self.assertEqual(self.page.locator('.xp-news-card').count(), 5)
 
+    def test_drawer_common_tools_has_no_placeholder_more_entry(self):
+        self.page.goto(self.url + '#/home')
+        self.page.locator('[data-action="drawer-open"]').click()
+        section = self.page.locator('.v6-tools-section:visible')
+        self.assertIn('常用功能', section.inner_text())
+        self.assertNotIn('更多', section.inner_text())
+        self.assertEqual(section.locator('.v6-tool-orbit > button').count(), 4)
+
     def test_mobile_routes_fit_and_forms_remain_reachable(self):
         for width in (360, 390, 430):
             self.page.set_viewport_size({'width': width, 'height': 844})
