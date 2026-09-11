@@ -369,7 +369,7 @@ class ExperienceTests(unittest.TestCase):
         self.assertEqual(home.locator('.xp-home-light').count(), 0)
         self.assertEqual(home.locator('.xp-home-utilities').count(), 0)
         self.assertEqual(home.locator('.xp-home-starters > button').count(), 3)
-        self.assertEqual(self.page.locator('.v90-card-pill:visible').count(), 0)
+        self.assertEqual(self.page.locator('.v90-card-pill:visible').count(), 5)
         self.assertEqual(self.page.locator('#chatInput').count(), 1)
         composer = self.page.locator('.ai-shell > .composer:visible').bounding_box()
         hero = self.page.locator('.xp-home-hero:visible').bounding_box()

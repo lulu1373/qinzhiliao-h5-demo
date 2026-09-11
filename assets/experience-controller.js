@@ -477,8 +477,7 @@ function installExperienceHome({read}) {
       <div class="xp-home-starters" aria-label="你可以这样开始"><button data-action="start-scenario" data-scenario="homework"><i>${svg.conflict}</i><span><b>刚刚发生什么了？</b><small>从一件具体的事聊起</small></span>${svg.back}</button><button data-xp-action="chat-start" data-scene="emotion"><i>${svg.heart}</i><span><b>我有点情绪卡住了</b><small>先聊聊，不急着做练习</small></span>${svg.back}</button><button data-xp-action="chat-start" data-scene="repeat"><i>${svg.repeat}</i><span><b>这个问题总是反复</b><small>先从最近一次聊起</small></span>${svg.back}</button></div></div>`;
   };
   renderComposer = function() {
-    const quickbar=state.chat.active?renderCardQuickBarV90():'';
-    return `<div class="composer xp-composer">${quickbar}<div class="composer-row"><button class="composer-btn" data-action="voice-start" aria-label="语音输入">${svg.mic}</button><div class="composer-input"><textarea id="chatInput" rows="1" placeholder="${state.chat.active ? '继续和小亲说…' : '和小亲说说…'}"></textarea></div><button class="composer-btn" data-action="attachment-sheet" aria-label="添加附件">${svg.plus}</button><button class="composer-btn" id="chatSendBtn" data-action="chat-send" aria-label="发送">${svg.send}</button></div></div>`;
+    return `<div class="composer xp-composer">${renderCardQuickBarV90()}<div class="composer-row"><button class="composer-btn" data-action="voice-start" aria-label="语音输入">${svg.mic}</button><div class="composer-input"><textarea id="chatInput" rows="1" placeholder="${state.chat.active ? '继续和小亲说…' : '和小亲说说…'}"></textarea></div><button class="composer-btn" data-action="attachment-sheet" aria-label="添加附件">${svg.plus}</button><button class="composer-btn" id="chatSendBtn" data-action="chat-send" aria-label="发送">${svg.send}</button></div></div>`;
   };
 }
 installExperience();
