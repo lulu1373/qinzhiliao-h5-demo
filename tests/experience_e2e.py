@@ -158,6 +158,10 @@ class ExperienceTests(unittest.TestCase):
         if self.page.locator('.qzl-region-sheet:visible').count():
             self.page.locator('[data-overlay-action="close"]').click()
         self.assertIn('广州市教育局',self.page.locator('.xp-page').inner_text())
+        self.assertIn('本地教育信息，一处看清', self.page.locator('.xp-community-copy').inner_text())
+        self.assertEqual(self.page.locator('.xp-news-source i:visible').first.inner_text(), '官方来源')
+        self.assertGreater(self.page.locator('a.xp-news-original:visible').count(), 0)
+        self.assertIn('打开原文', self.page.locator('a.xp-news-original:visible').first.inner_text())
         self.page.locator('[data-xp-action="route"][data-route^="experience/news/"]').first.click()
         self.page.wait_for_selector('.xp-official:visible')
         self.assertIn('关键时间',self.page.locator('.xp-official:visible').inner_text())
