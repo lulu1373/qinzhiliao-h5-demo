@@ -407,5 +407,60 @@ class ExperienceTests(unittest.TestCase):
         self.assertLessEqual(box['y'] + box['height'], 461)
 
 
+
+    def test_moderation_feedback_demo_covers_privacy_review_reject_and_comment(self):
+        def open_demo(scenario):
+            self.page.goto(self.url + '#/guides', wait_until='networkidle')
+            self.page.wait_for_selector('.xp-community-hero')
+            self.page.locator('[data-xp-action="compose"]:visible').first.click()
+            self.page.locator('.xp-moderation-demo summary').click()
+            self.page.locator(f'[data-xp-action="moderation-demo"][data-value="{scenario}"]').click()
+            self.page.locator('[data-xp-action="draft-preview"]').click()
+            self.page.wait_for_selector('[data-xp-action="draft-publish"]:visible')
+
+        open_demo('privacy')
+        self.page.locator('[data-xp-action="draft-publish"]').click()
+        self.page.wait_for_selector('.xp-moderation-sheet.is-revise')
+        self.assertIn('发布前需要改一处', self.page.locator('.xp-moderation-sheet').inner_text())
+        self.page.locator('[data-xp-action="moderation-redact"]').click()
+        self.page.wait_for_selector('.xp-moderation-safe-edit')
+        self.assertNotIn('张小明', self.page.locator('.xp-preview').inner_text())
+        self.assertIn('我家孩子最近在学校', self.page.locator('.xp-preview').inner_text())
+        self.page.locator('[data-xp-action="draft-publish"]').click()
+        self.page.wait_for_selector('.xp-community-hero')
+        self.assertIn('孩子最近不想去学校', self.page.locator('.xp-feed').inner_text())
+
+        open_demo('review')
+        self.page.locator('[data-xp-action="draft-publish"]').click()
+        self.page.wait_for_selector('.xp-moderation-sheet.is-reviewing')
+        self.assertIn('不要等待社区回复', self.page.locator('.xp-moderation-sheet').inner_text())
+        self.page.locator('[data-overlay-action="close"]:visible').click()
+        self.page.wait_for_selector('.xp-mine-summary')
+        self.assertIn('审核中 · 仅自己可见', self.page.locator('.xp-mine-list').inner_text())
+        self.page.goto(self.url + '#/guides', wait_until='networkidle')
+        self.assertNotIn('孩子说自己不想活了，我很担心', self.page.locator('.xp-feed').inner_text())
+
+        open_demo('reject')
+        self.page.locator('[data-xp-action="draft-publish"]').click()
+        self.page.wait_for_selector('.xp-moderation-sheet.is-rejected')
+        self.assertIn('危险育儿建议', self.page.locator('.xp-moderation-sheet').inner_text())
+        self.page.locator('[data-xp-action="moderation-appeal"]').click()
+        self.assertEqual(self.stored()['experience']['draft']['moderationAppeal'], 'submitted')
+
+        self.page.goto(self.url + '#/guides', wait_until='networkidle')
+        self.page.locator('[data-xp-action="route"][data-route^="experience/post/"]').first.click()
+        self.page.wait_for_selector('.xp-reply-composer')
+        before = len(self.stored()['experience']['comments'])
+        self.page.locator('[data-xp-action="moderation-comment-demo"]').click()
+        self.page.locator('[data-xp-action="comment"]').click()
+        self.page.wait_for_selector('.xp-comment-moderation')
+        self.assertIn('感到被攻击', self.page.locator('.xp-comment-moderation').inner_text())
+        self.assertEqual(len(self.stored()['experience']['comments']), before)
+        self.page.locator('[data-xp-action="comment-moderation-edit"]').click()
+        self.page.locator('#xpComment').fill('我也遇到过类似情况，抱抱你。')
+        self.page.locator('[data-xp-action="comment"]').click()
+        self.assertEqual(len(self.stored()['experience']['comments']), before + 1)
+
+
 if __name__ == '__main__':
     unittest.main()

@@ -12,6 +12,32 @@ function installExperience() {
   const originalRoute = renderRoute;
   let lastRoute = '', busy = false;
 
+
+  const MODERATION_DEMOS={
+    pass:{title:'昨晚我先听孩子说完',body:'昨晚因为屏幕时间有点争执，我先停下来听他说完，再一起约了今天的结束时间。',postType:'dynamic',stage:'小学低年级',topic:'沟通'},
+    privacy:{title:'孩子最近不想去学校',body:'我儿子张小明在广州XX小学四年级3班，最近早上总说不想去学校，我有点担心。',postType:'question',stage:'小学高年级',topic:'学校适应'},
+    review:{title:'孩子说自己不想活了，我很担心',body:'昨晚孩子说“我不想活了”，我现在很担心，不知道该怎么陪他。我想听听大家遇到这种情况会先做什么。',postType:'question',stage:'青春期',topic:'安全求助'},
+    reject:{title:'这样管孩子是不是更有效',body:'孩子不听话就打一顿，打一顿就老实了，我觉得这样最快。',postType:'method',stage:'小学低年级',topic:'管教'}
+  };
+  function moderatePost(draft){
+    const text=((draft.title||'')+' '+(draft.body||'')).trim(),scenario=draft.moderationScenario||'';
+    if(scenario==='privacy'||/张小明|XX小学|四年级3班|学校.{0,8}班/.test(text))return{decision:'revision_required',risk:'minor_privacy',title:'发布前需要改一处',message:'为了保护孩子隐私，这段内容包含较具体的个人信息。',evidence:'张小明 · 广州XX小学四年级3班'};
+    if(scenario==='review'||/不想活|自杀|自伤/.test(text))return{decision:'reviewing',risk:'safety_crisis',title:'内容审核中',message:'这段内容涉及比较敏感的安全话题，需要再确认一下。'};
+    if(scenario==='reject'||/打一顿就老实|打死|往死里打/.test(text))return{decision:'rejected',risk:'harmful_parenting',title:'这条内容暂时无法发布',message:'其中包含鼓励对孩子使用伤害性做法的内容。'};
+    return{decision:'published',risk:'none'};
+  }
+  function moderateComment(body){
+    if(/去死|打死你/.test(body))return{decision:'rejected',title:'这条回复无法发送',message:'包含威胁或严重攻击内容。',evidence:body.slice(0,80)};
+    if(/有病|不配当妈|不配当爸|蠢|垃圾/.test(body))return{decision:'revision_required',title:'这句话可能会让对方感到被攻击',message:'要不要换一种表达？修改后可以重新发送。',evidence:body.slice(0,80)};
+    return{decision:'published'};
+  }
+  function moderationSheet(result){
+    if(result.decision==='revision_required')return `<div class="xp-moderation-sheet is-revise"><span class="xp-moderation-kicker">发布保护</span><h2>${esc(result.title)}</h2><p>${esc(result.message)}</p><div class="xp-moderation-evidence"><small>检测到</small><strong>${esc(result.evidence||'孩子个人信息')}</strong><div><span>孩子姓名</span><span>学校 / 班级</span></div></div><p class="xp-moderation-suggestion">建议改成“我家孩子最近在学校……”</p><button class="primary-btn full-btn" data-xp-action="moderation-redact">小亲帮我隐藏这些信息</button><button class="secondary-btn full-btn" data-xp-action="moderation-edit">自己修改</button><button class="ghost-btn full-btn" data-overlay-action="close">暂不发布</button></div>`;
+    if(result.decision==='reviewing')return `<div class="xp-moderation-sheet is-reviewing"><span class="xp-moderation-kicker">仅自己可见</span><h2>${esc(result.title)}</h2><p>${esc(result.message)}</p><div class="xp-moderation-state-card"><strong>内容已经保存</strong><span>审核期间不会出现在社区公开流，完成后状态会更新。</span></div><p class="xp-moderation-safety-note">如果孩子此刻有伤害自己或他人的风险，请优先联系当地紧急服务或专业机构，不要等待社区回复。</p><button class="primary-btn full-btn" data-overlay-action="close">知道了</button></div>`;
+    return `<div class="xp-moderation-sheet is-rejected"><span class="xp-moderation-kicker">社区安全</span><h2>${esc(result.title)}</h2><p>${esc(result.message)}</p><div class="xp-moderation-evidence"><small>需要修改的内容</small><strong>“打一顿就老实了……”</strong><div><span>危险育儿建议</span></div></div><p class="xp-moderation-suggestion">你可以修改这部分内容后再次发布。</p><button class="primary-btn full-btn" data-xp-action="moderation-edit">修改内容</button><button class="secondary-btn full-btn" data-xp-action="moderation-rules">查看社区规则</button><button class="ghost-btn full-btn" data-xp-action="moderation-appeal">申请复核</button></div>`;
+  }
+  function redactPrivacy(text){return String(text||'').replace(/我儿子张小明在广州XX小学四年级3班，最近/g,'我家孩子最近在学校，').replace(/广州XX小学四年级3班/g,'孩子所在学校').replace(/张小明/g,'我家孩子').replace(/我儿子我家孩子/g,'我家孩子');}
+
   function commit(data, patch = {}) {
     const previous = state;
     state = {...state,...patch,experience:data};
@@ -192,15 +218,19 @@ function installExperience() {
     }));
   }
   function publish() {
-    const data = read(), draft = data.draft, editing=!!draft.id;
-    const id = draft.id || uid('post'), origin=getQuery(currentRoute).origin||'guides';
-    let next = editing ? model.updatePost(data,id,{...draft,now:now()}) : model.savePost(data,{...draft,id,now:now()});
+    const data = read(), draft = data.draft, editing=!!draft.id,decision=moderatePost(draft);
+    if(decision.decision==='revision_required'||decision.decision==='rejected'){showBottomSheet(moderationSheet(decision));return;}
+    const id = draft.id || uid('post'), origin=getQuery(currentRoute).origin||'guides',status=decision.decision==='reviewing'?'reviewing':'published';
+    let next = editing ? model.updatePost(data,id,{...draft,status,moderation:decision,now:now()}) : model.savePost(data,{...draft,id,status,moderation:decision,now:now()});
     const ui={...next.ui};
     let target=origin;
-    if(origin==='guides'){ui.tab='dynamic';ui.filter='all';ui.query='';}
+    if(status==='reviewing'){ui.mineTab='published';target='experience/mine';}
+    else if(origin==='guides'){ui.tab='dynamic';ui.filter='all';ui.query='';}
     if(origin==='experience/mine/drafts'){ui.mineTab='published';target='experience/mine';}
     next = {...next,draft:{},ui};
-    commit(next); toast(editing?'修改已保存':'发布成功'); returnToOrigin(target);
+    commit(next);
+    if(status==='reviewing'){navigate(target,{replace:true});requestAnimationFrame(()=>showBottomSheet(moderationSheet(decision)));return;}
+    toast(editing?'修改已保存':'发布成功'); returnToOrigin(target);
   }
   function card(type, patch) {
     const data = read();
@@ -324,6 +354,18 @@ function installExperience() {
       if (action === 'edit-draft') {const origin=getQuery(currentRoute).origin||'guides';return navigate('experience/compose?origin='+encodeOrigin(origin),{replace:true});}
       if (action === 'resume-draft') return go('experience/compose?origin='+encodeOrigin(routeBase(currentRoute)==='experience/mine/drafts'?'experience/mine/drafts':'experience/mine'));
       if (action === 'clear-draft') {showConfirm('删除这条草稿？','删除后无法恢复。',()=>{const data=read();commit({...data,draft:{}});toast('草稿已删除');refresh();});return;}
+      if (action === 'moderation-demo') {
+        const preset=MODERATION_DEMOS[val];if(!preset)return;
+        const data=read();commit(model.updateDraft(data,{...preset,group:data.draft.group||'play',moderationScenario:val,moderationResolved:'',moderationAppeal:''}));return refresh();
+      }
+      if (action === 'moderation-redact') {
+        const data=read(),draft=data.draft||{};commit(model.updateDraft(data,{title:redactPrivacy(draft.title),body:redactPrivacy(draft.body),moderationScenario:'pass',moderationResolved:'privacy'}));closeOverlay();toast('已隐藏可能识别孩子的信息');return refresh();
+      }
+      if (action === 'moderation-edit') {closeOverlay();const origin=getQuery(currentRoute).origin||'guides';return navigate('experience/compose?origin='+encodeOrigin(origin),{replace:true});}
+      if (action === 'moderation-rules') {showBottomSheet(`<div class="xp-moderation-sheet"><span class="xp-moderation-kicker">社区规则</span><h2>让交流对孩子和家长都更安全</h2><p>请不要发布可识别孩子的隐私、鼓励伤害或羞辱的做法、违法内容、广告引流，以及对他人的人身攻击。</p><button class="primary-btn full-btn" data-overlay-action="close">知道了</button></div>`);return;}
+      if (action === 'moderation-appeal') {const data=read();commit(model.updateDraft(data,{moderationAppeal:'submitted'}));closeOverlay();toast('已提交复核申请 · Demo');return;}
+      if (action === 'moderation-comment-demo') {const data=read();commit({...data,commentDrafts:{...data.commentDrafts,[id]:'你这种妈真的有病。'}});return refresh(button.closest('.xp-page')?.scrollTop||0);}
+      if (action === 'comment-moderation-edit') {const data=read(),m={...(data.ui?.commentModeration||{})};delete m[id];commit({...data,ui:{...data.ui,commentModeration:m}});refresh(button.closest('.xp-page')?.scrollTop||0);requestAnimationFrame(()=>document.getElementById('xpComment')?.focus());return;}
       if (action === 'draft-preview') {
         saveDraft();
         const data = read();
@@ -376,9 +418,12 @@ function installExperience() {
       if (action === 'comment') {
         const body=value('xpComment').trim();
         if(!body){document.getElementById('xpComment')?.focus();return;}
-        const commentId=uid('comment'),top=button.closest('.xp-page')?.scrollTop||0;
+        const top=button.closest('.xp-page')?.scrollTop||0,moderation=moderateComment(body);
+        if(moderation.decision!=='published'){const data=read();commit({...data,ui:{...data.ui,commentModeration:{...(data.ui?.commentModeration||{}),[id]:moderation}}});refresh(top);requestAnimationFrame(()=>document.getElementById('xpComment')?.focus());return;}
+        const commentId=uid('comment');
         const next = model.addComment(read(),{id:commentId,postId:id,body,now:now()});
-        commit({...next,commentDrafts:{...next.commentDrafts,[id]:''}});
+        const m={...(next.ui?.commentModeration||{})};delete m[id];
+        commit({...next,commentDrafts:{...next.commentDrafts,[id]:''},ui:{...next.ui,commentModeration:m}});
         toast('回复已发送'); refresh(top);
         requestAnimationFrame(()=>setTimeout(()=>{
           const node=document.querySelector(`[data-comment-id="${commentId}"]`);
@@ -411,7 +456,8 @@ function installExperience() {
       if (['xpTitle','xpBody','xpGroup','xpPostType','xpStage','xpTopic'].includes(target.id)) return saveDraft();
       if (['xpCardEvent','xpCardNote'].includes(target.id)) return card(id,{event:value('xpCardEvent'),note:value('xpCardNote')});
       if (target.id === 'xpComment') {
-        commit({...data,commentDrafts:{...data.commentDrafts,[id]:target.value}});
+        const moderation={...(data.ui?.commentModeration||{})};delete moderation[id];
+        commit({...data,commentDrafts:{...data.commentDrafts,[id]:target.value},ui:{...data.ui,commentModeration:moderation}});
         target.style.height='auto';target.style.height=Math.min(target.scrollHeight,120)+'px';
         const send=document.querySelector('.xp-reply-send');if(send)send.disabled=!target.value.trim();
         return;

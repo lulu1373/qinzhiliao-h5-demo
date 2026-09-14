@@ -132,7 +132,8 @@
     const storedImageBytes = data.posts.reduce((total,item)=>total+(Array.isArray(item.images)?item.images.reduce((sum,image)=>sum+(typeof image==='string'?image.length:0),0):0),0);
     if (storedImageBytes + safeImages.reduce((total,image)=>total+image.length,0) > 3600000) throw new Error('本机图片空间已满，请减少图片后再发布');
     const postType = ['dynamic','question','method'].includes(input.postType) ? input.postType : 'dynamic';
-    const post = { id, title:text(input.title,'标题',60), body:text(input.body,'正文',2000), group, scene:group, author:'我的本机记录', authorId:'self', kind:postType==='method'?'method':'experience', postType, stage:text(input.stage,'阶段',20,true), topic:text(input.topic,'话题',30,true), images:safeImages, likeCount:0, commentCount:0, demo:true, local:true, status:'published', createdAt:input.now || new Date().toISOString(), updatedAt:null, publishedLabel:'刚刚' };
+    const status=['published','reviewing'].includes(input.status)?input.status:'published',moderation=object(input.moderation);
+    const post = { id, title:text(input.title,'标题',60), body:text(input.body,'正文',2000), group, scene:group, author:'我的本机记录', authorId:'self', kind:postType==='method'?'method':'experience', postType, stage:text(input.stage,'阶段',20,true), topic:text(input.topic,'话题',30,true), images:safeImages, likeCount:0, commentCount:0, demo:true, local:true, status, moderation:{...moderation}, createdAt:input.now || new Date().toISOString(), updatedAt:null, publishedLabel:status==='reviewing'?'刚刚提交':'刚刚' };
     return {...data, posts:[post,...data.posts]};
   }
   function updatePost(raw, id, patch) {
@@ -148,7 +149,8 @@
       if (typeof image !== 'string' || !/^data:image\/(?:png|jpeg|webp);base64,[a-z0-9+/=]+$/i.test(image) || image.length > 520000) throw new Error('图片格式不支持或文件过大');
       return image;
     });
-    const updated = {...current,title:text(input.title ?? current.title,'标题',60),body:text(input.body ?? current.body,'正文',2000),group,scene:group,postType,kind:postType==='method'?'method':'experience',stage:text(input.stage ?? current.stage,'阶段',20,true),topic:text(input.topic ?? current.topic,'话题',30,true),images:safeImages,authorId:'self',local:true,status:'published',updatedAt:input.now || new Date().toISOString()};
+    const status=['published','reviewing'].includes(input.status)?input.status:'published',moderation=object(input.moderation);
+    const updated = {...current,title:text(input.title ?? current.title,'标题',60),body:text(input.body ?? current.body,'正文',2000),group,scene:group,postType,kind:postType==='method'?'method':'experience',stage:text(input.stage ?? current.stage,'阶段',20,true),topic:text(input.topic ?? current.topic,'话题',30,true),images:safeImages,authorId:'self',local:true,status,moderation:{...moderation},publishedLabel:status==='reviewing'?'刚刚提交':(current.publishedLabel||'刚刚'),updatedAt:input.now || new Date().toISOString()};
     return {...data,posts:data.posts.map(p=>p.id===key?updated:p)};
   }
   function deletePost(raw, id) {

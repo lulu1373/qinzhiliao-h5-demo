@@ -160,3 +160,28 @@ test('card intros use the clean mascot without changing the chat avatar',()=>{
   assert.match(html,/class="ai-avatar"><img src="\${ASSETS\.mascotAvatar}"/);
   assert.match(html,/\.v90-card-intro-visual img\.v105-card-mascot\{[^}]*filter:none!important/);
 });
+
+test('moderation demo keeps reviewing posts private and exposes all four feedback scenarios',()=>{
+  const real=require('../assets/experience-model.js');
+  let data=real.savePost({}, {id:'review-1',title:'需要复核的求助',body:'这条内容只应自己看到',group:'play',status:'reviewing',moderation:{decision:'reviewing'}});
+  const common={model:real,data:{...data,ui:{tab:'dynamic'}}};
+  const feed=view.render('experience/community',ctx(common));
+  assert.doesNotMatch(feed,/需要复核的求助/);
+  const mine=view.render('experience/mine',ctx({model:real,data:{...data,ui:{mineTab:'published'}}}));
+  assert.match(mine,/需要复核的求助/); assert.match(mine,/审核中 · 仅自己可见/);
+  const detail=view.render('experience/post/review-1',ctx({model:real,data}));
+  assert.match(detail,/审核中 · 仅自己可见/); assert.doesNotMatch(detail,/xp-reply-composer/);
+  const compose=view.render('experience/compose',ctx({model:real,data:{draft:{}}}));
+  for(const value of ['pass','privacy','review','reject']) assert.match(compose,new RegExp(`data-value="${value}"`));
+  const controller=fs.readFileSync(path.join(__dirname,'../assets/experience-controller.js'),'utf8');
+  assert.match(controller,/function moderatePost\(/); assert.match(controller,/function moderateComment\(/);
+  assert.match(controller,/minor_privacy/); assert.match(controller,/safety_crisis/); assert.match(controller,/harmful_parenting/);
+});
+
+test('community routes pin status bar, header and body to one solid canvas',()=>{
+  const css=fs.readFileSync(path.join(__dirname,'../assets/experience.css'),'utf8');
+  assert.match(css,/--xp-community-canvas:#FDF9F3/);
+  assert.match(css,/\.app-frame:has\(\.xp-page\).*background:var\(--xp-community-canvas\)!important/);
+  assert.match(css,/\.app-frame:has\(\.xp-page\) \.main-viewport,[^\n]*\.statusbar,[^\n]*\.screen-host,[^\n]*\.screen\{background:var\(--xp-community-canvas\)!important/);
+  assert.match(css,/\.xp-page \.xp-header,\.xp-community-hero\{background:var\(--xp-community-canvas\)!important/);
+});
