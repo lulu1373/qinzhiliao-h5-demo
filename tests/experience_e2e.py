@@ -388,7 +388,7 @@ class ExperienceTests(unittest.TestCase):
         section = self.page.locator('.v6-tools-section:visible')
         self.assertIn('常用功能', section.inner_text())
         self.assertNotIn('更多', section.inner_text())
-        self.assertEqual(section.locator('.v6-tool-orbit > button').count(), 4)
+        self.assertEqual(section.locator('.v6-tool-orbit > button').count(), 8)
 
     def test_mobile_routes_fit_and_forms_remain_reachable(self):
         for width in (360, 390, 430):

@@ -203,6 +203,7 @@ function installExperience() {
     const actionMeta = {...gr.actionMeta,[journey.actionId]:{...gr.actionMeta[journey.actionId],
       ...(actual ? {feedbackAt:now(),feedbackDate:date()} : {})}};
     commit(data,{actions,growthReports:{...gr,actionMeta}});
+    if (actual) window.dispatchEvent(new CustomEvent('qzl:reward',{detail:{sourceType:'action_feedback',sourceId:journey.actionId}}));
     refresh();
   }
   function saveDraft() {

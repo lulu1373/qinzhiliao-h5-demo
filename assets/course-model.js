@@ -6,6 +6,7 @@
   'use strict';
 
   const DAY = 24 * 60 * 60 * 1000;
+  const QUOTE_TTL = 15 * 60 * 1000;
   const CATALOG = [
     {id:'B001', title:'新人亲子沟通礼包', type:'newcomer', topic:'亲子沟通', subtitle:'先把冲突说清楚，再一起找下一步', amountFen:990, lessons:[['b001-1','先听完再回应',480],['b001-2','把催促改成提问',480],['b001-3','冲突后重新靠近',540]]},
     {id:'M201', title:'孩子情绪来了，父母先稳住', type:'member', topic:'情绪与冲突', subtitle:'识别情绪升级前的那个瞬间', normalFen:5900, memberFen:990, lessons:[['m201-1','情绪不是故意捣乱',720],['m201-2','先帮自己停半步',840],['m201-3','冲突后怎样修复',840]]},
@@ -23,6 +24,25 @@
   const nowISO = value => validDate(value) ? new Date(value).toISOString() : new Date().toISOString();
   const plusDays = (value, days) => new Date(new Date(value).getTime() + days * DAY).toISOString();
   const newId = (prefix, now) => `${prefix}_${String(now || Date.now()).replace(/[^0-9]/g,'').slice(-10)}_${Math.random().toString(36).slice(2,7)}`;
+  const monthEnd = (year, month) => new Date(Date.UTC(year,month,0)).getUTCDate();
+  const localDay = value => {
+    if (/^\d{4}-\d{2}-\d{2}$/.test(String(value || ''))) return String(value);
+    return new Date(nowISO(value)).toLocaleDateString('sv-SE',{timeZone:'Asia/Shanghai'});
+  };
+  const anchoredDay = (year, month, anchorDay) => `${year}-${String(month).padStart(2,'0')}-${String(Math.min(anchorDay,monthEnd(year,month))).padStart(2,'0')}`;
+
+  function membershipCycleId(anchorDate, now) {
+    const anchor = localDay(anchorDate), today = localDay(now);
+    const [,anchorMonth,anchorDay] = anchor.split('-').map(Number);
+    let [year,month] = today.split('-').map(Number);
+    let candidate = anchoredDay(year,month,anchorDay);
+    if (today < candidate) {
+      month -= 1;
+      if (month < 1) { year -= 1; month = 12; }
+      candidate = anchoredDay(year,month,anchorDay);
+    }
+    return candidate < anchor ? anchor : candidate;
+  }
 
   function normalize(raw) {
     const input = raw && typeof raw === 'object' ? raw : {};
@@ -31,16 +51,18 @@
     const entitlements = asArray(input.entitlements).filter(item => item && byId(item.productId));
     const orders = asArray(input.orders).filter(item => item && item.id && byId(item.productId));
     const ledger = asArray(points.ledger).filter(item => item && item.entryId && Number.isFinite(Number(item.remaining))).map(item => ({...item, amount:Number(item.amount || item.remaining || 0),remaining:Math.max(0, Number(item.remaining || 0))}));
-    const consumed = orders.filter(order => order.method === 'points' && order.status === 'succeeded').length;
+    const consumed = orders.filter(order => order.productId === 'P301' && order.method === 'points' && order.status === 'succeeded').length;
     const data = {
       version:1,
-      membership:{active:membership.active === true, cycleId:typeof membership.cycleId === 'string' ? membership.cycleId : '', quota:Number.isInteger(membership.quota) ? membership.quota : 2, used:Number.isInteger(membership.used) ? membership.used : 0},
+      membership:{active:membership.active === true, anchorDate:typeof membership.anchorDate === 'string' ? membership.anchorDate : '', cycleId:typeof membership.cycleId === 'string' ? membership.cycleId : '', quota:Number.isInteger(membership.quota) ? membership.quota : 2, used:Number.isInteger(membership.used) ? membership.used : 0},
       points:{ledger, balance:ledger.reduce((sum, item) => sum + item.remaining, 0)},
       orders,
       entitlements,
       preferences:{proactiveRecommendations:input.preferences?.proactiveRecommendations !== false},
       progress:input.progress && typeof input.progress === 'object' ? clone(input.progress) : {},
       recommendationHidden:typeof input.recommendationHidden === 'string' ? input.recommendationHidden : '',
+      checkinPromptDay:typeof input.checkinPromptDay === 'string' ? input.checkinPromptDay : '',
+      recommendationExposure:input.recommendationExposure && typeof input.recommendationExposure === 'object' ? clone(input.recommendationExposure) : {},
       firstPointsRedemption:input.firstPointsRedemption === true || consumed > 0
     };
     return data;
@@ -52,16 +74,32 @@
   }
   function canLearn(state, productId, now) { return !!entitlement(state, productId, now); }
 
-  function reservedByEntry(orders) {
+  function reservationIsLive(order, now) {
+    const expiresAt = new Date(order?.quoteExpiresAt).getTime();
+    return ['pending','processing'].includes(order?.status) && Number.isFinite(expiresAt) && expiresAt > new Date(nowISO(now)).getTime();
+  }
+
+  function reservedByEntry(orders, now) {
     const reserved = new Map();
-    asArray(orders).filter(order => order.method === 'points' && ['pending','processing'].includes(order.status)).forEach(order => {
+    asArray(orders).filter(order => order.method === 'points' && reservationIsLive(order,now)).forEach(order => {
       asArray(order.allocations).forEach(allocation => reserved.set(allocation.entryId,(reserved.get(allocation.entryId) || 0) + Number(allocation.amount || 0)));
     });
     return reserved;
   }
   function availablePointBalance(state, now) {
-    const instant = new Date(nowISO(now)).getTime(), reserved = reservedByEntry(state.orders);
+    const instant = new Date(nowISO(now)).getTime(), reserved = reservedByEntry(state.orders,now);
     return state.points.ledger.reduce((sum,item) => sum + (new Date(item.expiresAt).getTime() > instant ? Math.max(0,item.remaining-(reserved.get(item.entryId) || 0)) : 0),0);
+  }
+
+  function pointBalances(raw, now) {
+    const state = normalize(raw), instant = new Date(nowISO(now)).getTime();
+    const total = state.points.ledger.reduce((sum,item) => sum + (item.kind !== 'spend' && new Date(item.expiresAt).getTime() > instant ? Math.max(0,item.remaining) : 0),0);
+    const available = availablePointBalance(state,now);
+    return {available,frozen:Math.max(0,total-available),total};
+  }
+
+  function reservedMemberQuota(state, now) {
+    return state.orders.filter(order => order.memberReservation && order.memberCycleId === state.membership.cycleId && reservationIsLive(order,now)).length;
   }
 
   function offerFor(raw, productId, now) {
@@ -73,11 +111,13 @@
       return {available:true,method:'cash',amountFen:990,label:'新人 ¥9.9',reason:''};
     }
     if (product.type === 'member') {
-      if (state.membership.active && state.membership.used < state.membership.quota) return {available:true,method:'cash',amountFen:product.memberFen,label:'会员专享 ¥9.9',reason:''};
+      const remaining = state.membership.quota - state.membership.used - reservedMemberQuota(state,now);
+      if (state.membership.active && remaining > 0) return {available:true,method:'cash',amountFen:product.memberFen,label:'会员专享 ¥9.9',reason:''};
       return {available:false,method:'cash',amountFen:product.normalFen,label:'会员专享 ¥9.9',reason:state.membership.active ? 'member_quota_used' : 'member_required'};
     }
     if (product.type === 'points') {
-      const cost = state.firstPointsRedemption ? product.pointsCost : product.firstPointsCost;
+      const hasWelcomePrice = Number.isFinite(Number(product.firstPointsCost));
+      const cost = hasWelcomePrice && !state.firstPointsRedemption ? Number(product.firstPointsCost) : Number(product.pointsCost);
       const available = availablePointBalance(state,now);
       return {available:available >= cost,method:'points',amountFen:0,pointsCost:cost,label:`${cost} 积分兑换`,reason:available >= cost ? '' : 'points_insufficient'};
     }
@@ -86,7 +126,7 @@
 
   function reservePoints(ledger, cost, now, orders=[]) {
     const usable = ledger.filter(item => new Date(item.expiresAt).getTime() > new Date(now).getTime() && item.remaining > 0).sort((a,b) => new Date(a.expiresAt) - new Date(b.expiresAt));
-    const reserved = reservedByEntry(orders);
+    const reserved = reservedByEntry(orders,now);
     let needed = cost;
     const allocations = [];
     for (const item of usable) {
@@ -102,9 +142,10 @@
   function createOrder(raw, productId, method, now) {
     const state = normalize(raw), offer = offerFor(state, productId, now), product = byId(productId);
     if (!product) throw new Error('课程暂不可用');
-    if (state.orders.some(order => order.productId === productId && ['pending','processing'].includes(order.status))) throw new Error('这门课程已有待确认订单');
+    if (state.orders.some(order => order.productId === productId && reservationIsLive(order,now))) throw new Error('这门课程已有待确认订单');
     if (!offer.available || offer.method !== method) throw new Error(offer.reason === 'points_insufficient' ? '积分不足，先完成任务再来兑换' : '当前不满足获取条件');
-    const order = {id:newId('course',now), productId, method, status:'pending', createdAt:nowISO(now), quoteExpiresAt:plusDays(nowISO(now), 1), amountFen:offer.amountFen || 0, pointsCost:offer.pointsCost || 0, allocations:method === 'points' ? reservePoints(state.points.ledger, offer.pointsCost, nowISO(now),state.orders) : [], memberCycleId:product.type === 'member' ? state.membership.cycleId : '', memberReservation:product.type === 'member'};
+    const createdAt = nowISO(now);
+    const order = {id:newId('course',now), productId, method, status:'pending', createdAt, quoteExpiresAt:new Date(new Date(createdAt).getTime() + QUOTE_TTL).toISOString(), amountFen:offer.amountFen || 0, pointsCost:offer.pointsCost || 0, allocations:method === 'points' ? reservePoints(state.points.ledger, offer.pointsCost, createdAt,state.orders) : [], memberCycleId:product.type === 'member' ? state.membership.cycleId : '', memberReservation:product.type === 'member'};
     return {...state, orders:[...state.orders, order]};
   }
 
@@ -114,27 +155,41 @@
       const allocation = allocations.find(value => value.entryId === item.entryId);
       return allocation ? {...item, remaining:item.remaining - allocation.amount} : item;
     });
-    return {...state, points:{ledger,balance:ledger.reduce((sum,item) => sum + item.remaining,0)}};
+    const spend = {entryId:newId('points_spend',now),kind:'spend',amount:-Number(cost),remaining:0,occurredAt:nowISO(now),sourceType:'course_redemption'};
+    const nextLedger = [...ledger,spend];
+    return {...state, points:{ledger:nextLedger,balance:nextLedger.reduce((sum,item) => sum + item.remaining,0)}};
   }
 
   function settleOrder(raw, status, now, orderId='') {
     const state = normalize(raw);
+    const instant = new Date(nowISO(now)).getTime();
     const pending = orderId
       ? state.orders.find(order => order.id === orderId && (order.status === 'pending' || order.status === 'processing'))
       : [...state.orders].reverse().find(order => order.status === 'pending' || order.status === 'processing');
     if (!pending) return state;
     if (pending.status === 'succeeded') return state;
     if (!['success','failed','processing','cancelled'].includes(status)) throw new Error('未知交易结果');
+    const product = byId(pending.productId);
+    const invalidMemberCycle = product?.type === 'member' && pending.memberReservation && pending.memberCycleId !== state.membership.cycleId;
+    const invalidPointAllocation = pending.method === 'points' && (
+      asArray(pending.allocations).reduce((sum,item) => sum + Number(item.amount || 0),0) !== Number(pending.pointsCost || 0) ||
+      asArray(pending.allocations).some(allocation => {
+        const lot = state.points.ledger.find(item => item.entryId === allocation.entryId);
+        return !lot || new Date(lot.expiresAt).getTime() <= instant || Number(lot.remaining) < Number(allocation.amount || 0);
+      })
+    );
+    if (status === 'success' && (new Date(pending.quoteExpiresAt).getTime() <= instant || invalidMemberCycle || invalidPointAllocation)) {
+      return {...state,orders:state.orders.map(order => order.id === pending.id ? {...order,status:'expired'} : order)};
+    }
     if (status === 'processing') return {...state, orders:state.orders.map(order => order.id === pending.id ? {...order,status:'processing'} : order)};
     if (status === 'failed' || status === 'cancelled') return {...state, orders:state.orders.map(order => order.id === pending.id ? {...order,status:status === 'failed' ? 'failed' : 'cancelled'} : order)};
     if (entitlement(state,pending.productId,now)) return {...state,orders:state.orders.map(order => order.id===pending.id ? {...order,status:'succeeded',completedAt:nowISO(now)} : order)};
     let next = state;
     if (pending.method === 'points') next = redeemPoints(next,pending.pointsCost,nowISO(now),pending.allocations);
-    const product = byId(pending.productId);
     const ent = {id:newId('entitlement',now),productId:pending.productId,orderId:pending.id,source:pending.method,validFrom:nowISO(now),validUntil:plusDays(nowISO(now),365),status:'active'};
     next = {...next, entitlements:[...next.entitlements,ent], orders:next.orders.map(order => order.id===pending.id ? {...order,status:'succeeded',completedAt:nowISO(now)} : order)};
     if (product.type === 'member' && pending.memberReservation) next = {...next,membership:{...next.membership,used:next.membership.used + 1}};
-    if (pending.method === 'points') next = {...next,firstPointsRedemption:true};
+    if (pending.method === 'points' && pending.productId === 'P301') next = {...next,firstPointsRedemption:true};
     return normalize(next);
   }
 
@@ -143,5 +198,5 @@
     return !hidden || hidden !== String(localDay || '').slice(0,10);
   }
 
-  return {CATALOG, normalize, offerFor, createOrder, settleOrder, redeemPoints, canLearn, entitlement, recommendationAvailable};
+  return {CATALOG, normalize, offerFor, createOrder, settleOrder, redeemPoints, pointBalances, canLearn, entitlement, recommendationAvailable, membershipCycleId};
 });

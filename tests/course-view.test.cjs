@@ -17,8 +17,15 @@ test('classroom gives newcomer bundle, learning continuation and points clear en
   assert.match(html, /新人 ¥9\.9/);
   assert.match(html, /成长积分/);
   assert.match(html, /data-course-action="detail" data-product-id="B001"/);
-  assert.match(view.homeEntry(ctx()), /简快课堂/);
+  assert.equal(view.homeEntry(ctx()), '');
   assert.match(view.drawerEntry(ctx()), /我的学习/);
+  assert.doesNotMatch(view.drawerEntry(ctx()), /v6-drawer-feature/);
+});
+
+test('every course route renders inside its own vertical scroll region', () => {
+  for (const route of ['courses','courses/list','points','points/ledger','my-learning']) {
+    assert.match(view.render(route, ctx()), /<main class="[^"]*course-page[^"]*qzl-page-scroll/);
+  }
 });
 
 test('detail and checkout make the selected method and simulation explicit', () => {
@@ -45,6 +52,8 @@ test('points page exposes a deliberate daily check-in action', () => {
   const html = view.render('points', ctx());
   assert.match(html, /今日签到/);
   assert.match(html, /data-course-action="checkin"/);
+  assert.match(html, /当前可用/);
+  assert.match(html, /去完成/);
 });
 
 test('order detail keeps the acquisition record separate from the learning entitlement', () => {
@@ -56,4 +65,21 @@ test('order detail keeps the acquisition record separate from the learning entit
   assert.match(html, /已获取/);
   assert.match(html, /有效期/);
   assert.match(html, /data-course-action="learn"/);
+});
+
+test('points ledger displays original earn and spend amounts', () => {
+  const base = M.normalize({points:{ledger:[
+    {entryId:'wallet',kind:'earn',amount:160,remaining:160,expiresAt:'2026-10-01T00:00:00.000Z'}
+  ]}});
+  const paid = M.settleOrder(M.createOrder(base, 'P301', 'points', '2026-09-17T10:00:00.000Z'), 'success', '2026-09-17T10:01:00.000Z');
+  const html = view.render('points/ledger', ctx(paid));
+  assert.match(html, /\+160/);
+  assert.match(html, /−60/);
+  assert.doesNotMatch(html, />-0</);
+});
+
+test('membership activation records the real Shanghai operation day', () => {
+  const shell = fs.readFileSync(path.join(__dirname, '../index.html'), 'utf8');
+  assert.match(shell, /date:new Date\(\)\.toLocaleDateString\('sv-SE',\{timeZone:'Asia\/Shanghai'\}\)/);
+  assert.doesNotMatch(shell, /membership\.orders\.unshift\([^\n]*date:'2026-09-03'/);
 });

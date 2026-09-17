@@ -7,9 +7,18 @@ const file = path.join(__dirname, '../assets/course-model.js');
 const M = fs.existsSync(file) ? require(file) : {};
 
 test('exports the classroom domain contract', () => {
-  for (const key of ['CATALOG', 'normalize', 'offerFor', 'createOrder', 'settleOrder', 'redeemPoints']) {
+  for (const key of ['CATALOG', 'normalize', 'offerFor', 'createOrder', 'settleOrder', 'redeemPoints', 'membershipCycleId']) {
     assert.equal(typeof M[key], key === 'CATALOG' ? 'object' : 'function');
   }
+});
+
+test('membership cycles follow the activation-day anchor and clamp to month end', () => {
+  assert.equal(M.membershipCycleId('2026-01-31', '2026-02-27T12:00:00+08:00'), '2026-01-31');
+  assert.equal(M.membershipCycleId('2026-01-31', '2026-02-28T12:00:00+08:00'), '2026-02-28');
+  assert.equal(M.membershipCycleId('2026-01-31', '2026-03-01T12:00:00+08:00'), '2026-02-28');
+  assert.equal(M.membershipCycleId('2026-01-31', '2026-03-31T12:00:00+08:00'), '2026-03-31');
+  assert.equal(M.membershipCycleId('2026-09-03', '2026-10-02T12:00:00+08:00'), '2026-09-03');
+  assert.equal(M.membershipCycleId('2026-09-03', '2026-10-03T12:00:00+08:00'), '2026-10-03');
 });
 
 test('newcomer bundle is purchased once and membership offer consumes only its cycle quota', () => {
@@ -71,4 +80,84 @@ test('settles the requested order when separate pending course orders coexist', 
   assert.equal(settled.orders.find(order => order.id === second.orders[1].id).status, 'pending');
   assert.equal(M.canLearn(settled, 'B001', '2026-09-17T10:03:00.000Z'), true);
   assert.equal(M.canLearn(settled, 'M201', '2026-09-17T10:03:00.000Z'), false);
+});
+
+test('a product without a welcome points price always uses its regular price', () => {
+  const state = M.normalize({points:{ledger:[
+    {entryId:'wallet',kind:'earn',amount:300,remaining:300,expiresAt:'2026-10-01T00:00:00.000Z'}
+  ]}});
+  const offer = M.offerFor(state, 'P302', '2026-09-17T10:00:00.000Z');
+  assert.equal(offer.pointsCost, 240);
+  assert.equal(offer.label, '240 积分兑换');
+  assert.equal(Number.isFinite(offer.pointsCost), true);
+});
+
+test('the welcome points price belongs only to P301', () => {
+  const state = M.normalize({points:{ledger:[
+    {entryId:'wallet',kind:'earn',amount:500,remaining:500,expiresAt:'2026-10-01T00:00:00.000Z'}
+  ]}});
+  const p302 = M.settleOrder(M.createOrder(state, 'P302', 'points', '2026-09-17T10:00:00.000Z'), 'success', '2026-09-17T10:01:00.000Z');
+  assert.equal(M.offerFor(p302, 'P301', '2026-09-17T10:02:00.000Z').pointsCost, 60);
+});
+
+test('pending member orders reserve quota before payment', () => {
+  const base = M.normalize({membership:{active:true,cycleId:'cycle-a',quota:2,used:0}});
+  const first = M.createOrder(base, 'M201', 'cash', '2026-09-17T10:00:00.000Z');
+  const second = M.createOrder(first, 'M202', 'cash', '2026-09-17T10:01:00.000Z');
+  assert.equal(M.offerFor(second, 'M203', '2026-09-17T10:02:00.000Z').reason, 'member_quota_used');
+  assert.throws(() => M.createOrder(second, 'M203', 'cash', '2026-09-17T10:02:00.000Z'), /名额|条件/);
+});
+
+test('successful points redemption appends an immutable spend event', () => {
+  const base = M.normalize({points:{ledger:[
+    {entryId:'earn-160',kind:'earn',amount:160,remaining:160,expiresAt:'2026-10-01T00:00:00.000Z'}
+  ]}});
+  const success = M.settleOrder(M.createOrder(base, 'P301', 'points', '2026-09-17T10:00:00.000Z'), 'success', '2026-09-17T10:01:00.000Z');
+  assert.equal(success.points.ledger.find(item => item.entryId === 'earn-160').amount, 160);
+  assert.equal(success.points.ledger.some(item => item.kind === 'spend' && item.amount === -60), true);
+  assert.equal(success.points.balance, 100);
+});
+
+test('a pending quote cannot settle after fifteen minutes', () => {
+  const pending = M.createOrder(M.normalize(), 'B001', 'cash', '2026-09-17T10:00:00.000Z');
+  const expired = M.settleOrder(pending, 'success', '2026-09-17T10:16:00.000Z');
+  assert.equal(expired.orders[0].status, 'expired');
+  assert.equal(expired.entitlements.length, 0);
+});
+
+test('point balance separates available and frozen amounts', () => {
+  const base = M.normalize({points:{ledger:[
+    {entryId:'wallet',kind:'earn',amount:160,remaining:160,expiresAt:'2026-10-01T00:00:00.000Z'}
+  ]}});
+  const pending = M.createOrder(base, 'P301', 'points', '2026-09-17T10:00:00.000Z');
+  assert.deepEqual(M.pointBalances(pending, '2026-09-17T10:01:00.000Z'), {available:100,frozen:60,total:160});
+});
+
+test('an expired quote releases its frozen points before settlement', () => {
+  const base = M.normalize({points:{ledger:[
+    {entryId:'wallet',kind:'earn',amount:160,remaining:160,expiresAt:'2026-10-01T00:00:00.000Z'}
+  ]}});
+  const pending = M.createOrder(base, 'P301', 'points', '2026-09-17T10:00:00.000Z');
+  assert.deepEqual(M.pointBalances(pending, '2026-09-17T10:16:00.000Z'), {available:160,frozen:0,total:160});
+});
+
+test('a point order cannot consume a lot that expired before settlement', () => {
+  const base = M.normalize({points:{ledger:[
+    {entryId:'short-lived',kind:'earn',amount:160,remaining:160,expiresAt:'2026-09-17T10:05:00.000Z'}
+  ]}});
+  const pending = M.createOrder(base, 'P301', 'points', '2026-09-17T10:00:00.000Z');
+  const expired = M.settleOrder(pending, 'success', '2026-09-17T10:06:00.000Z');
+  assert.equal(expired.orders[0].status, 'expired');
+  assert.equal(expired.entitlements.length, 0);
+  assert.equal(expired.points.ledger[0].remaining, 160);
+});
+
+test('an order from a previous membership cycle cannot consume the current quota', () => {
+  const oldCycle = M.normalize({membership:{active:true,cycleId:'2026-08',quota:2,used:0}});
+  const pending = M.createOrder(oldCycle, 'M201', 'cash', '2026-09-17T10:00:00.000Z');
+  const advanced = {...pending,membership:{active:true,cycleId:'2026-09',quota:2,used:0}};
+  const expired = M.settleOrder(advanced, 'success', '2026-09-17T10:01:00.000Z');
+  assert.equal(expired.orders[0].status, 'expired');
+  assert.equal(expired.membership.used, 0);
+  assert.equal(expired.entitlements.length, 0);
 });

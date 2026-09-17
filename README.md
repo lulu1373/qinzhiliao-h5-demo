@@ -2,6 +2,18 @@
 
 当前运行入口：`index.html`，与 `latest/index.html` 同步。线上地址：https://lulu1373.github.io/qinzhiliao-h5-demo/latest/
 
+## 课程与成长积分
+
+课程入口位于侧栏「常用功能」，首页不放固定课程广告。完成一次已确认的聊天理解后，系统可在对话内展示相关课程卡；情绪支持的第一轮问答不推课。课程卡先打开介绍面板，再由用户决定是否查看详情。
+
+侧栏展示成长积分余额和每日签到。积分页包括签到、对话小结、课程学习、行动反馈和个人反思五类任务，以及积分课程兑换。演示数据保存在当前浏览器；支付、会员名额和积分兑换均为本地 Demo，不连接真实支付或服务端账户。课程模块修改后运行：
+
+```sh
+python3 tools/build_growth_reports.py
+node --test --experimental-test-coverage tests/*.test.cjs
+PYTHONPATH=tests python3 -m unittest -v course_e2e.CourseTests
+```
+
 ## 成长报告更新（V9.0 基础）
 
 侧栏「成长总结」进入 `#/growth`，现在提供日、周、月报告，行动日历和列表收进右上角「行动记录」。支持方法详情、来源核对、课题校正、反馈保存，以及携带报告上下文回到现有对话，保留未发送的草稿。
