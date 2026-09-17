@@ -11,12 +11,16 @@ test('exports course view contract', () => {
   for (const key of ['render', 'homeEntry', 'drawerEntry']) assert.equal(typeof view[key], 'function');
 });
 
-test('classroom gives newcomer bundle, learning continuation and points clear entry labels', () => {
+test('classroom presents the real JianKuai catalog without invented offer labels', () => {
   const html = view.render('courses', ctx());
   assert.match(html, /简快课堂/);
-  assert.match(html, /新人 ¥9\.9/);
-  assert.match(html, /成长积分/);
-  assert.match(html, /data-course-action="detail" data-product-id="B001"/);
+  assert.match(html, /从一次沟通开始，慢慢学会相处/);
+  assert.match(html, /李中莹·父母4堂学会有效亲子沟通课/);
+  assert.match(html, /李中莹●11堂情绪压力管理课/);
+  assert.match(html, /¥199/);
+  assert.match(html, /¥299/);
+  assert.doesNotMatch(html, /新人 ¥9\.9|积分兑换|演示课程/);
+  assert.match(html, /course-category-chips/);
   assert.equal(view.homeEntry(ctx()), '');
   assert.match(view.drawerEntry(ctx()), /我的学习/);
   assert.doesNotMatch(view.drawerEntry(ctx()), /v6-drawer-feature/);

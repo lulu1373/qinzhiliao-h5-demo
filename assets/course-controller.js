@@ -124,9 +124,10 @@ function installCourse() {
     if (!confirmed) return '';
     const conversationText = (state.chat.messages || []).map(message => String(message.html || '').replace(/<[^>]*>/g,' ')).join(' ');
     const topicMap = [
-      {pattern:/伴侣|夫妻|共同养育|育儿分歧|爸爸.*妈妈|妈妈.*爸爸/,productId:'M202'},
-      {pattern:/规则|边界|催促|作业|冲突|控制|威胁/,productId:'M203'},
-      {pattern:/情绪|发火|哭闹|崩溃|生气|失控/,productId:'M201'}
+      {pattern:/伴侣|夫妻|共同养育|育儿分歧|爸爸.*妈妈|妈妈.*爸爸/,productId:'R505'},
+      {pattern:/情绪|发火|哭闹|崩溃|生气|失控|压力|焦虑/,productId:'R502'},
+      {pattern:/规则|边界|催促|作业|冲突|控制|威胁|沟通|说话/,productId:'R501'},
+      {pattern:/学习|动力|拖延|磨蹭|不想学/,productId:'R504'}
     ];
     const match = topicMap.find(item => item.pattern.test(conversationText));
     if (!match) return '';
@@ -141,7 +142,14 @@ function installCourse() {
     if (!exposure.conversationId || exposure.conversationId !== conversationId) {
       commit({...data,recommendationExposure:{conversationId,courseId:product.id,day:day(),shownAt:iso()}});
     }
-    return `<aside class="course-chat-recommendation"><small>结合刚才的理解</small><b>${esc(product.title)}</b><p>与你们刚确认的互动主题相关，可以先看看这门课是否适合当下。</p><div><button data-course-action="preview-recommendation" data-product-id="${product.id}">了解这门课</button><button data-course-action="hide-recommendation">先继续聊</button></div></aside>`;
+    const reason = product.id === 'R505'
+      ? '你刚才想理清的是，怎样把共同养育的分歧谈清楚。'
+      : product.id === 'R502'
+        ? '你刚才想练习的是，在情绪上来时先稳住自己再回应。'
+        : product.id === 'R504'
+          ? '你刚才想理解的是，孩子拖延背后的学习动力。'
+          : '你刚才想练习的是，换一种方式和孩子说话。';
+    return `<aside class="course-chat-recommendation"><p class="course-chat-reason">${reason}简快有一门相关课程，可以看看是不是你想学的内容。</p><section><img src="${esc(product.cover)}" alt=""><span><b>${esc(product.title)}</b><small>${esc(product.subtitle)}</small><strong>¥${Math.round(Number(product.amountFen || 0)/100)}</strong></span></section><div><button data-course-action="preview-recommendation" data-product-id="${product.id}">看看课程</button><button data-course-action="hide-recommendation">先继续聊</button></div></aside>`;
   }
   function showRecommendationPreview(productId) {
     const product = model.CATALOG.find(item => item.id === productId);
@@ -185,7 +193,7 @@ function installCourse() {
     const data = read(), scroll = drawerEl.querySelector('.v6-drawer-scroll'), orbit = drawerEl.querySelector('.v6-tool-orbit');
     if (scroll && !scroll.querySelector('.course-points-summary')) {
       const checked = hasCheckedIn(data);
-      scroll.insertAdjacentHTML('afterbegin',`<section class="course-points-summary"><button class="course-points-main" data-course-action="route" data-route="points"><span><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M9 12h6M12 9v6"/></svg></span><span><small>成长积分</small><b>${availablePoints(data)}</b><em>查看明细与兑换</em></span><i>›</i></button><button class="course-checkin-mini" data-course-action="${checked ? 'route' : 'checkin'}" ${checked ? 'data-route="points"' : ''}>${checked ? '今日已签到' : '签到 +2'}</button></section>`);
+      scroll.insertAdjacentHTML('afterbegin',`<section class="course-points-summary"><button class="course-points-main" data-course-action="route" data-route="points"><span><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M9 12h6M12 9v6"/></svg></span><span><small>成长积分</small><b>${availablePoints(data)}</b></span></button><button class="course-checkin-mini" data-course-action="${checked ? 'route' : 'checkin'}" ${checked ? 'data-route="points"' : ''}>${checked ? '已签到 +2' : '签到 +2'}</button></section>`);
     }
     if (orbit && !orbit.querySelector('.course-drawer-tool')) {
       orbit.insertAdjacentHTML('afterbegin',view.drawerEntry(context()));

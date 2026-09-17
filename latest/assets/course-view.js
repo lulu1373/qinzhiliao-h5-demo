@@ -22,6 +22,8 @@
   const scrollPage = html => String(html || '').replace('<main class="course-page','<main class="course-page qzl-page-scroll');
   const title = (text, back='courses') => `<header class="course-titlebar"><button data-course-action="back" data-fallback="${back}" aria-label="返回">‹</button><b>${text}</b><span></span></header>`;
   const detailButton = product => `<button class="course-card" data-course-action="detail" data-product-id="${product.id}"><span class="course-cover type-${product.type}">${icon(product.type === 'points' ? 'coin' : product.type === 'newcomer' ? 'gift' : 'book')}</span><span class="course-card-copy"><small>${product.topic}</small><b>${product.title}</b><em>${product.subtitle}</em></span><i>›</i></button>`;
+  const displayPrice = product => `¥${Math.round(Number(product.amountFen || product.normalFen || 0) / 100)}`;
+  const realCourseCard = (ctx,product) => `<button class="course-real-card" data-course-action="detail" data-product-id="${product.id}"><img src="${esc(ctx,product.cover)}" alt=""><span><b>${esc(ctx,product.title)}</b><small>${esc(ctx,product.subtitle)}</small><strong>${displayPrice(product)}</strong></span><i>›</i></button>`;
 
   function homeEntry(ctx) {
     return '';
@@ -31,17 +33,13 @@
     return `<button class="course-drawer-tool classroom" data-course-action="route" data-route="courses"><span class="course-drawer-icon">${icon('book')}</span><b>简快课堂</b><small>亲子与家庭课程</small></button><button class="course-drawer-tool learning" data-course-action="route" data-route="my-learning"><span class="course-drawer-icon">${icon('play')}</span><b>我的学习</b><small>${count ? `已获取 ${count} 门` : '继续已获取课程'}</small></button>`;
   }
   function classroom(ctx) {
-    const newcomer = getProduct(ctx,'B001');
-    const member = ctx.data.membership;
-    const memberText = member.active ? `本期还有 ${Math.max(0,member.quota-member.used)} 个 ¥9.9 名额` : '开通会员后，可购买更多 ¥9.9 课程';
-    const owned = ctx.data.entitlements.filter(item => item.status === 'active').map(item => getProduct(ctx,item.productId)).filter(Boolean);
-    const cards = ctx.model.CATALOG.filter(item => item.type !== 'newcomer');
-    return `<main class="course-page">${title('简快课堂','home')}<section class="course-hero"><span>${icon('book')}</span><div><small>简快课堂 · 演示课程</small><h1>从听懂彼此，走到一起做到</h1><p>课程内容为演示示例，获取流程不会产生真实扣款。</p></div></section>${owned.length ? `<section class="course-section"><div class="course-section-head"><h2>继续学习</h2><button data-course-action="route" data-route="my-learning">全部 ›</button></div>${detailButton(owned[0])}</section>` : ''}<section class="course-section"><div class="course-section-head"><h2>新注册用户</h2><span class="course-price-chip">新人 ¥9.9</span></div>${detailButton(newcomer)}</section><section class="course-member-strip"><span>${icon('gift')}</span><div><b>会员专享课</b><small>${memberText}</small></div><button data-course-action="route" data-route="membership">查看权益</button></section><section class="course-section"><div class="course-section-head"><h2>成长积分兑换</h2><button data-course-action="route" data-route="points">${ctx.data.points.balance} 积分 ›</button></div>${cards.filter(item => item.type === 'points').map(detailButton).join('')}</section><section class="course-section"><div class="course-section-head"><h2>为此刻的家庭问题找方法</h2><button data-course-action="route" data-route="courses/list">查看全部 ›</button></div>${cards.filter(item => item.type === 'member').map(detailButton).join('')}</section></main>`;
+    const products = ctx.model.CATALOG.filter(item => item.visible === true);
+    return `<main class="course-page course-classroom">${title('简快课堂','home')}<section class="course-classroom-intro"><span>${icon('book')}</span><div><h1>从一次沟通开始，慢慢学会相处。</h1><p>专业、温暖、可实践的家庭成长课</p></div></section><section class="course-search course-search-compact"><input id="courseSearch" placeholder="搜索课程、主题或关键词"><button data-course-action="search">搜索</button></section><nav class="course-category-chips" aria-label="课程分类">${['全部','亲子沟通','学习动力','情绪压力','伴侣关系','自我成长'].map((name,index)=>`<button class="${index===0?'is-active':''}">${name}</button>`).join('')}</nav><section class="course-real-list">${products.map(product => realCourseCard(ctx,product)).join('')}</section></main>`;
   }
   function list(ctx,route) {
     const q = query(route), keyword = String(q.q || '').trim();
-    const products = ctx.model.CATALOG.filter(item => !keyword || `${item.title}${item.topic}${item.subtitle}`.includes(keyword));
-    return `<main class="course-page">${title('全部课程')}<section class="course-search"><input id="courseSearch" value="${esc(ctx,keyword)}" placeholder="搜索课程主题或关键词"><button data-course-action="search">搜索</button></section><p class="course-count">找到 ${products.length} 门演示课程</p><section class="course-list">${products.map(detailButton).join('') || '<div class="course-empty"><b>暂时没有找到相关课程</b><p>换一个关键词试试。</p></div>'}</section></main>`;
+    const products = ctx.model.CATALOG.filter(item => item.visible === true && (!keyword || `${item.title}${item.topic}${item.subtitle}`.includes(keyword)));
+    return `<main class="course-page">${title('全部课程')}<section class="course-search"><input id="courseSearch" value="${esc(ctx,keyword)}" placeholder="搜索课程主题或关键词"><button data-course-action="search">搜索</button></section><p class="course-count">找到 ${products.length} 门课程</p><section class="course-real-list">${products.map(product => realCourseCard(ctx,product)).join('') || '<div class="course-empty"><b>暂时没有找到相关课程</b><p>换一个关键词试试。</p></div>'}</section></main>`;
   }
   function detail(ctx,productId) {
     const product = getProduct(ctx,productId); if (!product) return missing(ctx);

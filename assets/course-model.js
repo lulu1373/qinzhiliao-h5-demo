@@ -8,13 +8,20 @@
   const DAY = 24 * 60 * 60 * 1000;
   const QUOTE_TTL = 15 * 60 * 1000;
   const CATALOG = [
-    {id:'B001', title:'新人亲子沟通礼包', type:'newcomer', topic:'亲子沟通', subtitle:'先把冲突说清楚，再一起找下一步', amountFen:990, lessons:[['b001-1','先听完再回应',480],['b001-2','把催促改成提问',480],['b001-3','冲突后重新靠近',540]]},
-    {id:'M201', title:'孩子情绪来了，父母先稳住', type:'member', topic:'情绪与冲突', subtitle:'识别情绪升级前的那个瞬间', normalFen:5900, memberFen:990, lessons:[['m201-1','情绪不是故意捣乱',720],['m201-2','先帮自己停半步',840],['m201-3','冲突后怎样修复',840]]},
-    {id:'M202', title:'伴侣一起养育，不必站在对立面', type:'member', topic:'伴侣协作', subtitle:'把分歧变成可以谈的共同规则', normalFen:6900, memberFen:990, lessons:[['m202-1','看见彼此的压力',720],['m202-2','分歧里先不结盟',720],['m202-3','一起定一个小约定',720]]},
-    {id:'M203', title:'有边界，也有连接', type:'member', topic:'亲子沟通', subtitle:'不靠威胁，也能把话说清楚', normalFen:5900, memberFen:990, lessons:[['m203-1','边界从具体开始',600],['m203-2','规则不等于控制',720],['m203-3','后果怎样共同商量',720]]},
-    {id:'P301', title:'给父母的暂停练习', type:'points', topic:'自我照顾', subtitle:'在反应之前，给自己一个停顿', pointsCost:120, firstPointsCost:60, lessons:[['p301-1','识别身体里的提醒',480],['p301-2','给自己十秒钟',480]]},
-    {id:'P302', title:'一次家庭反思，重新看见彼此', type:'points', topic:'家庭关系', subtitle:'不急着判断，先整理经历', pointsCost:240, lessons:[['p302-1','回看发生了什么',600],['p302-2','区分事实和感受',600],['p302-3','留下下次可试的一步',600]]},
-    {id:'S401', title:'亲子关系系统课', type:'standard', topic:'系统成长', subtitle:'从理解互动循环到建立家庭节奏', amountFen:12900, lessons:[['s401-1','关系循环从哪里开始',1200],['s401-2','听见彼此的难处',1200],['s401-3','让规则可执行',1200],['s401-4','冲突后的修复',1200],['s401-5','家庭会议怎么开',1200],['s401-6','把改变放回日常',1200]]}
+    {id:'R501', title:'李中莹·父母4堂学会有效亲子沟通课', type:'standard', topic:'亲子沟通', subtitle:'只需这一招，学会正确沟通，当会说话的父母', amountFen:19900, cover:'assets/course-parent-communication.webp', visible:true, lessons:[['r501-1','看见沟通背后的关系',900],['r501-2','把指责换成可回应的话',960],['r501-3','冲突时先稳住连接',960],['r501-4','把方法带回家庭日常',1080]]},
+    {id:'R502', title:'李中莹●11堂情绪压力管理课', type:'standard', topic:'情绪压力', subtitle:'告别无用情绪宣泄，有效缓解焦虑与压力', amountFen:29900, cover:'assets/course-emotion-pressure.webp', visible:true, lessons:[['r502-1','认识情绪发出的信号',900],['r502-2','在压力里找回选择',960],['r502-3','建立稳定的日常练习',1080]]},
+    {id:'R503', title:'李中莹·心理成长课18讲', type:'standard', topic:'自我成长', subtitle:'人生瓶颈该怎么办？一起找到内心的力量', amountFen:39900, cover:'assets/course-personal-growth.webp', visible:true, lessons:[['r503-1','看见重复出现的困扰',900],['r503-2','理解自己的内在需要',960],['r503-3','让改变从一小步开始',1080]]},
+    {id:'R504', title:'李中莹·培养孩子学习天赋与优势35讲', type:'standard', topic:'学习动力', subtitle:'以心理学与脑科学为基础，看见孩子的学习优势', amountFen:298000, cover:'assets/course-learning-strengths.webp', visible:true, lessons:[['r504-1','理解孩子的学习特点',900],['r504-2','找到优势与内在动力',960],['r504-3','建立可持续的学习节奏',1080]]},
+    {id:'R505', title:'李中莹婚恋私房课｜第一期', type:'standard', topic:'伴侣关系', subtitle:'每个人都需要的亲密关系辅导宝典', amountFen:398000, cover:'assets/course-partner-relationship.webp', visible:true, lessons:[['r505-1','看见关系里的互动循环',900],['r505-2','把冲突变成可以谈的话题',960],['r505-3','重新建立合作与连接',1080]]},
+    {id:'R506', title:'李中莹·培养亲子有效沟通35讲', type:'standard', topic:'亲子沟通', subtitle:'依据心理学技巧，用沟通改善亲子关系', amountFen:298000, cover:'assets/course-parent-dialogue.webp', visible:true, lessons:[['r506-1','理解沟通中的情绪',900],['r506-2','听懂孩子真正想表达什么',960],['r506-3','建立可持续的家庭沟通',1080]]},
+    {id:'R507', title:'人生的15项缺失', type:'standard', topic:'自我成长', subtitle:'认识生命经验里仍需要被看见的部分', amountFen:159900, cover:'assets/course-life-missing.webp', visible:true, lessons:[['r507-1','看见生命中的缺失',900],['r507-2','理解经验留下的影响',960],['r507-3','让内在慢慢得到补充',1080]]},
+    {id:'B001', title:'新人亲子沟通礼包', type:'newcomer', topic:'亲子沟通', subtitle:'先把冲突说清楚，再一起找下一步', amountFen:990, visible:false, lessons:[['b001-1','先听完再回应',480],['b001-2','把催促改成提问',480],['b001-3','冲突后重新靠近',540]]},
+    {id:'M201', title:'孩子情绪来了，父母先稳住', type:'member', topic:'情绪与冲突', subtitle:'识别情绪升级前的那个瞬间', normalFen:5900, memberFen:990, visible:false, lessons:[['m201-1','情绪不是故意捣乱',720],['m201-2','先帮自己停半步',840],['m201-3','冲突后怎样修复',840]]},
+    {id:'M202', title:'伴侣一起养育，不必站在对立面', type:'member', topic:'伴侣协作', subtitle:'把分歧变成可以谈的共同规则', normalFen:6900, memberFen:990, visible:false, lessons:[['m202-1','看见彼此的压力',720],['m202-2','分歧里先不结盟',720],['m202-3','一起定一个小约定',720]]},
+    {id:'M203', title:'有边界，也有连接', type:'member', topic:'亲子沟通', subtitle:'不靠威胁，也能把话说清楚', normalFen:5900, memberFen:990, visible:false, lessons:[['m203-1','边界从具体开始',600],['m203-2','规则不等于控制',720],['m203-3','后果怎样共同商量',720]]},
+    {id:'P301', title:'给父母的暂停练习', type:'points', topic:'自我照顾', subtitle:'在反应之前，给自己一个停顿', pointsCost:120, firstPointsCost:60, visible:false, lessons:[['p301-1','识别身体里的提醒',480],['p301-2','给自己十秒钟',480]]},
+    {id:'P302', title:'一次家庭反思，重新看见彼此', type:'points', topic:'家庭关系', subtitle:'不急着判断，先整理经历', pointsCost:240, visible:false, lessons:[['p302-1','回看发生了什么',600],['p302-2','区分事实和感受',600],['p302-3','留下下次可试的一步',600]]},
+    {id:'S401', title:'亲子关系系统课', type:'standard', topic:'系统成长', subtitle:'从理解互动循环到建立家庭节奏', amountFen:12900, visible:false, lessons:[['s401-1','关系循环从哪里开始',1200],['s401-2','听见彼此的难处',1200],['s401-3','让规则可执行',1200],['s401-4','冲突后的修复',1200],['s401-5','家庭会议怎么开',1200],['s401-6','把改变放回日常',1200]]}
   ].map(product => ({...product, lessons:product.lessons.map(([id,title,durationSeconds]) => ({id,title,durationSeconds}))}));
 
   const byId = id => CATALOG.find(product => product.id === id);
