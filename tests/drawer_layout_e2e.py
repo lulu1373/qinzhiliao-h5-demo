@@ -25,7 +25,7 @@ class DrawerLayoutTests(unittest.TestCase):
         self.page.locator('[data-action="drawer-open"]').click()
         self.page.wait_for_selector('#drawer[data-state="open"]')
 
-    def test_drawer_fills_app_canvas_without_moving_main_viewport(self):
+    def test_drawer_leaves_a_dimmed_right_preview_without_moving_main_viewport(self):
         for width, height in ((320, 568), (360, 800), (390, 844),
                               (430, 932), (480, 900), (1024, 768)):
             self.page.set_viewport_size({'width': width, 'height': height})
@@ -39,15 +39,24 @@ class DrawerLayoutTests(unittest.TestCase):
                 drawerWidth: drawer.width,
                 frameRight: frame.right,
                 drawerRight: drawer.right,
+                previewWidth: frame.right - drawer.right,
                 mainTransform: main.transform,
+                scrimOpacity: Number(getComputedStyle(document.querySelector('#drawerScrim')).opacity),
+                scrimActive: document.querySelector('#drawerScrim').classList.contains('active'),
                 horizontalOverflow: document.documentElement.scrollWidth > innerWidth
               };
             }""")
-            self.assertAlmostEqual(geometry['drawerWidth'], geometry['frameWidth'], delta=1)
-            self.assertAlmostEqual(geometry['drawerRight'], geometry['frameRight'], delta=1)
+            self.assertGreaterEqual(geometry['drawerWidth'] / geometry['frameWidth'], .88)
+            self.assertLessEqual(geometry['drawerWidth'] / geometry['frameWidth'], .90)
+            self.assertGreaterEqual(geometry['previewWidth'], 32)
+            self.assertGreater(geometry['scrimOpacity'], .3)
+            self.assertTrue(geometry['scrimActive'])
             self.assertIn(geometry['mainTransform'], ('none', 'matrix(1, 0, 0, 1, 0, 0)'))
             self.assertFalse(geometry['horizontalOverflow'])
-            self.page.locator('[data-action="drawer-close"]').click()
+            self.page.locator('#drawerScrim').click(position={
+                'x': geometry['drawerWidth'] + geometry['previewWidth'] / 2,
+                'y': 120,
+            })
             self.page.wait_for_function("document.querySelector('#drawer')?.dataset.state === 'closed'")
 
     def test_recent_conversation_has_complete_row_and_help_is_fixed(self):
@@ -81,7 +90,7 @@ class DrawerLayoutTests(unittest.TestCase):
             44,
         )
 
-    def test_focus_is_trapped_in_fullscreen_drawer_and_returns_to_opener(self):
+    def test_focus_is_trapped_in_drawer_and_returns_to_opener(self):
         self.open_drawer()
         self.page.wait_for_function("document.activeElement?.dataset.action === 'drawer-close'")
         self.assertTrue(self.page.locator('.main-viewport').evaluate('(el) => el.inert'))

@@ -1,64 +1,50 @@
-# V10 侧栏自适应设计 QA
+# V11 侧栏露出式抽屉设计 QA
 
 ## Evidence
 
-- Source visual truth: `/var/folders/j4/qkh28ctj2dq4d9rf5m1908kh0000gp/T/codex-clipboard-10309b76-aa36-4fff-9698-75806eb15084.png`
-- Source pixels: 1020 × 2040；包含浏览器框架，作为问题状态证据使用。
-- Mobile implementation: `/Users/lulu/AIWork/qinzhiliao-h5-demo/qinzhiliao-h5-demo/tests/design-qa-v10/mobile-final-390x844.png`
-- Wide implementation: `/Users/lulu/AIWork/qinzhiliao-h5-demo/qinzhiliao-h5-demo/tests/design-qa-v10/wide-final-1024x768.png`
-- Full comparison: `/Users/lulu/AIWork/qinzhiliao-h5-demo/qinzhiliao-h5-demo/tests/design-qa-v10/source-vs-wide-final.jpg`
-- CSS viewports: 390 × 844 and 1024 × 768；implementation device scale factor 1。
-- Density normalization: comparison keeps implementation at 1024 × 768 and scales the 1020 × 2040 source capture proportionally to 384 × 768. Browser chrome and differing aspect ratio are treated as context, not fidelity defects.
-- State: logged-in home, daily check-in sheet dismissed, drawer fully open, recent conversations collapsed to one row.
+- Behavior reference: `/var/folders/j4/qkh28ctj2dq4d9rf5m1908kh0000gp/T/codex-clipboard-427e9377-3c3f-4620-b23f-50b814c9fca7.png`
+- Reference intent: 左侧抽屉覆盖大部分页面，右侧保留约一成原页面并显示深色遮罩；抽屉不推动底层页面。
+- Prototype: `http://127.0.0.1:4173/#/home`
+- Visual capture: Codex In-app Browser，390 × 844 与默认宽屏视口；登录后首页，签到弹层关闭，抽屉完全展开。
+- Automated viewports: 320 × 568、360 × 800、390 × 844、430 × 932、480 × 900、1024 × 768。
 
 ## Full-view comparison
 
-The source shows a partial-width drawer, exposed app content and an internal white strip on the right. The final implementation covers the complete app canvas with one continuous background. On wide screens, header, points, feature rows, tools, recent conversation and footer use a centered 600 px reading width; the drawer itself remains full width, so there is no one-sided blank edge.
+参考图的关键不是具体健康产品内容，而是抽屉层级：抽屉约占屏幕九成，右侧仍可看到被压暗的原页面。V11 使用同一结构：抽屉宽度为屏幕的 88%–90%，右侧始终保留至少 32 px；深色遮罩覆盖底层页面，抽屉位于遮罩上方。底层页面保持原位，没有横向平移或缩放。
 
-On the 390 × 844 capture, the same structure uses the available width without horizontal overflow. The fixed help footer stays at the screen bottom while the middle region remains scrollable.
+390 × 844 的浏览器实拍中，抽屉右边缘位于 349 px，保留约 41 px 的底层页面预览，比例与参考图一致。1024 × 768 下仍按比例保留右侧区域，避免回到固定 388 px 导致桌面端大面积空白的问题。
 
 ## Focused comparison
 
-The mobile implementation capture is the focused evidence because text and icons are fully readable there. It confirms:
-
-- the eight existing product icons remain aligned in a 4 × 2 grid;
-- recent conversation contains mascot avatar, title, summary, time and enter affordance;
-- family archive and membership share one compact two-row group;
-- help and feedback is separated from scroll content by a fixed footer divider.
-
-## Required fidelity surfaces
-
-- Fonts and typography: existing system and PingFang stack preserved. Headings, labels and secondary text retain the product hierarchy without new wrapping at 320–430 px.
-- Spacing and layout rhythm: full-width drawer and fixed three-zone structure pass. All main wide-screen content blocks align to the same 600 px width. Mobile horizontal padding is 10–14 px.
-- Colors and tokens: warm paper canvas, green archive, gold membership and existing tool colors are preserved. No new competing palette was introduced.
-- Image quality and assets: existing user avatar, mascot avatar and existing product icon assets are reused. No placeholder or generated replacement is present.
-- Copy and content: “最近对话”“查看全部”“帮助与反馈” and all eight common-tool labels match the product IA. Active conversations derive title, summary and time from current chat messages; fallback Demo history remains available.
+- 抽屉右侧保留原页面，遮罩透明度为 42%，层级关系清楚。
+- 点击右侧遮罩会关闭抽屉并把焦点归还给打开按钮。
+- 左右滑动继续按抽屉自身宽度计算进度，不受屏幕尺寸变化影响。
+- 抽屉内部继续使用固定头部、独立滚动区和固定“帮助与反馈”底栏。
+- 积分、家庭档案、会员权益、八个常用功能和最近对话的现有排版保持不变。
 
 ## Interaction and runtime checks
 
-- `查看全部` expands from 1 to 7 rows and `收起` returns to 1 row.
-- Opening a historical conversation preserves its title when the drawer is reopened.
-- HTML entities in user messages are decoded before the recent-conversation preview is escaped for output.
-- Menu click and edge-swipe opening both move focus to Close and make the covered main viewport inert; close restores focus to the opener.
-- Replacing an opened historical conversation through the voice flow clears its historical identity and derives a fresh current title.
-- Help footer remains reachable at 320 × 568 after the scroll region reaches its bottom.
-- Drawer close control remains a 44 × 44 px target.
-- In-app browser console errors: none.
-- Automated viewports: 320 × 568, 360 × 800, 390 × 844, 430 × 932, 480 × 900 and 1024 × 768.
+- 六个响应式尺寸的抽屉宽度均为页面宽度的 88%–90%。
+- 六个尺寸的右侧可见区域均不小于 32 px，且没有横向溢出。
+- 菜单点击和边缘滑动打开都启用主页面焦点隔离。
+- 右侧遮罩可点击关闭，关闭后恢复打开按钮焦点。
+- 短屏滚动不会遮挡固定底栏。
+- 最近对话仍包含头像、标题、摘要、时间和进入图标。
+- Codex In-app Browser 视觉检查通过；右侧预览与参考图的层级关系一致。
 
 ## Comparison history
 
-1. Pass 1 found a P2 wide-screen rhythm defect: the 4 × 2 tool grid stretched across the full 1024–1280 px canvas. Fixed by keeping the drawer background full width and centering interactive content at a 600 px maximum reading width.
-2. Pass 2 found a P2 alignment defect: the points card retained a left-zero margin while later sections were centered. Fixed with an explicit centered margin rule for `.course-points-summary`.
-3. Pass 3 confirmed all main blocks share the same x-position and 600 px width in the wide browser.
-4. Code review found focus isolation, historical-conversation identity and entity-decoding defects. A second pass added edge-swipe focus handling and cleared historical identity when voice input replaces a conversation. All findings were fixed and covered by E2E regression tests; final review found no remaining P0/P1/P2.
+1. V10 错把“消除异常空边”实现为 100% 全屏抽屉，丢失了参考产品中用于表达层级的右侧页面预览。
+2. V11 将抽屉改为 89.5% 自适应宽度，并为 320 px 小屏设置 36 px 最小预览空间。
+3. 恢复 42% 深色遮罩及点击关闭能力；底层页面保持原位。
+4. 390 × 844 和默认宽屏浏览器视觉复核通过，六尺寸 E2E 回归通过。
 
 ## Findings
 
-No actionable P0, P1 or P2 visual, interaction or accessibility mismatch remains for the approved drawer repair scope.
+当前修正范围内没有剩余 P0、P1 或 P2 视觉、交互或无障碍问题。
 
 ## Follow-up polish
 
-- P3: production conversation history should eventually use server timestamps rather than the Demo fallback labels for archived conversations.
+- P3：未来若加入平板专用信息架构，可以在超宽屏单独设置抽屉最大阅读宽度；当前 H5 继续保持与参考图一致的比例露出方式。
 
 final result: passed

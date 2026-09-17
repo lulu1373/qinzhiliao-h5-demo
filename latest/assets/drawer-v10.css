@@ -1,12 +1,12 @@
-/* V10 drawer: full app-canvas side page with fixed header and footer. */
+/* V11 drawer: near-full-width sheet with a dimmed preview of the page behind it. */
 .drawer {
-  width: 100% !important;
+  width: min(89.5%, calc(100% - 36px)) !important;
   max-width: none !important;
   border-radius: 0 !important;
-  box-shadow: none !important;
+  box-shadow: 12px 0 30px rgba(33,31,29,.18) !important;
   background: #fbf7f1 !important;
 }
-.drawer-scrim { opacity: 0 !important; }
+.drawer-scrim { background: #282728 !important; }
 .v6-drawer-shell {
   height: 100%;
   min-height: 0;
