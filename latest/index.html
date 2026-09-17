@@ -4470,7 +4470,7 @@ html,body,#app{background:var(--qzl-canvas)!important;}
 <style id="v104-about-system-page">
 .app-frame:has(.about-page-v2),.app-frame:has(.about-page-v2) .statusbar{background:#F7F6F2!important;background-image:none!important}.about-page-v2{background:#F7F6F2!important;background-image:none!important}.about-page-v2>.page-titlebar{background:#F7F6F2!important;background-image:none!important;border:0!important;box-shadow:none!important}.about-page-v2 .about-body{padding:18px 20px 36px}.about-brand-card{background:#fff;border:1px solid rgba(62,68,59,.06);border-radius:24px;padding:28px 22px 25px;margin:0 0 24px;text-align:center;box-shadow:0 8px 26px rgba(48,54,45,.035)}.about-app-icon{display:block;width:82px;height:82px;object-fit:cover;border-radius:22px;margin:0 auto 16px;box-shadow:0 8px 22px rgba(76,99,64,.09)}.about-brand-card h1{margin:0;color:#30352F;font-size:23px;line-height:1.25;font-weight:760;letter-spacing:-.2px}.about-brand-card p{margin:8px 0 0;color:#747C72;font-size:14px;line-height:1.55}.about-brand-card small{display:inline-block;margin-top:8px;color:#9A9F97;font-size:12px;line-height:1.4}.about-section-label{padding:0 4px 9px;color:#8A9088;font-size:12px;font-weight:650;letter-spacing:.2px}.about-page-v2 .about-link-list{margin:0;background:#fff!important;border:1px solid rgba(62,68,59,.065)!important;border-radius:20px!important;box-shadow:0 8px 24px rgba(48,54,45,.035)!important;overflow:hidden}.about-page-v2 .about-link-list .list-row{min-height:72px!important;padding:11px 16px!important;gap:13px!important;border-bottom:1px solid #EEF0EC!important;background:#fff!important}.about-page-v2 .about-link-list .list-row:last-child{border-bottom:0!important}.about-page-v2 .about-link-list .list-row-icon{width:44px!important;height:44px!important;flex:0 0 44px;border-radius:14px!important;background:#F3F4F1!important;border:0!important;color:#626B60!important;box-shadow:none!important}.about-page-v2 .about-link-list .list-row-icon svg{width:22px!important;height:22px!important;fill:none!important;stroke:currentColor!important;stroke-width:1.8!important;stroke-linecap:round!important;stroke-linejoin:round!important}.about-page-v2 .about-link-list .list-row-main b{font-size:15px!important;line-height:1.35!important;font-weight:650!important;color:#30342F!important}.about-page-v2 .about-link-list .chevron{font-size:22px!important;color:#B5BAB2!important;margin-left:auto!important}.about-page-v2 .about-link-list .list-row:active{background:#F8F9F6!important}.about-page-v2 .about-link-list .list-row:nth-child(n) .list-row-icon{background:#F3F4F1!important;color:#626B60!important}@media(max-width:390px){.about-page-v2 .about-body{padding-left:16px;padding-right:16px}.about-brand-card{padding-top:24px;padding-bottom:22px}.about-app-icon{width:76px;height:76px;border-radius:20px}.about-page-v2 .about-link-list .list-row{min-height:68px!important;padding-left:14px!important;padding-right:14px!important}}
 </style>
-<link rel="stylesheet" href="assets/course.css?v=4d7e57b7aa"><link rel="stylesheet" href="assets/course-v2.css?v=ac51fff982"></head><body><div id="app" aria-live="polite"></div><script src="assets/growth-report-model.js?v=c66b2046b7"></script>
+<link rel="stylesheet" href="assets/course.css?v=4d7e57b7aa"><link rel="stylesheet" href="assets/course-v2.css?v=ac51fff982"><link rel="stylesheet" href="assets/drawer-v10.css?v=1"></head><body><div id="app" aria-live="polite"></div><script src="assets/growth-report-model.js?v=c66b2046b7"></script>
 <script src="assets/growth-report-view.js?v=9e5a405290"></script>
 <script src="assets/growth-milestone-model.js?v=0a4020d2bc"></script>
 <script src="assets/growth-milestone-view.js?v=2492e9af08"></script>
@@ -4788,7 +4788,8 @@ let drawerCloseTimer=null;
 // V3.9: persistent Home + persistent Drawer + secondary PageStack.
 // Home and Drawer stay mounted while secondary pages cover them, so the chat
 // viewport, draft and drawer scroll never need to be reconstructed on Back.
-const drawerView={scrollTop:0,selectedHistory:null};
+const drawerView={scrollTop:0,selectedHistory:null,historyExpanded:false};
+let drawerReturnFocus=null;
 let drawerHadMotion=false;
 let drawerSuppressClickUntil=0;
 let drawerPointerId=null;
@@ -5823,15 +5824,34 @@ function renderDemoTools(){
 }
 function renderNotFound(){return `<div class="secondary-page">${titleBar('页面不存在',{back:'home'})}<div class="empty-card"><img src="${ASSETS.mascot}" alt=""><h3>没有找到这个页面</h3><p>可以返回首页继续体验。</p><button class="primary-btn" data-action="route" data-route="home">返回首页</button></div></div>`;}
 
+function drawerConversationItems(){
+  const historical=CHAT_HISTORY_TITLES.map((title,index)=>({title,summary:CHAT_HISTORY_SUMMARIES[index]||'继续这段对话',time:index===0?'今天':index<3?'昨天':`${index+1} 天前`,historyIndex:index,current:false}));
+  const messages=state.chat?.messages||[];
+  if(!state.chat?.active||!messages.length)return historical;
+  const selectedIndex=Number.isInteger(state.chat.historyIndex)?state.chat.historyIndex:null;
+  if(selectedIndex!==null&&historical[selectedIndex]){
+    const selected={...historical[selectedIndex],time:messages[messages.length-1]?.time||historical[selectedIndex].time,current:true};
+    return [selected,...historical.filter(item=>item.historyIndex!==selectedIndex)];
+  }
+  const decoder=document.createElement('textarea');
+  const plain=value=>{decoder.innerHTML=String(value||'').replace(/<[^>]*>/g,' ');return decoder.value.replace(/\s+/g,' ').trim();};
+  const firstUser=messages.find(message=>message.role==='user');
+  const last=messages[messages.length-1]||{};
+  const title=plain(firstUser?.html||'与小亲的对话').slice(0,18)||'与小亲的对话';
+  const summary=plain(last.html||'继续这段对话').slice(0,36)||'继续这段对话';
+  return [{title,summary,time:last.time||'刚刚',historyIndex:null,current:true},...historical];
+}
+
 function renderDrawer(){
   rememberDrawerScroll();
   if(!state.loggedIn){drawerEl.innerHTML='';return;}
   const pendingCount=getPendingTasks().length;
   const unreadCount=getUnreadMessageCount();
-  const names=CHAT_HISTORY_TITLES;
+  const conversations=drawerConversationItems();
+  const visibleConversations=drawerView.historyExpanded?conversations:conversations.slice(0,1);
   const role=roleLabel(state.user.role);
   drawerEl.innerHTML=`<div class="v6-drawer-shell">
-    <header class="v6-drawer-head">
+    <header class="v6-drawer-head"><div class="v10-drawer-head-inner">
       <div class="v6-user-block">
         <button class="v6-avatar" data-action="route" data-route="profile" aria-label="个人资料">${userAvatarMarkup('v6-user-avatar-img')}</button>
         <div><button class="v6-user-name" data-action="route" data-route="profile">${esc(state.user.name)}</button><button class="v6-user-sub" data-action="route" data-route="settings">${esc(role)} · 设置 ${svg.back}</button></div>
@@ -5841,15 +5861,15 @@ function renderDrawer(){
         <button data-action="route" data-route="task-center" aria-label="任务">${svg.task}${pendingCount?`<em>${pendingCount>99?'99+':pendingCount}</em>`:''}</button>
         <button data-action="drawer-close" aria-label="关闭">${svg.close}</button>
       </div>
-    </header>
+    </div></header>
 
     <div class="v6-drawer-scroll" id="drawerScroll" tabindex="0" aria-label="侧栏内容，可上下滚动">
       <section class="v6-drawer-feature-grid">
         <button class="v6-drawer-feature archive" data-action="route" data-route="archive">
-          <span class="v6-feature-icon">${svg.familyArchive}</span><span><b>家庭档案</b><small>家庭关系与长期记忆</small></span><i>去管理</i>
+          <span class="v6-feature-icon">${svg.familyArchive}</span><span><b>家庭档案</b><small>家庭关系与长期记忆</small></span><i>${svg.back}</i>
         </button>
         <button class="v6-drawer-feature member" data-action="route" data-route="membership">
-          <span class="v6-feature-icon">${svg.membership}</span><span><b>会员权益</b><small>${state.membership.active?'完整权益已开启':'解锁完整理解与成长能力'}</small></span><i>${state.membership.active?'查看':'去开通'}</i>
+          <span class="v6-feature-icon">${svg.membership}</span><span><b>会员权益</b><small>${state.membership.active?'完整权益已开启':'解锁完整理解与成长能力'}</small></span><i>${svg.back}</i>
         </button>
       </section>
 
@@ -5863,17 +5883,16 @@ function renderDrawer(){
         </div>
       </section>
 
-      <button class="v6-flat-link" data-action="route" data-route="settings/help"><b>帮助与反馈</b>${svg.back}</button>
-
-      <section class="v6-chat-history" aria-labelledby="v6HistoryTitle">
-        <h3 id="v6HistoryTitle">对话记录</h3>
-        <span class="v6-history-group">最近</span>
-        <div class="v6-history-list">${names.map((name,i)=>{
-          const current=drawerView.selectedHistory===i&&state.chat.active;
-          return `<button class="v6-history-row${current?' is-current':''}" data-action="open-history" data-index="${i}"${current?' aria-current="true"':''}><span><b>${esc(name)}</b><small>${esc(CHAT_HISTORY_SUMMARIES[i]||'继续这段对话')}</small></span><i>${i===0?'今天':i<3?'昨天':`${i+1} 天前`}</i></button>`;
+      <section class="v10-recent-conversations" aria-labelledby="v10RecentTitle">
+        <div class="v10-recent-heading"><h3 id="v10RecentTitle">最近对话</h3><button data-action="drawer-history-toggle" aria-expanded="${drawerView.historyExpanded}">${drawerView.historyExpanded?'收起':'查看全部'}</button></div>
+        <div class="v10-conversation-list">${visibleConversations.map(item=>{
+          const action=item.current?'drawer-close':'open-history';
+          const index=item.historyIndex===null?'':` data-index="${item.historyIndex}"`;
+          return `<button class="v10-conversation-row${item.current?' is-current':''}" data-action="${action}"${index}${item.current?' aria-current="true"':''}><span class="v10-conversation-avatar"><img src="${ASSETS.mascotAvatar}" alt="小亲"></span><span class="v10-conversation-copy"><b>${esc(item.title)}</b><small>${esc(item.summary)}</small></span><i class="v10-conversation-time">${esc(item.time)}</i><span class="v10-conversation-enter">${svg.back}</span></button>`;
         }).join('')}</div>
       </section>
     </div>
+    <footer class="v10-drawer-footer"><button data-action="route" data-route="settings/help">${svg.help}<b>帮助与反馈</b>${svg.back}</button></footer>
   </div>`;
   drawerEl.setAttribute('aria-label','我的');
   const scroller=document.getElementById('drawerScroll');
@@ -6176,6 +6195,7 @@ function handleClick(e){
   else if(action==='open-file')openFilePicker();
   else if(action==='feedback-submit')submitFeedback();
   else if(action==='open-history')openHistory(Number(el.dataset.index));
+  else if(action==='drawer-history-toggle'){rememberDrawerScroll();drawerView.historyExpanded=!drawerView.historyExpanded;renderDrawer();}
   else if(action==='demo-reset')resetDemo();
 }
 
@@ -6519,7 +6539,7 @@ function openFilePicker(){
 }
 function openHistory(index){
   drawerView.selectedHistory=Number(index);
-  closeDrawer(true);state.chat.active=true;state.chat.node='done';state.chat.messages=[{role:'ai',html:`这是你之前的对话：<b>${esc(CHAT_HISTORY_TITLES[index]||CHAT_HISTORY_TITLES[0])}</b><br>你可以继续从这里聊下去。`,time:todayTime()}];saveState();navigate('home');
+  closeDrawer(true);state.chat={...state.chat,active:true,node:'done',historyIndex:Number(index),messages:[{role:'ai',html:`这是你之前的对话：<b>${esc(CHAT_HISTORY_TITLES[index]||CHAT_HISTORY_TITLES[0])}</b><br>你可以继续从这里聊下去。`,time:todayTime()}]};saveState();navigate('home');
 }
 
 function showOverlay(html){overlayRoot.innerHTML=html;}
@@ -6535,7 +6555,7 @@ function showAttachmentSheet(){showBottomSheet(`<h2>添加内容</h2><div class=
 function startVoiceMock(){
   showOverlay(`<div class="voice-overlay"><div class="voice-wave"><i></i><i></i><i></i><i></i><i></i></div><b>正在听…</b><div style="font-size:11px;margin-top:5px;color:#ddd">点击取消</div></div>`);
   overlayRoot.firstElementChild.addEventListener('click',closeOverlay,{once:true});
-  aiTimer=setTimeout(()=>{if(!overlayRoot.innerHTML)return;closeOverlay();state.chat.active=true;state.chat.node='context1';state.chat.messages=[{role:'user',html:'刚刚又因为写作业吵架了。',time:todayTime()},{role:'ai',html:'我在。先不急着判断谁对谁错。第一次提醒孩子时，他正在做什么？',time:todayTime()}];saveState();renderRoute('home');toast('已转成文字');},1300);
+  aiTimer=setTimeout(()=>{if(!overlayRoot.innerHTML)return;closeOverlay();state.chat={...state.chat,active:true,node:'context1',historyIndex:null,messages:[{role:'user',html:'刚刚又因为写作业吵架了。',time:todayTime()},{role:'ai',html:'我在。先不急着判断谁对谁错。第一次提醒孩子时，他正在做什么？',time:todayTime()}]};saveState();renderRoute('home');toast('已转成文字');},1300);
 }
 
 function handleOverlayClick(e){
@@ -6630,6 +6650,10 @@ function settleClosedDrawer(){
   mainViewport.style.borderRadius='0px';
   drawerScrim.style.opacity='0';
   setDrawerPhase('closed');
+  mainViewport.inert=false;
+  mainViewport.removeAttribute('aria-hidden');
+  const returnTarget=drawerReturnFocus;drawerReturnFocus=null;
+  if(returnTarget?.isConnected)requestAnimationFrame(()=>returnTarget.focus({preventScroll:true}));
 }
 function setDrawerProgress(value,{animate=false}={}){
   const p=Math.max(0,Math.min(1,value));
@@ -6644,13 +6668,16 @@ function setDrawerProgress(value,{animate=false}={}){
   // Percentage is relative to the drawer's OWN border box; it also stays
   // correct after viewport resize, without recalculating a stale pixel offset.
   drawerEl.style.transform=`translate3d(${(p-1)*100}%,0,0)`;
-  mainViewport.style.transform=p===0?'none':`translate3d(${p*18}px,0,0) scale(${1-p*.015})`;
-  mainViewport.style.borderRadius=`${p*24}px`;
+  mainViewport.style.transform='none';
+  mainViewport.style.borderRadius='0px';
   mainViewport.style.overflow='hidden';
-  drawerScrim.style.opacity=String(p*.24);
-  drawerScrim.classList.toggle('active',p>.01);
+  drawerScrim.style.opacity='0';
+  drawerScrim.classList.remove('active');
   if(p>0){
+    if(!wasVisible&&!drawerReturnFocus)drawerReturnFocus=document.activeElement instanceof HTMLElement?document.activeElement:null;
+    mainViewport.inert=true;mainViewport.setAttribute('aria-hidden','true');
     setDrawerPhase(drawer.dragging?'dragging':(p===1?(shouldAnimate?'opening':'open'):'dragging'));
+    if(p===1&&drawer.open&&!drawer.dragging)requestAnimationFrame(()=>drawerEl.querySelector('[data-action="drawer-close"]')?.focus({preventScroll:true}));
   }else if(shouldAnimate&&wasVisible){
     setDrawerPhase('closing');
     // transitionend is primary; fallback also covers interrupted transitions.
