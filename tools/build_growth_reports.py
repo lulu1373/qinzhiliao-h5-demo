@@ -20,6 +20,8 @@ styles = ['growth-report.css', 'growth-milestone.css']
 scripts = ['growth-report-model.js', 'growth-report-view.js', 'growth-milestone-model.js', 'growth-milestone-view.js']
 styles += ['experience.css', 'experience-home.css', 'card-practice.css']
 scripts += ['experience-model.js', 'experience-view.js', 'card-practice.js']
+styles += ['course.css']
+scripts += ['course-model.js', 'course-view.js']
 resources = ['community-screen-time.webp', 'community-school-ready.webp', 'community-family-walk.webp']
 experience = (ROOT / 'assets/experience-controller.js').read_text()
 xp_begin, xp_end = '/* BEGIN EXPERIENCE CONTROLLER */', '/* END EXPERIENCE CONTROLLER */'
@@ -28,6 +30,13 @@ if xp_begin in html:
     html = re.sub(re.escape(xp_begin) + r'.*?' + re.escape(xp_end) + r'\n?', lambda _: xp_block, html, flags=re.S)
 else:
     html = html.replace('/* V9.0 initialization */', xp_block + '\n/* V9.0 initialization */', 1)
+course = (ROOT / 'assets/course-controller.js').read_text()
+course_begin, course_end = '/* BEGIN COURSE CONTROLLER */', '/* END COURSE CONTROLLER */'
+course_block = course_begin + '\n' + course + '\n' + course_end + '\n'
+if course_begin in html:
+    html = re.sub(re.escape(course_begin) + r'.*?' + re.escape(course_end) + r'\n?', lambda _: course_block, html, flags=re.S)
+else:
+    html = html.replace('/* V9.0 initialization */', course_block + '\n/* V9.0 initialization */', 1)
 for name in styles:
     digest = hashlib.sha256((ROOT / 'assets' / name).read_bytes()).hexdigest()[:10]
     tag = f'<link rel="stylesheet" href="assets/{name}?v={digest}">'
