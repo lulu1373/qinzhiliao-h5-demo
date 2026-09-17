@@ -4470,15 +4470,15 @@ html,body,#app{background:var(--qzl-canvas)!important;}
 <style id="v104-about-system-page">
 .app-frame:has(.about-page-v2),.app-frame:has(.about-page-v2) .statusbar{background:#F7F6F2!important;background-image:none!important}.about-page-v2{background:#F7F6F2!important;background-image:none!important}.about-page-v2>.page-titlebar{background:#F7F6F2!important;background-image:none!important;border:0!important;box-shadow:none!important}.about-page-v2 .about-body{padding:18px 20px 36px}.about-brand-card{background:#fff;border:1px solid rgba(62,68,59,.06);border-radius:24px;padding:28px 22px 25px;margin:0 0 24px;text-align:center;box-shadow:0 8px 26px rgba(48,54,45,.035)}.about-app-icon{display:block;width:82px;height:82px;object-fit:cover;border-radius:22px;margin:0 auto 16px;box-shadow:0 8px 22px rgba(76,99,64,.09)}.about-brand-card h1{margin:0;color:#30352F;font-size:23px;line-height:1.25;font-weight:760;letter-spacing:-.2px}.about-brand-card p{margin:8px 0 0;color:#747C72;font-size:14px;line-height:1.55}.about-brand-card small{display:inline-block;margin-top:8px;color:#9A9F97;font-size:12px;line-height:1.4}.about-section-label{padding:0 4px 9px;color:#8A9088;font-size:12px;font-weight:650;letter-spacing:.2px}.about-page-v2 .about-link-list{margin:0;background:#fff!important;border:1px solid rgba(62,68,59,.065)!important;border-radius:20px!important;box-shadow:0 8px 24px rgba(48,54,45,.035)!important;overflow:hidden}.about-page-v2 .about-link-list .list-row{min-height:72px!important;padding:11px 16px!important;gap:13px!important;border-bottom:1px solid #EEF0EC!important;background:#fff!important}.about-page-v2 .about-link-list .list-row:last-child{border-bottom:0!important}.about-page-v2 .about-link-list .list-row-icon{width:44px!important;height:44px!important;flex:0 0 44px;border-radius:14px!important;background:#F3F4F1!important;border:0!important;color:#626B60!important;box-shadow:none!important}.about-page-v2 .about-link-list .list-row-icon svg{width:22px!important;height:22px!important;fill:none!important;stroke:currentColor!important;stroke-width:1.8!important;stroke-linecap:round!important;stroke-linejoin:round!important}.about-page-v2 .about-link-list .list-row-main b{font-size:15px!important;line-height:1.35!important;font-weight:650!important;color:#30342F!important}.about-page-v2 .about-link-list .chevron{font-size:22px!important;color:#B5BAB2!important;margin-left:auto!important}.about-page-v2 .about-link-list .list-row:active{background:#F8F9F6!important}.about-page-v2 .about-link-list .list-row:nth-child(n) .list-row-icon{background:#F3F4F1!important;color:#626B60!important}@media(max-width:390px){.about-page-v2 .about-body{padding-left:16px;padding-right:16px}.about-brand-card{padding-top:24px;padding-bottom:22px}.about-app-icon{width:76px;height:76px;border-radius:20px}.about-page-v2 .about-link-list .list-row{min-height:68px!important;padding-left:14px!important;padding-right:14px!important}}
 </style>
-<link rel="stylesheet" href="assets/course.css?v=4d7e57b7aa"><link rel="stylesheet" href="assets/course-v2.css?v=1f1e61d199"></head><body><div id="app" aria-live="polite"></div><script src="assets/growth-report-model.js?v=c66b2046b7"></script>
+<link rel="stylesheet" href="assets/course.css?v=4d7e57b7aa"><link rel="stylesheet" href="assets/course-v2.css?v=ac51fff982"></head><body><div id="app" aria-live="polite"></div><script src="assets/growth-report-model.js?v=c66b2046b7"></script>
 <script src="assets/growth-report-view.js?v=9e5a405290"></script>
 <script src="assets/growth-milestone-model.js?v=0a4020d2bc"></script>
 <script src="assets/growth-milestone-view.js?v=2492e9af08"></script>
 <script src="assets/experience-model.js?v=71dcb6623c"></script>
 <script src="assets/experience-view.js?v=9d65c2ed09"></script>
 <script src="assets/card-practice.js?v=f58d85522b"></script>
-<script src="assets/course-model.js?v=1b8f521f5f"></script>
-<script src="assets/course-view.js?v=d0018852ef"></script>
+<script src="assets/course-model.js?v=ed12e0bcb2"></script>
+<script src="assets/course-view.js?v=e20294ff54"></script>
 <script>
 (function(){
 'use strict';
@@ -5836,16 +5836,20 @@ function renderDrawer(){
         <button class="v6-avatar" data-action="route" data-route="profile" aria-label="个人资料">${userAvatarMarkup('v6-user-avatar-img')}</button>
         <div><button class="v6-user-name" data-action="route" data-route="profile">${esc(state.user.name)}</button><button class="v6-user-sub" data-action="route" data-route="settings">${esc(role)} · 设置 ${svg.back}</button></div>
       </div>
-      <div class="v6-drawer-actions"><button data-action="drawer-close" aria-label="关闭">${svg.close}</button></div>
+      <div class="v6-drawer-actions">
+        <button data-action="route" data-route="messages" aria-label="消息">${svg.bell}${unreadCount?`<em>${unreadCount>99?'99+':unreadCount}</em>`:''}</button>
+        <button data-action="route" data-route="task-center" aria-label="任务">${svg.task}${pendingCount?`<em>${pendingCount>99?'99+':pendingCount}</em>`:''}</button>
+        <button data-action="drawer-close" aria-label="关闭">${svg.close}</button>
+      </div>
     </header>
 
     <div class="v6-drawer-scroll" id="drawerScroll" tabindex="0" aria-label="侧栏内容，可上下滚动">
       <section class="v6-drawer-feature-grid">
         <button class="v6-drawer-feature archive" data-action="route" data-route="archive">
-          <span class="v6-feature-icon">${svg.familyArchive}</span><span><b>家庭档案</b><small>家庭关系与长期记忆</small></span><i>${svg.back}</i>
+          <span class="v6-feature-icon">${svg.familyArchive}</span><span><b>家庭档案</b><small>家庭关系与长期记忆</small></span><i>去管理</i>
         </button>
         <button class="v6-drawer-feature member" data-action="route" data-route="membership">
-          <span class="v6-feature-icon">${svg.membership}</span><span><b>会员权益</b><small>${state.membership.active?'完整权益已开启':'解锁完整理解与成长能力'}</small></span><i>${svg.back}</i>
+          <span class="v6-feature-icon">${svg.membership}</span><span><b>会员权益</b><small>${state.membership.active?'完整权益已开启':'解锁完整理解与成长能力'}</small></span><i>${state.membership.active?'查看':'去开通'}</i>
         </button>
       </section>
 
@@ -5859,14 +5863,16 @@ function renderDrawer(){
         </div>
       </section>
 
+      <button class="v6-flat-link" data-action="route" data-route="settings/help"><b>帮助与反馈</b>${svg.back}</button>
+
       <section class="v6-chat-history" aria-labelledby="v6HistoryTitle">
-        <div class="v6-section-heading"><h3 id="v6HistoryTitle">最近对话</h3><span>查看全部 ${svg.back}</span></div>
-        <div class="v6-history-list">${names.slice(0,1).map((name,i)=>{
+        <h3 id="v6HistoryTitle">对话记录</h3>
+        <span class="v6-history-group">最近</span>
+        <div class="v6-history-list">${names.map((name,i)=>{
           const current=drawerView.selectedHistory===i&&state.chat.active;
           return `<button class="v6-history-row${current?' is-current':''}" data-action="open-history" data-index="${i}"${current?' aria-current="true"':''}><span><b>${esc(name)}</b><small>${esc(CHAT_HISTORY_SUMMARIES[i]||'继续这段对话')}</small></span><i>${i===0?'今天':i<3?'昨天':`${i+1} 天前`}</i></button>`;
         }).join('')}</div>
       </section>
-      <button class="v6-flat-link" data-action="route" data-route="settings/help"><b>帮助与反馈</b>${svg.back}</button>
     </div>
   </div>`;
   drawerEl.setAttribute('aria-label','我的');
@@ -8587,10 +8593,9 @@ function installCourse() {
     if (!confirmed) return '';
     const conversationText = (state.chat.messages || []).map(message => String(message.html || '').replace(/<[^>]*>/g,' ')).join(' ');
     const topicMap = [
-      {pattern:/伴侣|夫妻|共同养育|育儿分歧|爸爸.*妈妈|妈妈.*爸爸/,productId:'R505'},
-      {pattern:/情绪|发火|哭闹|崩溃|生气|失控|压力|焦虑/,productId:'R502'},
-      {pattern:/规则|边界|催促|作业|冲突|控制|威胁|沟通|说话/,productId:'R501'},
-      {pattern:/学习|动力|拖延|磨蹭|不想学/,productId:'R504'}
+      {pattern:/伴侣|夫妻|共同养育|育儿分歧|爸爸.*妈妈|妈妈.*爸爸/,productId:'M202'},
+      {pattern:/规则|边界|催促|作业|冲突|控制|威胁/,productId:'M203'},
+      {pattern:/情绪|发火|哭闹|崩溃|生气|失控/,productId:'M201'}
     ];
     const match = topicMap.find(item => item.pattern.test(conversationText));
     if (!match) return '';
@@ -8605,14 +8610,7 @@ function installCourse() {
     if (!exposure.conversationId || exposure.conversationId !== conversationId) {
       commit({...data,recommendationExposure:{conversationId,courseId:product.id,day:day(),shownAt:iso()}});
     }
-    const reason = product.id === 'R505'
-      ? '你刚才想理清的是，怎样把共同养育的分歧谈清楚。'
-      : product.id === 'R502'
-        ? '你刚才想练习的是，在情绪上来时先稳住自己再回应。'
-        : product.id === 'R504'
-          ? '你刚才想理解的是，孩子拖延背后的学习动力。'
-          : '你刚才想练习的是，换一种方式和孩子说话。';
-    return `<aside class="course-chat-recommendation"><p class="course-chat-reason">${reason}简快有一门相关课程，可以看看是不是你想学的内容。</p><section><img src="${esc(product.cover)}" alt=""><span><b>${esc(product.title)}</b><small>${esc(product.subtitle)}</small><strong>¥${Math.round(Number(product.amountFen || 0)/100)}</strong></span></section><div><button data-course-action="preview-recommendation" data-product-id="${product.id}">看看课程</button><button data-course-action="hide-recommendation">先继续聊</button></div></aside>`;
+    return `<aside class="course-chat-recommendation"><small>结合刚才的理解</small><b>${esc(product.title)}</b><p>与你们刚确认的互动主题相关，可以先看看这门课是否适合当下。</p><div><button data-course-action="preview-recommendation" data-product-id="${product.id}">了解这门课</button><button data-course-action="hide-recommendation">先继续聊</button></div></aside>`;
   }
   function showRecommendationPreview(productId) {
     const product = model.CATALOG.find(item => item.id === productId);
@@ -8656,7 +8654,7 @@ function installCourse() {
     const data = read(), scroll = drawerEl.querySelector('.v6-drawer-scroll'), orbit = drawerEl.querySelector('.v6-tool-orbit');
     if (scroll && !scroll.querySelector('.course-points-summary')) {
       const checked = hasCheckedIn(data);
-      scroll.insertAdjacentHTML('afterbegin',`<section class="course-points-summary"><button class="course-points-main" data-course-action="route" data-route="points"><span><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M9 12h6M12 9v6"/></svg></span><span><small>成长积分</small><b>${availablePoints(data)}</b></span></button><button class="course-checkin-mini" data-course-action="${checked ? 'route' : 'checkin'}" ${checked ? 'data-route="points"' : ''}>${checked ? '已签到 +2' : '签到 +2'}</button></section>`);
+      scroll.insertAdjacentHTML('afterbegin',`<section class="course-points-summary"><button class="course-points-main" data-course-action="route" data-route="points"><span><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M9 12h6M12 9v6"/></svg></span><span><small>成长积分</small><b>${availablePoints(data)}</b><em>查看明细与兑换</em></span><i>›</i></button><button class="course-checkin-mini" data-course-action="${checked ? 'route' : 'checkin'}" ${checked ? 'data-route="points"' : ''}>${checked ? '今日已签到' : '签到 +2'}</button></section>`);
     }
     if (orbit && !orbit.querySelector('.course-drawer-tool')) {
       orbit.insertAdjacentHTML('afterbegin',view.drawerEntry(context()));

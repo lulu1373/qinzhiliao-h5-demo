@@ -22,11 +22,7 @@ styles += ['experience.css', 'experience-home.css', 'card-practice.css']
 scripts += ['experience-model.js', 'experience-view.js', 'card-practice.js']
 styles += ['course.css', 'course-v2.css']
 scripts += ['course-model.js', 'course-view.js']
-resources = ['community-screen-time.webp', 'community-school-ready.webp', 'community-family-walk.webp',
-             'course-parent-communication.webp', 'course-emotion-pressure.webp',
-             'course-personal-growth.webp', 'course-learning-strengths.webp',
-             'course-partner-relationship.webp', 'course-parent-dialogue.webp',
-             'course-life-missing.webp']
+resources = ['community-screen-time.webp', 'community-school-ready.webp', 'community-family-walk.webp']
 experience = (ROOT / 'assets/experience-controller.js').read_text()
 xp_begin, xp_end = '/* BEGIN EXPERIENCE CONTROLLER */', '/* END EXPERIENCE CONTROLLER */'
 xp_block = xp_begin + '\n' + experience + '\n' + xp_end + '\n'

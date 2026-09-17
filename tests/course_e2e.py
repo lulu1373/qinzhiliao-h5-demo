@@ -14,18 +14,17 @@ class CourseTests(unittest.TestCase):
     def course_click(self, action, extra=''):
         self.page.locator(f'[data-course-action="{action}"]{extra}:visible').first.click()
 
-    def test_real_course_purchase_reaches_learning_and_persists(self):
+    def test_newcomer_bundle_purchase_reaches_learning_and_persists(self):
         self.page.goto(self.url + '#/courses', wait_until='networkidle')
         self.page.wait_for_selector('.course-page:visible')
-        self.assertIn('李中莹·父母4堂学会有效亲子沟通课', self.page.locator('.course-page').inner_text())
-        self.assertNotIn('新人 ¥9.9', self.page.locator('.course-page').inner_text())
-        self.course_click('detail', '[data-product-id="R501"]')
+        self.assertIn('新人 ¥9.9', self.page.locator('.course-page').inner_text())
+        self.course_click('detail', '[data-product-id="B001"]')
         self.course_click('checkout')
         self.course_click('pay')
         self.page.wait_for_selector('.course-payment-sheet:visible')
         self.course_click('settle', '[data-result="success"]')
         self.page.wait_for_selector('.course-result-card.success:visible')
-        self.course_click('learn', '[data-product-id="R501"]')
+        self.course_click('learn', '[data-product-id="B001"]')
         self.page.wait_for_selector('.course-video:visible')
         self.course_click('complete-lesson')
         stored = self.stored()
@@ -60,12 +59,6 @@ class CourseTests(unittest.TestCase):
         self.assertIn('成长积分', self.page.locator('.course-points-summary').inner_text())
         self.assertEqual(self.page.locator('.v6-drawer-feature.classroom,.v6-drawer-feature.learning').count(), 0)
         self.assertEqual(self.page.locator('.course-drawer-tool').count(), 2)
-        self.assertEqual(self.page.locator('.v6-drawer-actions [data-route="messages"]').count(), 0)
-        self.assertEqual(self.page.locator('.v6-drawer-actions [data-route="task-center"]').count(), 0)
-        feature_group = self.page.locator('.v6-drawer-feature-grid')
-        self.assertLessEqual(feature_group.evaluate('(el)=>el.getBoundingClientRect().height'), 112)
-        points = self.page.locator('.course-points-summary')
-        self.assertLessEqual(points.evaluate('(el)=>el.getBoundingClientRect().height'), 58)
 
     def test_classroom_scroll_reaches_the_last_course(self):
         self.page.goto(self.url + '#/courses', wait_until='networkidle')
@@ -76,7 +69,7 @@ class CourseTests(unittest.TestCase):
         self.page.wait_for_timeout(250)
         after = scroll.evaluate('(el)=>el.scrollTop')
         self.assertGreater(after, before)
-        self.assertTrue(self.page.locator('[data-product-id="R507"]').last.is_visible())
+        self.assertTrue(self.page.locator('[data-product-id="M203"]').last.is_visible())
 
     def test_classroom_back_restores_the_open_drawer(self):
         self.page.locator('[data-action="drawer-open"]').click()
@@ -152,9 +145,7 @@ class CourseTests(unittest.TestCase):
         self.page.reload(wait_until='networkidle')
         card = self.page.locator('.course-chat-recommendation:visible')
         self.assertEqual(card.count(), 1)
-        self.assertIn('李中莹婚恋私房课', card.inner_text())
-        self.assertIn('共同养育的分歧', card.inner_text())
-        self.assertNotIn('和孩子说话', card.inner_text())
+        self.assertIn('伴侣一起养育', card.inner_text())
 
 
 if __name__ == '__main__':
