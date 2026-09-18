@@ -7,7 +7,7 @@
 
   const DAY = 24 * 60 * 60 * 1000;
   const QUOTE_TTL = 15 * 60 * 1000;
-  const CATALOG = [
+  const ACTIVITY_CATALOG = [
     {id:'B001', title:'新人亲子沟通礼包', type:'newcomer', topic:'亲子沟通', subtitle:'先把冲突说清楚，再一起找下一步', amountFen:990, lessons:[['b001-1','先听完再回应',480],['b001-2','把催促改成提问',480],['b001-3','冲突后重新靠近',540]]},
     {id:'M201', title:'孩子情绪来了，父母先稳住', type:'member', topic:'情绪与冲突', subtitle:'识别情绪升级前的那个瞬间', normalFen:5900, memberFen:990, lessons:[['m201-1','情绪不是故意捣乱',720],['m201-2','先帮自己停半步',840],['m201-3','冲突后怎样修复',840]]},
     {id:'M202', title:'伴侣一起养育，不必站在对立面', type:'member', topic:'伴侣协作', subtitle:'把分歧变成可以谈的共同规则', normalFen:6900, memberFen:990, lessons:[['m202-1','看见彼此的压力',720],['m202-2','分歧里先不结盟',720],['m202-3','一起定一个小约定',720]]},
@@ -15,7 +15,20 @@
     {id:'P301', title:'给父母的暂停练习', type:'points', topic:'自我照顾', subtitle:'在反应之前，给自己一个停顿', pointsCost:120, firstPointsCost:60, lessons:[['p301-1','识别身体里的提醒',480],['p301-2','给自己十秒钟',480]]},
     {id:'P302', title:'一次家庭反思，重新看见彼此', type:'points', topic:'家庭关系', subtitle:'不急着判断，先整理经历', pointsCost:240, lessons:[['p302-1','回看发生了什么',600],['p302-2','区分事实和感受',600],['p302-3','留下下次可试的一步',600]]},
     {id:'S401', title:'亲子关系系统课', type:'standard', topic:'系统成长', subtitle:'从理解互动循环到建立家庭节奏', amountFen:12900, lessons:[['s401-1','关系循环从哪里开始',1200],['s401-2','听见彼此的难处',1200],['s401-3','让规则可执行',1200],['s401-4','冲突后的修复',1200],['s401-5','家庭会议怎么开',1200],['s401-6','把改变放回日常',1200]]}
-  ].map(product => ({...product, lessons:product.lessons.map(([id,title,durationSeconds]) => ({id,title,durationSeconds}))}));
+  ];
+  const REAL_COURSES = [
+    {id:'SPU_SRV_7552428368961d8zaFyye25',title:'李中莹·NLP人生智慧深度答疑会',topic:'李中莹亲授地面课',subtitle:'',amountFen:398000,lineFen:0,cover:'assets/courses/SPU_SRV_7552428368961d8zaFyye25.webp',externalUrl:'https://appgGFrIU8W9694.h5.xet.pomoho.com/v1/goods/goods_detail/SPU_SRV_7552428368961d8zaFyye25?type=2&channel_id=&pro_id='},
+    {id:'SPU_SRV_747185903332727EIKcqE54',title:'《李中莹亲授心理导师传承班》',topic:'李中莹亲授地面课',subtitle:'',amountFen:9980000,lineFen:0,cover:'assets/courses/SPU_SRV_747185903332727EIKcqE54.webp',externalUrl:'https://appgGFrIU8W9694.h5.xet.pomoho.com/v1/goods/goods_detail/SPU_SRV_747185903332727EIKcqE54?type=2&channel_id=&pro_id='},
+    {id:'SPU_SRV_76424434221573fs9MRGs91',title:'企业家心智模式',topic:'李中莹亲授地面课',subtitle:'李中莹 舒瀚霆双师亲授地面课，2026全新重磅升级！',amountFen:1980000,lineFen:2680000,cover:'assets/courses/SPU_SRV_76424434221573fs9MRGs91.webp',externalUrl:'https://appgGFrIU8W9694.h5.xet.pomoho.com/v1/goods/goods_detail/SPU_SRV_76424434221573fs9MRGs91?type=2&channel_id=&pro_id='},
+    {id:'SPU_SRV_7600025662793jN111CdA91',title:'李中莹NLP专业执行师证书班',topic:'NLP专业执行师',subtitle:'',amountFen:1980000,lineFen:16900000,cover:'assets/courses/SPU_SRV_7600025662793jN111CdA91.webp',externalUrl:'https://appgGFrIU8W9694.h5.xet.pomoho.com/v1/goods/goods_detail/SPU_SRV_7600025662793jN111CdA91?type=2&channel_id=&pro_id='},
+    {id:'SPU_SRV_71833515053897pB7Kc9p63',title:'《马飞鹏·NLP专业执行师国际标准版》12天线下课',topic:'NLP专业执行师',subtitle:'马飞鹏导师本次课程采用国际标准版，12天将教授70多个NLP技巧，权威标准，你将更好地学技术、练能力！助力你重构一套成功快乐的身心系统、为职业发展添砖加瓦！',amountFen:30000,lineFen:2380000,cover:'assets/courses/SPU_SRV_71833515053897pB7Kc9p63.webp',externalUrl:'https://appgGFrIU8W9694.h5.xet.pomoho.com/v1/goods/goods_detail/SPU_SRV_71833515053897pB7Kc9p63?type=2&channel_id=&pro_id='},
+    {id:'SPU_SRV_7627682734251biIaIfy542',title:'李中莹NLP高级执行师线上班',topic:'NLP高级执行师',subtitle:'',amountFen:798000,lineFen:998000,cover:'assets/courses/SPU_SRV_7627682734251biIaIfy542.webp',externalUrl:'https://appgGFrIU8W9694.h5.xet.pomoho.com/v1/goods/goods_detail/SPU_SRV_7627682734251biIaIfy542?type=2&channel_id=&pro_id='},
+    {id:'SPU_SRV_7471409111179EjLh17ha51',title:'马飞鹏《NLP高级执行师国际标准版》',topic:'NLP高级执行师',subtitle:'',amountFen:3380000,lineFen:0,cover:'assets/courses/SPU_SRV_7471409111179EjLh17ha51.webp',externalUrl:'https://appgGFrIU8W9694.h5.xet.pomoho.com/v1/goods/goods_detail/SPU_SRV_7471409111179EjLh17ha51?type=2&channel_id=&pro_id='},
+    {id:'course_3Bq0k4jffkrIa6KtCAMHXjzaFFZ',title:'简快身心积极疗法—初级班',topic:'简快身心积极疗法',subtitle:'『简快身心积极疗法』——李中莹初级专业线上课',amountFen:198000,lineFen:0,cover:'assets/courses/course_3Bq0k4jffkrIa6KtCAMHXjzaFFZ.webp',externalUrl:'https://appgGFrIU8W9694.h5.xet.pomoho.com/p/course/ecourse/course_3Bq0k4jffkrIa6KtCAMHXjzaFFZ'},
+    {id:'course_3CcFgHeAAvg9rLSjowSvy41JOpg',title:'简快身心积极疗法-中级班',topic:'简快身心积极疗法',subtitle:'简快身心积极疗法专业课—中级班',amountFen:268000,lineFen:0,cover:'assets/courses/course_3CcFgHeAAvg9rLSjowSvy41JOpg.webp',externalUrl:'https://appgGFrIU8W9694.h5.xet.pomoho.com/p/course/ecourse/course_3CcFgHeAAvg9rLSjowSvy41JOpg'},
+    {id:'course_3Cf7zajCa0bxYZc1WwnUbv3v4wG',title:'简快身心积极疗法-高级班',topic:'简快身心积极疗法',subtitle:'简快身心积极疗法专业课—高级班（内功班）',amountFen:398000,lineFen:0,cover:'assets/courses/course_3Cf7zajCa0bxYZc1WwnUbv3v4wG.webp',externalUrl:'https://appgGFrIU8W9694.h5.xet.pomoho.com/p/course/ecourse/course_3Cf7zajCa0bxYZc1WwnUbv3v4wG'}
+  ].map(product => ({...product,type:'official',source:'xet',lessons:[]}));
+  const CATALOG = [...ACTIVITY_CATALOG,...REAL_COURSES].map(product => ({...product, lessons:product.lessons.map(lesson => Array.isArray(lesson) ? {id:lesson[0],title:lesson[1],durationSeconds:lesson[2]} : lesson)}));
 
   const byId = id => CATALOG.find(product => product.id === id);
   const clone = value => JSON.parse(JSON.stringify(value));
@@ -198,5 +211,5 @@
     return !hidden || hidden !== String(localDay || '').slice(0,10);
   }
 
-  return {CATALOG, normalize, offerFor, createOrder, settleOrder, redeemPoints, pointBalances, canLearn, entitlement, recommendationAvailable, membershipCycleId};
+  return {CATALOG, REAL_COURSES, normalize, offerFor, createOrder, settleOrder, redeemPoints, pointBalances, canLearn, entitlement, recommendationAvailable, membershipCycleId};
 });

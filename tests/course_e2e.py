@@ -60,16 +60,18 @@ class CourseTests(unittest.TestCase):
         self.assertEqual(self.page.locator('.v6-drawer-feature.classroom,.v6-drawer-feature.learning').count(), 0)
         self.assertEqual(self.page.locator('.course-drawer-tool').count(), 2)
 
-    def test_classroom_scroll_reaches_the_last_course(self):
-        self.page.goto(self.url + '#/courses', wait_until='networkidle')
+    def test_real_course_list_scrolls_to_the_last_official_course(self):
+        self.page.goto(self.url + '#/courses/list', wait_until='networkidle')
         scroll = self.page.locator('.course-page.qzl-page-scroll')
+        self.assertEqual(self.page.locator('[data-course-source="xet"]').count(), 10)
+        self.assertIn('李中莹·NLP人生智慧深度答疑会', scroll.inner_text())
         before = scroll.evaluate('(el)=>el.scrollTop')
         scroll.hover()
-        self.page.mouse.wheel(0, 1200)
+        self.page.mouse.wheel(0, 2400)
         self.page.wait_for_timeout(250)
         after = scroll.evaluate('(el)=>el.scrollTop')
         self.assertGreater(after, before)
-        self.assertTrue(self.page.locator('[data-product-id="M203"]').last.is_visible())
+        self.assertTrue(self.page.locator('[data-product-id="course_3Cf7zajCa0bxYZc1WwnUbv3v4wG"]').last.is_visible())
 
     def test_classroom_back_restores_the_open_drawer(self):
         self.page.locator('[data-action="drawer-open"]').click()

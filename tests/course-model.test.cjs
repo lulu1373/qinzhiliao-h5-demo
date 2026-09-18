@@ -7,9 +7,30 @@ const file = path.join(__dirname, '../assets/course-model.js');
 const M = fs.existsSync(file) ? require(file) : {};
 
 test('exports the classroom domain contract', () => {
-  for (const key of ['CATALOG', 'normalize', 'offerFor', 'createOrder', 'settleOrder', 'redeemPoints', 'membershipCycleId']) {
-    assert.equal(typeof M[key], key === 'CATALOG' ? 'object' : 'function');
+  for (const key of ['CATALOG', 'REAL_COURSES', 'normalize', 'offerFor', 'createOrder', 'settleOrder', 'redeemPoints', 'membershipCycleId']) {
+    assert.equal(typeof M[key], ['CATALOG', 'REAL_COURSES'].includes(key) ? 'object' : 'function');
   }
+});
+
+test('real classroom catalog mirrors the ten public Jian Kuai store products', () => {
+  assert.equal(M.REAL_COURSES.length, 10);
+  assert.deepEqual(M.REAL_COURSES.map(item => item.title), [
+    '李中莹·NLP人生智慧深度答疑会',
+    '《李中莹亲授心理导师传承班》',
+    '企业家心智模式',
+    '李中莹NLP专业执行师证书班',
+    '《马飞鹏·NLP专业执行师国际标准版》12天线下课',
+    '李中莹NLP高级执行师线上班',
+    '马飞鹏《NLP高级执行师国际标准版》',
+    '简快身心积极疗法—初级班',
+    '简快身心积极疗法-中级班',
+    '简快身心积极疗法-高级班'
+  ]);
+  const first = M.REAL_COURSES[0];
+  assert.equal(first.amountFen, 398000);
+  assert.match(first.cover, /^assets\/courses\//);
+  assert.match(first.externalUrl, /^https:\/\/appgGFrIU8W9694\.h5\.xet\.pomoho\.com\//);
+  assert.equal(first.source, 'xet');
 });
 
 test('membership cycles follow the activation-day anchor and clamp to month end', () => {

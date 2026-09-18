@@ -28,6 +28,27 @@ test('every course route renders inside its own vertical scroll region', () => {
   }
 });
 
+test('all-courses list uses real store covers, prices and official products only', () => {
+  const html = view.render('courses/list', ctx());
+  assert.match(html, /10 门真实课程/);
+  assert.match(html, /李中莹·NLP人生智慧深度答疑会/);
+  assert.match(html, /简快身心积极疗法-高级班/);
+  assert.match(html, /assets\/courses\//);
+  assert.match(html, /¥3980/);
+  assert.match(html, /data-course-source="xet"/);
+  assert.doesNotMatch(html, /新人亲子沟通礼包/);
+  assert.doesNotMatch(html, /给父母的暂停练习/);
+});
+
+test('real course detail links to the official store without invented lessons or checkout', () => {
+  const html = view.render('courses/detail/SPU_SRV_7552428368961d8zaFyye25', ctx());
+  assert.match(html, /官方课程/);
+  assert.match(html, /data-course-action="official"/);
+  assert.match(html, /¥3980/);
+  assert.doesNotMatch(html, /<h2>课程目录/);
+  assert.doesNotMatch(html, /data-course-action="checkout"/);
+});
+
 test('detail and checkout make the selected method and simulation explicit', () => {
   const detail = view.render('courses/detail/B001', ctx());
   assert.match(detail, /新人亲子沟通礼包/);

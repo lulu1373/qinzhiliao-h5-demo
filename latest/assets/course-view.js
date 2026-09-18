@@ -5,6 +5,7 @@
 })(typeof window !== 'undefined' ? window : globalThis, function() {
   'use strict';
   const money = fen => `¥${(Number(fen || 0) / 100).toFixed(2)}`;
+  const storeMoney = fen => `¥${Number(fen || 0) / 100}`;
   const mins = seconds => `${Math.max(1, Math.round(Number(seconds || 0) / 60))} 分钟`;
   const icon = name => ({
     book:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H11v16H6.5A2.5 2.5 0 0 0 4 21.5v-16Zm16 0A2.5 2.5 0 0 0 17.5 3H13v16h4.5a2.5 2.5 0 0 1 2.5 2.5v-16Z"/></svg>',
@@ -21,7 +22,9 @@
   const esc = (ctx,value) => ctx.esc ? ctx.esc(value) : String(value || '');
   const scrollPage = html => String(html || '').replace('<main class="course-page','<main class="course-page qzl-page-scroll');
   const title = (text, back='courses') => `<header class="course-titlebar"><button data-course-action="back" data-fallback="${back}" aria-label="返回">‹</button><b>${text}</b><span></span></header>`;
-  const detailButton = product => `<button class="course-card" data-course-action="detail" data-product-id="${product.id}"><span class="course-cover type-${product.type}">${icon(product.type === 'points' ? 'coin' : product.type === 'newcomer' ? 'gift' : 'book')}</span><span class="course-card-copy"><small>${product.topic}</small><b>${product.title}</b><em>${product.subtitle}</em></span><i>›</i></button>`;
+  const detailButton = product => product.source === 'xet'
+    ? `<button class="course-card course-real-card" data-course-action="detail" data-course-source="xet" data-product-id="${product.id}"><span class="course-real-cover"><img src="${product.cover}" alt="${product.title}" loading="lazy"></span><span class="course-card-copy"><small>${product.topic}</small><b>${product.title}</b><em>${product.subtitle || '简快人官方课程'}</em><span class="course-real-price"><strong>${storeMoney(product.amountFen)}</strong>${product.lineFen ? `<del>${storeMoney(product.lineFen)}</del>` : ''}</span></span><i>›</i></button>`
+    : `<button class="course-card" data-course-action="detail" data-product-id="${product.id}"><span class="course-cover type-${product.type}">${icon(product.type === 'points' ? 'coin' : product.type === 'newcomer' ? 'gift' : 'book')}</span><span class="course-card-copy"><small>${product.topic}</small><b>${product.title}</b><em>${product.subtitle}</em></span><i>›</i></button>`;
 
   function homeEntry(ctx) {
     return '';
@@ -36,15 +39,20 @@
     const memberText = member.active ? `本期还有 ${Math.max(0,member.quota-member.used)} 个 ¥9.9 名额` : '开通会员后，可购买更多 ¥9.9 课程';
     const owned = ctx.data.entitlements.filter(item => item.status === 'active').map(item => getProduct(ctx,item.productId)).filter(Boolean);
     const cards = ctx.model.CATALOG.filter(item => item.type !== 'newcomer');
-    return `<main class="course-page">${title('简快课堂','home')}<section class="course-hero"><span>${icon('book')}</span><div><small>简快课堂 · 演示课程</small><h1>从听懂彼此，走到一起做到</h1><p>课程内容为演示示例，获取流程不会产生真实扣款。</p></div></section>${owned.length ? `<section class="course-section"><div class="course-section-head"><h2>继续学习</h2><button data-course-action="route" data-route="my-learning">全部 ›</button></div>${detailButton(owned[0])}</section>` : ''}<section class="course-section"><div class="course-section-head"><h2>新注册用户</h2><span class="course-price-chip">新人 ¥9.9</span></div>${detailButton(newcomer)}</section><section class="course-member-strip"><span>${icon('gift')}</span><div><b>会员专享课</b><small>${memberText}</small></div><button data-course-action="route" data-route="membership">查看权益</button></section><section class="course-section"><div class="course-section-head"><h2>成长积分兑换</h2><button data-course-action="route" data-route="points">${ctx.data.points.balance} 积分 ›</button></div>${cards.filter(item => item.type === 'points').map(detailButton).join('')}</section><section class="course-section"><div class="course-section-head"><h2>为此刻的家庭问题找方法</h2><button data-course-action="route" data-route="courses/list">查看全部 ›</button></div>${cards.filter(item => item.type === 'member').map(detailButton).join('')}</section></main>`;
+    const realCourses = ctx.model.REAL_COURSES || cards.filter(item => item.source === 'xet');
+    return `<main class="course-page">${title('简快课堂','home')}<section class="course-hero"><span>${icon('book')}</span><div><small>简快课堂 · 官方课程</small><h1>从听懂彼此，走到一起做到</h1><p>课程信息来自简快人官方课堂，详情与购买在官方页面完成。</p></div></section>${owned.length ? `<section class="course-section"><div class="course-section-head"><h2>继续学习</h2><button data-course-action="route" data-route="my-learning">全部 ›</button></div>${detailButton(owned[0])}</section>` : ''}<section class="course-section"><div class="course-section-head"><h2>新注册用户</h2><span class="course-price-chip">新人 ¥9.9</span></div>${detailButton(newcomer)}</section><section class="course-member-strip"><span>${icon('gift')}</span><div><b>会员专享课</b><small>${memberText}</small></div><button data-course-action="route" data-route="membership">查看权益</button></section><section class="course-section"><div class="course-section-head"><h2>成长积分兑换</h2><button data-course-action="route" data-route="points">${ctx.data.points.balance} 积分 ›</button></div>${cards.filter(item => item.type === 'points').map(detailButton).join('')}</section><section class="course-section"><div class="course-section-head"><h2>简快真实课程</h2><button data-course-action="route" data-route="courses/list">全部 ${realCourses.length} 门 ›</button></div>${realCourses.slice(0,3).map(detailButton).join('')}</section></main>`;
   }
   function list(ctx,route) {
     const q = query(route), keyword = String(q.q || '').trim();
-    const products = ctx.model.CATALOG.filter(item => !keyword || `${item.title}${item.topic}${item.subtitle}`.includes(keyword));
-    return `<main class="course-page">${title('全部课程')}<section class="course-search"><input id="courseSearch" value="${esc(ctx,keyword)}" placeholder="搜索课程主题或关键词"><button data-course-action="search">搜索</button></section><p class="course-count">找到 ${products.length} 门演示课程</p><section class="course-list">${products.map(detailButton).join('') || '<div class="course-empty"><b>暂时没有找到相关课程</b><p>换一个关键词试试。</p></div>'}</section></main>`;
+    const source = ctx.model.REAL_COURSES || ctx.model.CATALOG.filter(item => item.source === 'xet');
+    const products = source.filter(item => !keyword || `${item.title}${item.topic}${item.subtitle}`.includes(keyword));
+    return `<main class="course-page">${title('全部课程')}<section class="course-search"><input id="courseSearch" value="${esc(ctx,keyword)}" placeholder="搜索课程主题或关键词"><button data-course-action="search">搜索</button></section><p class="course-count">${keyword ? `找到 ${products.length} 门真实课程` : `${source.length} 门真实课程 · 来自简快人官方课堂`}</p><section class="course-list course-real-list">${products.map(detailButton).join('') || '<div class="course-empty"><b>暂时没有找到相关课程</b><p>换一个关键词试试。</p></div>'}</section></main>`;
   }
   function detail(ctx,productId) {
     const product = getProduct(ctx,productId); if (!product) return missing(ctx);
+    if (product.source === 'xet') {
+      return `<main class="course-page course-detail course-official-detail">${title('课程详情')}<section class="course-official-hero"><img src="${product.cover}" alt="${esc(ctx,product.title)}"><span>简快人官方课程</span></section><section class="course-detail-block"><small>${esc(ctx,product.topic)}</small><h1>${esc(ctx,product.title)}</h1>${product.subtitle ? `<p>${esc(ctx,product.subtitle)}</p>` : ''}</section><section class="course-price course-official-price"><div><small>官方售价</small><b>课程价格以官方详情页为准</b></div><strong>${storeMoney(product.amountFen)}</strong>${product.lineFen ? `<del>${storeMoney(product.lineFen)}</del>` : ''}</section><section class="course-detail-block"><h2>课程说明</h2><p>这里展示的是简快人官方课堂当前公开的课程资料。课程目录、开课安排、适用对象及购买规则，请到官方详情页查看。</p></section><footer class="course-sticky"><span>将打开简快人官方课堂</span><button class="course-primary" data-course-action="official" data-url="${encodeURIComponent(product.externalUrl)}">查看官方课程</button></footer></main>`;
+    }
     const offer = ctx.model.offerFor(ctx.data,product.id,new Date().toISOString());
     const total = product.lessons.reduce((sum,item) => sum + item.durationSeconds,0);
     const price = offer.method === 'points' ? `${offer.pointsCost} 积分兑换` : offer.amountFen ? money(offer.amountFen) : offer.label;
