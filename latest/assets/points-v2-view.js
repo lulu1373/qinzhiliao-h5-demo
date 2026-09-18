@@ -31,7 +31,8 @@
     };
     return `<svg class="pv2-svg ${tone}" viewBox="0 0 64 64" aria-hidden="true">${map[name]||map.coin}</svg>`;
   }
-  const mascot=()=>'<span class="pv2-mascot"><img src="assets/mascot-clean-v90.png" alt="小亲"><i>'+icon('sprout')+'</i></span>';
+  const richIcon=name=>typeof window!=='undefined'&&window.QZLPointsV3Icons?.render?window.QZLPointsV3Icons.render(name):icon(name);
+  const mascot=()=>'<span class="pv2-mascot pv3-mascot"><img src="assets/mascot-clean-v90.png" alt="小亲"><i>'+icon('sprout')+'</i></span>';
   function shell(title,body,{back='home',right=''}={}){
     return `<main class="points-v2-page qzl-stacked-page"><header class="pv2-titlebar"><button data-points-action="back" data-fallback="${back}" aria-label="返回">${icon('back')}</button><b>${title}</b><span>${right}</span></header><section class="pv2-scroll">${body}</section></main>`;
   }
@@ -42,19 +43,50 @@
     return `<div class="pv2-week-strip">${cells}</div>`;
   }
   function dashboard(ctx){
-    const m=ctx.model,s=m.monthStats(ctx.course,m.monthKey(ctx.today),ctx.today),level=m.levelInfo(ctx.course),streak=m.streak(ctx.course,ctx.today),checked=m.hasCheckin(ctx.course,ctx.today);
+    const m=ctx.model,s=m.monthStats(ctx.course,m.monthKey(ctx.today),ctx.today),level=m.levelInfo(ctx.course),streak=m.streak(ctx.course,ctx.today),checked=m.hasCheckin(ctx.course,ctx.today),nextReward=m.CHECKIN_REWARDS[streak%7];
     const body=`
-      <section class="pv2-hero-card"><div><small>每一次陪伴</small><h2>都在靠近更好的自己</h2><strong>${ctx.balance}<em>成长积分 ›</em></strong></div>${mascot()}</section>
-      <section class="pv2-stat-row"><div><b>${streak} 天</b><small>连续陪伴</small></div><div><b>${m.checkedDays(ctx.course).length} 天</b><small>累计签到</small></div><div><b>Lv.${level.current.level}</b><small>${level.current.name}</small></div></section>
-      <button class="pv2-today-card" data-points-action="route" data-route="points/checkin"><span><small>今天 · ${zhDate(ctx.today)}</small><b>${checked?'今天已签到':'签到领取 +' + m.CHECKIN_REWARDS[(streak%7)] + ' 积分'}</b></span><i>${icon('arrow')}</i></button>
-      <section class="pv2-panel"><header><h3>本周签到</h3><button data-points-action="route" data-route="points/calendar">查看月历 ›</button></header>${weekStrip(ctx)}<p class="pv2-progress-note">${checked?'今天已经留下这一小步':'再签到 2 天，可获得周奖励 +5'}</p></section>
-      <button class="pv2-task-entry" data-points-action="route" data-route="points/tasks"><span class="pv2-iconbox blue">${icon('task')}</span><span><b>做任务赚积分</b><small>完成行动，获得更多成长积分</small></span><i>${icon('arrow')}</i></button>
-      <section class="pv2-mini-stats"><div><b>本月签到 ${s.days} 天</b><small>本月获得 +${s.earned}</small></div><button data-points-action="route" data-route="points/ledger">积分明细</button><button data-points-action="route" data-route="points/rewards">积分兑换</button></section>`;
-    return shell('成长中心',body,{right:'<button data-points-action="route" data-route="points/rules">积分规则</button>'});
+      <section class="pv3-growth-card">
+        <div class="pv3-growth-top">
+          <div class="pv3-growth-copy"><small>每一次陪伴</small><h2>都在靠近更好的自己</h2>
+            <button class="pv3-balance" data-points-action="route" data-route="points/wallet?tab=ledger"><strong>${ctx.balance}</strong><span>成长积分 ›</span></button>
+          </div>
+          ${mascot()}
+        </div>
+        <div class="pv3-stat-row">
+          <button data-points-action="route" data-route="points/checkin"><b>${streak} 天</b><small>连续陪伴</small></button>
+          <button data-points-action="route" data-route="points/calendar"><b>${m.checkedDays(ctx.course).length} 天</b><small>累计签到</small></button>
+          <button data-points-action="route" data-route="points/level"><b>Lv.${level.current.level}</b><small>${level.current.name}</small></button>
+        </div>
+      </section>
+
+      <button class="pv3-checkin-entry ${checked?'is-done':''}" data-points-action="route" data-route="points/checkin">
+        <span class="pv3-entry-icon pv3-gold">${richIcon('checkin')}</span>
+        <span class="pv3-entry-copy"><small>今天 · ${zhDate(ctx.today)}</small><b>${checked?'今天已签到':'签到领取 +'+nextReward+' 积分'}</b><em>${checked?'明天继续回来看看自己':'点一下，把今天的陪伴留下来'}</em></span>
+        <i class="pv3-entry-arrow">${icon('arrow')}</i>
+      </button>
+
+      <section class="pv3-week-card">
+        <header><div><small>成长足迹</small><h3>本周签到</h3></div><button data-points-action="route" data-route="points/calendar">查看月历 ›</button></header>
+        ${weekStrip(ctx)}
+        <div class="pv3-week-footer"><span>${checked?'今天已经留下这一小步':'今天签到后，会点亮一个成长印记'}</span><b>本月 +${s.earned} 积分</b></div>
+      </section>
+
+      <button class="pv3-feature-entry" data-points-action="route" data-route="points/tasks">
+        <span class="pv3-entry-icon pv3-blue">${richIcon('task')}</span>
+        <span class="pv3-entry-copy"><small>成长任务</small><b>做任务赚积分</b><em>对话、亲子卡、行动反馈、课程和社区</em></span>
+        <i class="pv3-entry-arrow">${icon('arrow')}</i>
+      </button>
+
+      <button class="pv3-feature-entry pv3-wallet-entry" data-points-action="route" data-route="points/wallet?tab=ledger">
+        <span class="pv3-entry-icon pv3-yellow">${richIcon('wallet')}</span>
+        <span class="pv3-entry-copy"><small>我的积分</small><b>明细与兑换</b><em>查看每笔积分，也可以兑换成长权益</em></span>
+        <i class="pv3-entry-arrow">${icon('arrow')}</i>
+      </button>`;
+    return shell('成长积分',body,{right:'<button data-points-action="route" data-route="points/rules">积分规则</button>'});
   }
   function checkin(ctx){
     const m=ctx.model,done=m.hasCheckin(ctx.course,ctx.today),streak=m.streak(ctx.course,ctx.today),nextDay=((streak%7)+1),reward=done?0:m.CHECKIN_REWARDS[nextDay-1];
-    const cycle=m.CHECKIN_REWARDS.map((r,i)=>`<div class="pv2-cycle-day ${i<streak%7?'done':''} ${!done&&i===streak%7?'today':''}"><i>${icon('gift')}</i><b>+${r}</b><small>第${i+1}天</small></div>`).join('');
+    const cycle=m.CHECKIN_REWARDS.map((r,i)=>`<div class="pv2-cycle-day ${i<streak%7?'done':''} ${!done&&i===streak%7?'today':''}"><i>${richIcon('gift')}</i><b>+${r}</b><small>第${i+1}天</small></div>`).join('');
     const body=`
       <section class="pv2-checkin-hero">${mascot()}<div><small>今天也在用心陪伴 👋</small><h2>给自己一个小小的奖励吧</h2></div></section>
       <section class="pv2-checkin-card"><small>${zhDate(ctx.today)} 星期${['日','一','二','三','四','五','六'][new Date(ctx.today+'T12:00:00+08:00').getDay()]}</small><strong>${done?'✓':'+'+reward}</strong><p>${done?'今日奖励已领取':'成长积分'}</p><button data-points-action="claim-checkin" ${done?'disabled':''}>${done?'今日已签到':'领取奖励'}</button></section>
@@ -73,8 +105,22 @@
   function tasks(ctx,route){
     const tab=query(route).tab||'all',all=ctx.model.taskStatus(ctx.course,ctx.today),items=all.filter(t=>tab==='all'||t.group===tab);
     const tabs=[['all','全部任务'],['daily','每日任务'],['growth','成长任务'],['community','社区任务']].map(([id,label])=>`<button class="${tab===id?'active':''}" data-points-action="task-tab" data-tab="${id}">${label}</button>`).join('');
-    const rows=items.map(t=>`<article class="pv2-task-row"><span class="pv2-iconbox ${t.group==='daily'?'gold':t.group==='community'?'green':t.id==='course'?'blue':'violet'}">${icon(t.id==='checkin'?'calendar':t.id==='chat'?'chat':t.id==='card'?'card':t.id==='feedback'?'action':t.id==='course'?'course':'community')}</span><div><b>${t.title}</b><small>+${t.reward} 积分</small></div><em>${t.count}/${t.limit}</em><button data-points-action="task-go" data-route="${t.route}" ${t.done?'disabled':''}>${t.done?'已完成':'去'+(t.id==='course'?'学习':t.id==='community'?'发布':t.id==='checkin'?'签到':'完成')}</button></article>`).join('');
+    const rows=items.map(t=>`<article class="pv2-task-row pv3-task-row"><span class="pv3-task-icon">${richIcon(t.id==='checkin'?'checkin':t.id==='chat'?'chat':t.id==='card'?'card':t.id==='feedback'?'action':t.id==='course'?'course':'community')}</span><div><b>${t.title}</b><small>${t.desc}</small><strong>+${t.reward} 积分</strong></div><em>${t.count}/${t.limit}</em><button data-points-action="task-go" data-route="${t.route}" ${t.done?'disabled':''}>${t.done?'已完成':'去'+(t.id==='course'?'学习':t.id==='community'?'发布':t.id==='checkin'?'签到':'完成')}</button></article>`).join('');
     return shell('任务中心',`<nav class="pv2-tabs">${tabs}</nav><section class="pv2-task-banner"><div><small>在行动中积累成长</small><h2>每一小步，都值得被鼓励</h2></div>${mascot()}</section><section class="pv2-task-list">${rows}</section>`,{back:'points'});
+  }
+  function wallet(ctx,route){
+    const tab=query(route).tab==='rewards'?'rewards':'ledger',level=ctx.model.levelInfo(ctx.course);
+    const nav=`<nav class="pv3-wallet-tabs"><button class="${tab==='ledger'?'active':''}" data-points-action="route" data-route="points/wallet?tab=ledger">积分明细</button><button class="${tab==='rewards'?'active':''}" data-points-action="route" data-route="points/wallet?tab=rewards">积分兑换</button></nav>`;
+    const head=`<section class="pv3-wallet-hero"><span class="pv3-wallet-icon">${richIcon('wallet')}</span><div><small>当前可用</small><strong>${ctx.balance}</strong><b>成长积分</b><p>Lv.${level.current.level} · ${level.current.name}</p></div></section>`;
+    let content='';
+    if(tab==='ledger'){
+      const iconFor=x=>({checkin:'checkin',chat_summary:'chat',card_saved:'card',action_feedback:'action',course_lesson:'course',community_post:'community',reward_redemption:'gift',course_redemption:'course'}[x.sourceType]||'history');
+      const rows=ctx.model.ledgerRows(ctx.course);
+      content=rows.length?`<section class="pv3-wallet-list">${rows.map(x=>{const d=x.sourceDay||String(x.occurredAt||'').slice(0,10),time=x.occurredAt?new Date(x.occurredAt).toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit',hour12:false,timeZone:'Asia/Shanghai'}):'';return `<article class="pv3-wallet-row"><span>${richIcon(iconFor(x))}</span><div><b>${esc(ctx,x.displayTitle)}</b><small>${d} · ${time}</small></div><strong class="${x.kind}">${Number(x.amount)>0?'+':''}${x.amount}</strong></article>`;}).join('')}</section>`:'<div class="pv2-empty">还没有积分记录</div>';
+    }else{
+      content=`<section class="pv3-wallet-rewards">${ctx.model.REWARDS.map(r=>`<article class="pv3-wallet-reward"><span>${richIcon(r.kind==='课程'?'course':r.kind==='工具'?'gift':r.kind==='实物'?'card':'medal')}</span><div><b>${r.title}</b><small>${r.desc}</small><strong>${r.cost} 积分</strong></div><button data-points-action="redeem" data-reward-id="${r.id}">去兑换</button></article>`).join('')}</section>`;
+    }
+    return shell('我的积分',head+nav+content,{back:'points'});
   }
   function ledger(ctx,route){
     const filter=query(route).filter||'all',rows=ctx.model.ledgerRows(ctx.course).filter(x=>filter==='all'||(filter==='earn'?x.kind==='earn':x.kind==='spend'));
@@ -83,7 +129,7 @@
     return shell('积分明细',`<nav class="pv2-tabs pv2-ledger-tabs">${tabs}</nav><section class="pv2-ledger-list">${html}</section>`,{back:'points'});
   }
   function rewards(ctx){
-    const rows=ctx.model.REWARDS.map(r=>`<article class="pv2-reward-row"><span class="pv2-reward-art ${r.tone}">${icon(r.kind==='课程'?'course':r.kind==='工具'?'reward':r.kind==='实物'?'card':'calendar')}</span><div><b>${r.title}</b><small>${r.desc}</small><strong>${r.cost} 积分</strong></div><button data-points-action="redeem" data-reward-id="${r.id}">去兑换</button></article>`).join('');
+    const rows=ctx.model.REWARDS.map(r=>`<article class="pv2-reward-row pv3-reward-row"><span class="pv2-reward-art ${r.tone}">${richIcon(r.kind==='课程'?'course':r.kind==='工具'?'gift':r.kind==='实物'?'card':'medal')}</span><div><b>${r.title}</b><small>${r.desc}</small><strong>${r.cost} 积分</strong></div><button data-points-action="redeem" data-reward-id="${r.id}">去兑换</button></article>`).join('');
     return shell('积分兑换',`<section class="pv2-reward-head"><span>我的积分：<b>${ctx.balance}</b></span></section><nav class="pv2-tabs"><button class="active">全部</button><button>课程</button><button>工具</button><button>会员</button><button>实物</button></nav><section class="pv2-reward-list">${rows}</section>`,{back:'points'});
   }
   function level(ctx){
@@ -102,6 +148,7 @@
     if(base==='points/checkin')return checkin(ctx);
     if(base==='points/calendar')return calendarPage(ctx,route);
     if(base==='points/tasks')return tasks(ctx,route);
+    if(base==='points/wallet')return wallet(ctx,route);
     if(base==='points/ledger')return ledger(ctx,route);
     if(base==='points/rewards')return rewards(ctx);
     if(base==='points/level')return level(ctx);

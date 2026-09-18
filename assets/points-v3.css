@@ -1,0 +1,357 @@
+/* Points V3 — visual architecture pass
+   Warm growth garden language: richer dimensional icons, coherent cards, fewer competing entry points. */
+:root{
+  --pv3-canvas:#fbf8f1;
+  --pv3-card:#fffdfa;
+  --pv3-text:#30342f;
+  --pv3-muted:#8b897f;
+  --pv3-green:#73bd68;
+  --pv3-green-deep:#4e9851;
+  --pv3-green-soft:#e7f4c7;
+  --pv3-orange:#ff8751;
+  --pv3-gold:#f6ba46;
+  --pv3-blue:#78baf3;
+  --pv3-violet:#8f78e5;
+  --pv3-radius:24px;
+  --pv3-shadow:0 12px 32px rgba(85,67,45,.075);
+  --pv3-soft-shadow:0 8px 22px rgba(85,67,45,.055);
+}
+.points-v2-page{background:
+  radial-gradient(circle at 85% 2%,rgba(234,246,211,.52),transparent 24%),
+  linear-gradient(180deg,#fffdf8 0%,var(--pv3-canvas) 70%,#faf6ee 100%)!important;
+}
+.points-v2-page .pv2-titlebar{background:rgba(255,253,248,.95)!important;border-bottom-color:rgba(101,82,59,.045)!important}
+.points-v2-page .pv2-scroll{padding:12px 14px calc(28px + var(--safe-bottom))!important}
+.pv3-icon{display:block;width:100%;height:100%;overflow:visible}
+.pv3-entry-icon .pv3-icon,.pv3-task-icon .pv3-icon,.pv3-wallet-icon .pv3-icon,.pv3-wallet-row>span .pv3-icon,.pv3-wallet-reward>span .pv3-icon,.pv2-reward-art .pv3-icon,.pv2-cycle-day .pv3-icon{width:100%;height:100%}
+
+/* Growth card */
+.pv3-growth-card{
+  position:relative;
+  overflow:hidden;
+  border:1px solid rgba(113,146,78,.10);
+  border-radius:30px;
+  background:#fff;
+  box-shadow:var(--pv3-shadow);
+}
+.pv3-growth-top{
+  position:relative;
+  min-height:184px;
+  padding:22px 156px 18px 20px;
+  overflow:hidden;
+  background:
+    radial-gradient(circle at 84% 9%,rgba(255,255,255,.9),transparent 22%),
+    radial-gradient(circle at 94% 65%,rgba(122,192,91,.22),transparent 31%),
+    linear-gradient(136deg,#edf8cf 0%,#dff1ad 58%,#edf6d1 100%);
+}
+.pv3-growth-top::before{
+  content:"";
+  position:absolute;
+  inset:auto -22px -34px auto;
+  width:178px;height:92px;
+  border-radius:50%;
+  background:rgba(134,194,102,.16);
+  transform:rotate(-11deg);
+}
+.pv3-growth-copy{position:relative;z-index:2}
+.pv3-growth-copy>small{
+  display:block;
+  color:#568252;
+  font-size:13px;
+  line-height:1.2;
+  font-weight:750;
+  letter-spacing:.2px;
+}
+.pv3-growth-copy>h2{
+  margin:5px 0 13px;
+  color:#42503d;
+  font-size:17px;
+  line-height:1.45;
+  font-weight:680;
+}
+.pv3-balance{
+  appearance:none;
+  display:block;
+  padding:0;
+  border:0;
+  background:transparent;
+  text-align:left;
+  color:inherit;
+}
+.pv3-balance strong{
+  display:block;
+  color:#203426;
+  font-size:48px;
+  line-height:.96;
+  font-weight:760;
+  letter-spacing:-1.8px;
+}
+.pv3-balance span{
+  display:block;
+  margin-top:9px;
+  color:#687b61;
+  font-size:12px;
+  font-weight:680;
+}
+.pv3-growth-card .pv3-mascot{
+  right:12px!important;
+  bottom:0!important;
+  width:142px!important;
+  height:150px!important;
+}
+.pv3-growth-card .pv3-mascot img{
+  width:128px!important;
+  height:128px!important;
+  filter:drop-shadow(0 12px 14px rgba(68,98,51,.16))!important;
+}
+.pv3-growth-card .pv3-mascot>i{top:0!important;left:50px!important}
+.pv3-stat-row{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  background:rgba(255,255,255,.98);
+}
+.pv3-stat-row button{
+  min-height:68px;
+  padding:11px 4px 10px;
+  border:0;
+  border-right:1px solid rgba(94,78,60,.07);
+  background:transparent;
+  text-align:center;
+}
+.pv3-stat-row button:last-child{border-right:0}
+.pv3-stat-row b{display:block;color:#30352f;font-size:18px;line-height:1.05;font-weight:720}
+.pv3-stat-row small{display:block;margin-top:6px;color:#89897f;font-size:10px;line-height:1.2}
+
+/* Shared feature entry */
+.pv3-checkin-entry,.pv3-feature-entry{
+  width:100%;
+  display:grid;
+  grid-template-columns:58px 1fr 36px;
+  align-items:center;
+  gap:12px;
+  margin-top:13px;
+  padding:13px 13px;
+  border:1px solid rgba(102,83,62,.065);
+  border-radius:23px;
+  background:#fff;
+  box-shadow:var(--pv3-soft-shadow);
+  text-align:left;
+  color:var(--pv3-text);
+}
+.pv3-checkin-entry{
+  min-height:86px;
+  border-color:rgba(230,165,68,.09);
+  background:
+    radial-gradient(circle at 88% 20%,rgba(255,255,255,.62),transparent 24%),
+    linear-gradient(102deg,#fff5d9 0%,#ffe6ae 100%);
+}
+.pv3-checkin-entry.is-done{background:linear-gradient(102deg,#f3f8e8,#e6f2cd)}
+.pv3-entry-icon{
+  width:58px;height:58px;
+  display:grid;
+  place-items:center;
+  border-radius:18px;
+}
+.pv3-entry-icon .pv3-icon{width:49px;height:49px}
+.pv3-gold{background:linear-gradient(145deg,rgba(255,255,255,.65),rgba(255,238,185,.7))}
+.pv3-blue{background:linear-gradient(145deg,#f4f9ff,#e5f1ff)}
+.pv3-yellow{background:linear-gradient(145deg,#fffaf0,#fff0c7)}
+.pv3-entry-copy>small{
+  display:block;
+  margin-bottom:4px;
+  color:#9d7650;
+  font-size:10px;
+  font-weight:650;
+}
+.pv3-entry-copy>b{display:block;color:#34352f;font-size:15px;line-height:1.2;font-weight:730}
+.pv3-entry-copy>em{display:block;margin-top:5px;color:#8b887f;font-size:9.5px;line-height:1.35;font-style:normal}
+.pv3-entry-arrow{
+  width:34px;height:34px;
+  display:grid;place-items:center;
+  border-radius:50%;
+  color:#948c82;
+  background:rgba(255,255,255,.58);
+}
+.pv3-checkin-entry .pv3-entry-arrow{background:var(--pv3-orange);color:#fff;box-shadow:0 5px 12px rgba(244,119,67,.18)}
+.pv3-entry-arrow .pv2-svg{width:16px!important;height:16px!important}
+
+/* Week/growth record */
+.pv3-week-card{
+  margin-top:13px;
+  padding:16px 15px 14px;
+  border:1px solid rgba(94,77,57,.065);
+  border-radius:25px;
+  background:rgba(255,255,255,.96);
+  box-shadow:var(--pv3-soft-shadow);
+}
+.pv3-week-card>header{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:13px}
+.pv3-week-card>header small{display:block;color:#70a165;font-size:9px;font-weight:700}
+.pv3-week-card>header h3{margin:3px 0 0;font-size:17px;line-height:1;font-weight:720}
+.pv3-week-card>header button{border:0;background:transparent;color:#91877c;font-size:10px}
+.pv3-week-card .pv2-week-strip{gap:4px}
+.pv3-week-card .pv2-week-day small{font-size:9px;color:#9a948b;margin-bottom:7px}
+.pv3-week-card .pv2-week-day i{
+  width:31px;height:31px;
+  border:2px solid #f0ede7;
+  background:linear-gradient(180deg,#f7f5f1,#efede8);
+  color:#aaa49b;
+  font-size:11px;
+}
+.pv3-week-card .pv2-week-day.done i{
+  border-color:#dfeeda;
+  background:linear-gradient(180deg,#83cf7d,#5fb768);
+  color:#fff;
+  box-shadow:0 4px 9px rgba(78,155,86,.18);
+}
+.pv3-week-card .pv2-week-day.done i .pv2-svg{width:21px;height:21px;fill:none!important;stroke:#fff!important;stroke-width:4!important}
+.pv3-week-card .pv2-week-day.today i{
+  border:3px solid #ff9a55;
+  background:#fff9ec;
+  color:#e9793d;
+  box-shadow:0 0 0 3px #fff1d9;
+}
+.pv3-week-card .pv2-week-day em{font-size:8.5px;color:#aaa49a}
+.pv3-week-card .pv2-week-day.done em{color:#58a75d}
+.pv3-week-card .pv2-week-day.today em{color:#e8753d;font-weight:700}
+.pv3-week-footer{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+  margin-top:13px;
+  padding:9px 11px;
+  border-radius:14px;
+  background:#fff7df;
+  color:#9f7951;
+  font-size:9px;
+}
+.pv3-week-footer b{font-size:9px;color:#d78b42;white-space:nowrap}
+
+/* Feature cards */
+.pv3-feature-entry{min-height:82px}
+.pv3-feature-entry+.pv3-feature-entry{margin-top:9px}
+.pv3-wallet-entry{margin-bottom:2px}
+.pv3-wallet-entry .pv3-entry-copy>small{color:#b38a4d}
+
+/* V3 task page icon treatment */
+.pv3-task-row{
+  min-height:76px!important;
+  grid-template-columns:56px 1fr 34px 58px!important;
+  gap:9px!important;
+  padding:10px 11px!important;
+  border-radius:19px!important;
+  box-shadow:0 6px 18px rgba(75,60,43,.035);
+}
+.pv3-task-icon{width:54px;height:54px;display:grid;place-items:center;border-radius:16px;background:linear-gradient(145deg,#fff,#f7f2e9)}
+.pv3-task-icon .pv3-icon{width:48px;height:48px}
+.pv3-task-row>div>b{font-size:12.5px!important}
+.pv3-task-row>div>small{margin-top:3px!important;color:#8f8a82!important;font-size:9px!important}
+.pv3-task-row>div>strong{display:block;margin-top:5px;color:#ef7d4b;font-size:10px}
+.pv3-task-row>button{height:32px!important;border-radius:13px!important;font-weight:650!important}
+.pv3-task-row>button:disabled{color:#9b978f!important;background:#ebe8e2!important}
+
+/* V3 reward rows */
+.pv3-reward-row{grid-template-columns:64px 1fr 64px!important;min-height:80px!important;border-radius:19px!important}
+.pv3-reward-row .pv2-reward-art{width:60px!important;height:60px!important;background:linear-gradient(145deg,#fff,#f7f1e8)!important}
+.pv3-reward-row .pv2-reward-art .pv3-icon{width:52px;height:52px}
+
+/* My points: ledger + redemption in one page */
+.pv3-wallet-hero{
+  min-height:132px;
+  padding:17px 18px;
+  display:grid;
+  grid-template-columns:84px 1fr;
+  gap:14px;
+  align-items:center;
+  border-radius:27px;
+  border:1px solid rgba(218,172,76,.10);
+  background:
+    radial-gradient(circle at 90% 0%,rgba(255,255,255,.8),transparent 31%),
+    linear-gradient(135deg,#fff8df,#f8e9b9);
+  box-shadow:var(--pv3-shadow);
+}
+.pv3-wallet-icon{
+  width:80px;height:80px;
+  display:grid;place-items:center;
+  border-radius:24px;
+  background:rgba(255,255,255,.52);
+}
+.pv3-wallet-icon .pv3-icon{width:67px;height:67px}
+.pv3-wallet-hero small{display:block;color:#9b8057;font-size:10px}
+.pv3-wallet-hero strong{display:inline-block;margin-top:1px;color:#2e3c2e;font-size:34px;line-height:1;font-weight:760}
+.pv3-wallet-hero b{margin-left:6px;color:#7c725f;font-size:11px}
+.pv3-wallet-hero p{margin:8px 0 0;color:#b06f3f;font-size:10px;font-weight:650}
+.pv3-wallet-tabs{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:4px;
+  margin:13px 0 10px;
+  padding:4px;
+  border-radius:17px;
+  background:#efeae2;
+}
+.pv3-wallet-tabs button{
+  height:38px;
+  border:0;
+  border-radius:14px;
+  background:transparent;
+  color:#8e867c;
+  font-size:12px;
+}
+.pv3-wallet-tabs button.active{
+  background:#fff;
+  color:#34352f;
+  font-weight:720;
+  box-shadow:0 3px 10px rgba(74,60,43,.07);
+}
+.pv3-wallet-list,.pv3-wallet-rewards{display:grid;gap:8px}
+.pv3-wallet-row,.pv3-wallet-reward{
+  min-height:67px;
+  padding:9px 10px;
+  display:grid;
+  grid-template-columns:48px 1fr auto;
+  gap:10px;
+  align-items:center;
+  border:1px solid rgba(98,80,59,.06);
+  border-radius:18px;
+  background:#fff;
+  box-shadow:0 5px 16px rgba(75,60,43,.03);
+}
+.pv3-wallet-row>span,.pv3-wallet-reward>span{
+  width:46px;height:46px;
+  display:grid;place-items:center;
+  border-radius:14px;
+  background:linear-gradient(145deg,#fff,#f7f2ea);
+}
+.pv3-wallet-row>span .pv3-icon,.pv3-wallet-reward>span .pv3-icon{width:42px;height:42px}
+.pv3-wallet-row b,.pv3-wallet-row small,.pv3-wallet-reward b,.pv3-wallet-reward small,.pv3-wallet-reward strong{display:block}
+.pv3-wallet-row b,.pv3-wallet-reward b{font-size:12px}
+.pv3-wallet-row small,.pv3-wallet-reward small{margin-top:3px;color:#999187;font-size:8.5px}
+.pv3-wallet-row>strong{font-size:13px}
+.pv3-wallet-row>strong.earn{color:#4fa85b}.pv3-wallet-row>strong.spend{color:#e26f4b}
+.pv3-wallet-reward{grid-template-columns:54px 1fr 61px}
+.pv3-wallet-reward>span{width:52px;height:52px}
+.pv3-wallet-reward>span .pv3-icon{width:47px;height:47px}
+.pv3-wallet-reward>strong{margin-top:5px;color:#ff7142;font-size:10px}
+.pv3-wallet-reward>button{
+  height:31px;
+  border:0;
+  border-radius:13px;
+  background:#ff8451;
+  color:#fff;
+  font-size:10px;
+  font-weight:650;
+}
+
+/* Use richer icons in existing check-in/reward surfaces */
+.pv2-cycle-day i:has(.pv3-icon){background:transparent!important;width:34px!important;height:34px!important}
+.pv2-cycle-day i .pv3-icon{width:34px!important;height:34px!important}
+
+@media(max-width:359px){
+  .pv3-growth-top{padding-right:138px}
+  .pv3-growth-card .pv3-mascot{width:124px!important}
+  .pv3-checkin-entry,.pv3-feature-entry{grid-template-columns:52px 1fr 32px;padding-left:10px}
+  .pv3-entry-icon{width:52px;height:52px}
+  .pv3-entry-icon .pv3-icon{width:45px;height:45px}
+  .pv3-task-row{grid-template-columns:50px 1fr 30px 54px!important}
+}

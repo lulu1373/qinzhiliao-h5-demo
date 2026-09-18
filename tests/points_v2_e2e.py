@@ -28,9 +28,9 @@ class PointsV2Tests(unittest.TestCase):
     def test_all_eight_points_routes_are_responsive(self):
         self.seed()
         routes = [
-            ('points','成长中心'),('points/checkin','每日签到'),('points/calendar','签到日历'),
-            ('points/tasks','任务中心'),('points/ledger','积分明细'),('points/rewards','积分兑换'),
-            ('points/level','我的等级'),('points/rules','积分规则')
+            ('points','成长积分'),('points/checkin','每日签到'),('points/calendar','签到日历'),
+            ('points/tasks','任务中心'),('points/wallet?tab=ledger','我的积分'),('points/ledger','积分明细'),
+            ('points/rewards','积分兑换'),('points/level','我的等级'),('points/rules','积分规则')
         ]
         for route,title in routes:
             self.page.goto(self.url + '#/' + route, wait_until='networkidle')
