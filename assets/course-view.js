@@ -17,12 +17,41 @@
     check:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg>'
   }[name] || '');
   const featureIcon = name => {
-    const src = {
-      classroom:'assets/icons/jiankuai-classroom.svg',
-      learning:'assets/icons/my-learning.svg',
-      points:'assets/icons/growth-points.svg'
+    const art = {
+      classroom:`<svg class="course-feature-art qzl-soft3d-icon qzl-soft3d-classroom" viewBox="0 0 64 64" aria-hidden="true">
+        <defs>
+          <linearGradient id="qcl-l" x1="10" y1="20" x2="31" y2="50"><stop stop-color="#A7DDFF"/><stop offset=".55" stop-color="#6FA9F6"/><stop offset="1" stop-color="#4B77D8"/></linearGradient>
+          <linearGradient id="qcl-r" x1="54" y1="20" x2="34" y2="50"><stop stop-color="#D1EBFF"/><stop offset=".55" stop-color="#91BDF6"/><stop offset="1" stop-color="#617DDD"/></linearGradient>
+          <linearGradient id="qcl-p" x1="14" y1="18" x2="34" y2="45"><stop stop-color="#FFF"/><stop offset="1" stop-color="#EDF4FF"/></linearGradient>
+          <linearGradient id="qcl-g" x1="40" y1="15" x2="55" y2="29"><stop stop-color="#A8F58A"/><stop offset=".55" stop-color="#59CE5C"/><stop offset="1" stop-color="#2FA248"/></linearGradient>
+        </defs>
+        <path d="M8 23c7-2.8 14.2-2 21 2v25c-7-3.4-14-3.7-21-.9V23Z" fill="url(#qcl-l)"/>
+        <path d="M56 23c-7-2.8-14.2-2-21 2v25c7-3.4 14-3.7 21-.9V23Z" fill="url(#qcl-r)"/>
+        <path d="M12 19.5c6-1.4 11.4-.8 17 2.5v22c-5.8-2.5-11.2-2.9-17-1.3V19.5Z" fill="url(#qcl-p)" stroke="#D5E4F8"/>
+        <path d="M52 19.5c-6-1.4-11.4-.8-17 2.5v22c5.8-2.5 11.2-2.9 17-1.3V19.5Z" fill="url(#qcl-p)" stroke="#D5E4F8"/>
+        <path d="M32 22v28" stroke="#4E73C8" stroke-width="2.1" stroke-linecap="round"/>
+        <path d="M16 25.5c4.2-.7 7.3-.2 10 1.2M16 30.2c4.3-.5 7.3 0 10 1.4M48 25.5c-4.2-.7-7.3-.2-10 1.2M48 30.2c-4.3-.5-7.3 0-10 1.4" stroke="#B7CBEA" stroke-width="1.6" stroke-linecap="round"/>
+        <path d="M40 27c1.9-7.5 7-11.8 15-11.8-.9 7.7-5.6 12.6-15 14Z" fill="url(#qcl-g)" stroke="#43B04C"/>
+        <path d="M42 27c4.1-3.7 7.5-6 11.4-7.8" stroke="#EDFFE6" stroke-width="1.3" stroke-linecap="round" opacity=".85"/>
+      </svg>`,
+      learning:`<svg class="course-feature-art qzl-soft3d-icon qzl-soft3d-learning" viewBox="0 0 64 64" aria-hidden="true">
+        <defs>
+          <linearGradient id="qln-t" x1="17" y1="11" x2="46" y2="24"><stop stop-color="#D7BDFF"/><stop offset="1" stop-color="#8A68E7"/></linearGradient>
+          <linearGradient id="qln-b" x1="10" y1="18" x2="53" y2="53"><stop stop-color="#BAB3FF"/><stop offset=".55" stop-color="#7C76EF"/><stop offset="1" stop-color="#5A55CC"/></linearGradient>
+          <linearGradient id="qln-o" x1="26" y1="27" x2="41" y2="43"><stop stop-color="#FFF"/><stop offset="1" stop-color="#E8EBFF"/></linearGradient>
+          <linearGradient id="qln-c" x1="44" y1="40" x2="57" y2="55"><stop stop-color="#8AEC7F"/><stop offset="1" stop-color="#38B954"/></linearGradient>
+        </defs>
+        <rect x="18" y="11" width="29" height="13" rx="5.5" fill="url(#qln-t)"/>
+        <rect x="10" y="18" width="43" height="34" rx="9" fill="url(#qln-b)" stroke="#7565D9"/>
+        <path d="M12 22c9-3.4 24-3.6 39-.5" stroke="#DFDBFF" stroke-width="2" stroke-linecap="round" opacity=".68"/>
+        <circle cx="31" cy="35" r="11.5" fill="#655FD0" opacity=".25"/>
+        <path d="M27 27.5c0-1.4 1.5-2.2 2.7-1.45l12 7.7c1 .65 1 2.15 0 2.8l-12 7.7c-1.2.75-2.7-.05-2.7-1.45V27.5Z" fill="url(#qln-o)" stroke="#D4D7F7"/>
+        <circle cx="50.5" cy="48.5" r="9.5" fill="url(#qln-c)" stroke="#2FA748"/>
+        <path d="m46.3 48.5 2.8 2.9 5.6-6.2" stroke="#FFF" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>`,
+      points:'<img class="course-feature-art course-feature-points" src="assets/icons/growth-points.svg" alt="" aria-hidden="true" draggable="false">'
     }[name];
-    return src ? `<img class="course-feature-art course-feature-${name}" src="${src}" alt="" aria-hidden="true" draggable="false">` : '';
+    return art || '';
   };
   const productVisual = product => product.type === 'points' ? featureIcon('points') : product.type === 'newcomer' ? icon('gift') : featureIcon('classroom');
   const productFrameClass = product => product.type === 'newcomer' ? '' : ' course-feature-frame';
