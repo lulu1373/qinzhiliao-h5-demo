@@ -52,9 +52,28 @@
 }
 
 .message-tools .message-helpful-btn.is-helpful{
-  background:#ECEBE9!important;
-  color:#555553!important;
-  box-shadow:inset 0 0 0 1px rgba(60,60,60,.04)!important;
+  background:#FFF4D2!important;
+  color:#D9A318!important;
+  box-shadow:inset 0 0 0 1px rgba(217,163,24,.10)!important;
+}
+
+.message-helpful-mark{
+  width:32px;
+  height:30px;
+  margin:6px 0 0 3px;
+  display:grid;
+  place-items:center;
+  color:#D9A318;
+}
+
+.message-helpful-mark .message-tool-svg{
+  width:22px!important;
+  height:22px!important;
+  fill:none!important;
+  stroke:currentColor!important;
+  stroke-width:1.8!important;
+  stroke-linecap:round!important;
+  stroke-linejoin:round!important;
 }
 
 .message-tools .message-tool-btn.is-copied{
@@ -89,9 +108,13 @@
 }
 
 @media(hover:hover){
-  .message-tools .message-tool-btn:hover{
+  .message-tools .message-tool-btn:not(.is-helpful):not(.is-copied):not(.is-refreshing):hover{
     background:#F2F1EF!important;
     color:#5F5F5D!important;
+  }
+  .message-tools .message-helpful-btn.is-helpful:hover{
+    background:#FFF4D2!important;
+    color:#D9A318!important;
   }
 }
 
