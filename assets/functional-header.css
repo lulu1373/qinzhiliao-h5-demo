@@ -1,0 +1,113 @@
+/* Persistent headers shared by all secondary feature pages. */
+:root {
+  --qzl-header-paper: rgba(248, 246, 242, 0.97);
+  --qzl-header-line: rgba(65, 72, 57, 0.1);
+  --qzl-header-shadow: 0 6px 18px rgba(45, 53, 41, 0.045);
+}
+
+#app .page-titlebar,
+#app .course-titlebar,
+#app .xp-page > .xp-header,
+#app .cp-page > .cp-header {
+  background: var(--qzl-header-paper) !important;
+  background-image: none !important;
+  border-bottom: 1px solid var(--qzl-header-line) !important;
+  box-shadow: var(--qzl-header-shadow) !important;
+  -webkit-backdrop-filter: blur(16px) saturate(1.08) !important;
+  backdrop-filter: blur(16px) saturate(1.08) !important;
+}
+
+/* Standard secondary pages already use a sticky title bar. Keep that
+   behavior and restore the visual boundary removed by the canvas reset. */
+#app .secondary-page > .page-titlebar {
+  z-index: 30 !important;
+}
+
+/* The stacked assessment/report shell owns its own inner scroller. */
+#app .qzl-stacked-page > .page-titlebar {
+  background: transparent !important;
+  border-bottom-color: transparent !important;
+  box-shadow: none !important;
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+}
+
+/* Course pages place the title bar inside the scrolling element. */
+#app .course-page.qzl-page-scroll {
+  scroll-padding-top: 76px;
+}
+
+#app .course-titlebar {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 31 !important;
+  height: 64px;
+  min-height: 64px;
+  margin: 0 -16px 12px;
+  padding: 0 16px;
+}
+
+/* Community pages use the page itself as the scroll container. */
+#app .xp-page {
+  scroll-padding-top: 76px;
+}
+
+#app .xp-page > .xp-header {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 31 !important;
+  min-height: 64px;
+  margin: 0 -20px 8px;
+  padding: 0 20px;
+}
+
+/* Card practice has a dedicated three-column title bar. */
+#app .cp-page > .cp-header {
+  display: grid;
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 32 !important;
+  min-height: 64px;
+  margin: 0 -20px 10px;
+  padding: 0 20px;
+}
+
+/* Native mobile/PWA mode removes the simulated status bar, so custom
+   headers must absorb the physical safe area just like .page-titlebar. */
+.mobile-runtime #app .course-titlebar,
+.mobile-runtime #app .xp-page > .xp-header,
+.mobile-runtime #app .cp-page > .cp-header {
+  min-height: calc(64px + var(--safe-top)) !important;
+  padding-top: var(--safe-top) !important;
+}
+
+.mobile-runtime #app .course-titlebar {
+  height: calc(64px + var(--safe-top)) !important;
+}
+
+#app .page-titlebar b,
+#app .course-titlebar b,
+#app .xp-header h1,
+#app .cp-header h1 {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (max-width: 375px) {
+  #app .course-titlebar {
+    margin-right: -13px;
+    margin-left: -13px;
+    padding-right: 13px;
+    padding-left: 13px;
+  }
+
+  #app .xp-page > .xp-header,
+  #app .cp-page > .cp-header {
+    margin-right: -16px;
+    margin-left: -16px;
+    padding-right: 16px;
+    padding-left: 16px;
+  }
+}
