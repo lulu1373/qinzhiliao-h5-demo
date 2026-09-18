@@ -57,13 +57,35 @@
   box-shadow:inset 0 0 0 1px rgba(60,60,60,.04)!important;
 }
 
+.message-tools .message-tool-btn.is-copied{
+  background:#E9E8E6!important;
+  color:#4F4F4D!important;
+  transform:scale(.96);
+  box-shadow:inset 0 0 0 1px rgba(60,60,60,.035)!important;
+}
+
+.message-tools .message-tool-btn.is-copied .message-tool-check{
+  animation:qzl-message-copy-check .22s cubic-bezier(.2,.8,.25,1.15);
+}
+
+.message-tools .message-tool-btn.is-refreshing{
+  background:#F0EFED!important;
+  color:#5B5B59!important;
+}
+
 .message-tools .message-tool-btn.is-refreshing .message-tool-svg{
-  animation:qzl-message-refresh .36s ease;
+  animation:qzl-message-refresh .54s linear infinite;
+  transform-origin:50% 50%;
+}
+
+@keyframes qzl-message-copy-check{
+  from{transform:scale(.55);opacity:.25}
+  to{transform:scale(1);opacity:1}
 }
 
 @keyframes qzl-message-refresh{
-  from{transform:rotate(0)}
-  to{transform:rotate(180deg)}
+  from{transform:rotate(0deg)}
+  to{transform:rotate(360deg)}
 }
 
 @media(hover:hover){
