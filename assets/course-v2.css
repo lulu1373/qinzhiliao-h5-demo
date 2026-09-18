@@ -155,3 +155,51 @@
   .course-task-list li>button { grid-column: 1/-1; }
   .course-chat-recommendation { margin-left: 38px; }
 }
+
+
+/* V13 feature icon harmony: reuse the approved V7.7 soft duotone language. */
+.course-feature-art{
+  display:block;
+  width:100%;
+  height:100%;
+  max-width:none;
+  object-fit:contain;
+  pointer-events:none;
+  user-select:none;
+  -webkit-user-drag:none;
+}
+.course-feature-frame{
+  background:transparent!important;
+  color:inherit!important;
+  border-color:transparent!important;
+  box-shadow:none!important;
+}
+.course-drawer-icon.course-feature-frame .course-feature-art{
+  width:44px!important;
+  height:44px!important;
+}
+.course-hero>span.course-feature-frame .course-feature-art,
+.course-learning-head>span.course-feature-frame .course-feature-art,
+.course-points-head>span.course-feature-frame .course-feature-art{
+  width:48px!important;
+  height:48px!important;
+}
+.course-detail-hero>span.course-feature-frame .course-feature-art{
+  width:56px!important;
+  height:56px!important;
+}
+.course-cover.course-feature-frame .course-feature-art{
+  width:46px!important;
+  height:46px!important;
+}
+.course-points-main>span:first-child{
+  background-color:transparent!important;
+  background-image:url("icons/growth-points.svg")!important;
+  background-repeat:no-repeat!important;
+  background-position:center!important;
+  background-size:36px 36px!important;
+}
+.course-points-main>span:first-child svg{display:none!important;}
+@media(max-width:359px){
+  .course-drawer-icon.course-feature-frame .course-feature-art{width:42px!important;height:42px!important;}
+}

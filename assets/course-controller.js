@@ -215,6 +215,11 @@ function installCourse() {
       }
       else if (action === 'back') goBack(el.dataset.fallback || 'courses');
       else if (action === 'detail') go(`courses/detail/${encodeURIComponent(el.dataset.productId || '')}`);
+      else if (action === 'official') {
+        const url = new URL(decodeURIComponent(el.dataset.url || ''),location.href);
+        if (url.protocol !== 'https:' || url.hostname.toLowerCase() !== 'appggfriu8w9694.h5.xet.pomoho.com') throw new Error('官方课程地址无效');
+        window.open(url.href,'_blank','noopener,noreferrer');
+      }
       else if (action === 'checkout') go(`courses/checkout/${encodeURIComponent(el.dataset.productId || '')}?method=${encodeURIComponent(el.dataset.method || 'cash')}`);
       else if (action === 'learn') { const product = model.CATALOG.find(item => item.id === el.dataset.productId); if (product) go(routeForLesson(product.id,product.lessons[0].id)); }
       else if (action === 'preview') go(`courses/detail/${encodeURIComponent(el.dataset.productId || '')}`);

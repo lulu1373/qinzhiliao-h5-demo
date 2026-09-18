@@ -22,7 +22,7 @@ styles += ['experience.css', 'experience-home.css', 'card-practice.css']
 scripts += ['experience-model.js', 'experience-view.js', 'card-practice.js']
 styles += ['course.css', 'course-v2.css']
 scripts += ['course-model.js', 'course-view.js']
-resources = ['community-screen-time.webp', 'community-school-ready.webp', 'community-family-walk.webp']
+resources = ['community-screen-time.webp', 'community-school-ready.webp', 'community-family-walk.webp', 'icons/jiankuai-classroom.svg', 'icons/my-learning.svg', 'icons/growth-points.svg']
 experience = (ROOT / 'assets/experience-controller.js').read_text()
 xp_begin, xp_end = '/* BEGIN EXPERIENCE CONTROLLER */', '/* END EXPERIENCE CONTROLLER */'
 xp_block = xp_begin + '\n' + experience + '\n' + xp_end + '\n'
@@ -56,5 +56,8 @@ for name in scripts:
 entry.write_text(html)
 (ROOT / 'latest/index.html').write_text(html)
 for name in styles + scripts + resources:
-    shutil.copyfile(ROOT / 'assets' / name, ROOT / 'latest/assets' / name)
+    source = ROOT / 'assets' / name
+    destination = ROOT / 'latest/assets' / name
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copyfile(source, destination)
 print('Root and latest growth reports synchronized.')
