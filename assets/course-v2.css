@@ -194,10 +194,10 @@
 }
 .course-points-main>span:first-child{
   background-color:transparent!important;
-  background-image:url("icons/growth-points.svg")!important;
+  background-image:url("icons/3d-fluency/stack-of-coins.png")!important;
   background-repeat:no-repeat!important;
   background-position:center!important;
-  background-size:36px 36px!important;
+  background-size:44px 44px!important;
 }
 .course-points-main>span:first-child svg{display:none!important;}
 @media(max-width:359px){

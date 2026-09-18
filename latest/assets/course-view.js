@@ -18,9 +18,11 @@
   }[name] || '');
   const featureIcon = name => {
     const src = {
-      classroom:'assets/icons/jiankuai-classroom.svg',
-      learning:'assets/icons/my-learning.svg',
-      points:'assets/icons/growth-points.svg'
+      classroom:'assets/icons/3d-fluency/open-book.png',
+      learning:'assets/icons/3d-fluency/video-playlist.png',
+      points:'assets/icons/3d-fluency/stack-of-coins.png',
+      lock:'assets/icons/3d-fluency/padlock.png',
+      complete:'assets/icons/3d-fluency/approval.png'
     }[name];
     return src ? `<img class="course-feature-art course-feature-${name}" src="${src}" alt="" aria-hidden="true" draggable="false">` : '';
   };
@@ -80,14 +82,14 @@
     const offer = ctx.model.offerFor(ctx.data,product.id,new Date().toISOString());
     if (!offer.available || offer.method !== method) return `<main class="course-page">${title('确认获取',`courses/detail/${product.id}`)}<div class="course-empty"><b>当前获取条件已变化</b><p>请回到课程详情重新确认。</p><button class="course-primary" data-course-action="route" data-route="courses/detail/${product.id}">返回课程详情</button></div></main>`;
     const value = method === 'points' ? `${offer.pointsCost} 积分` : money(offer.amountFen);
-    return `<main class="course-page">${title(method === 'points' ? '确认兑换' : '确认获取',`courses/detail/${product.id}`)}<section class="course-confirm-card"><span>${icon('check')}</span><h1>${esc(ctx,product.title)}</h1><p>有效期：获取成功起 365 天</p><dl><div><dt>本次${method === 'points' ? '兑换' : '支付'}</dt><dd>${value}</dd></div><div><dt>${method === 'points' ? '可用积分' : '支付方式'}</dt><dd>${method === 'points' ? `${ctx.data.points.balance} 积分` : '模拟支付'}</dd></div></dl></section><p class="course-demo-note">这是演示环境，点击后不会扣款，也不会调用真实支付服务。</p><button class="course-primary full" data-course-action="pay" data-product-id="${product.id}" data-method="${method}">确认${method === 'points' ? '兑换' : '模拟支付'} · ${value}</button></main>`;
+    return `<main class="course-page">${title(method === 'points' ? '确认兑换' : '确认获取',`courses/detail/${product.id}`)}<section class="course-confirm-card"><span class="course-feature-frame">${featureIcon('complete')}</span><h1>${esc(ctx,product.title)}</h1><p>有效期：获取成功起 365 天</p><dl><div><dt>本次${method === 'points' ? '兑换' : '支付'}</dt><dd>${value}</dd></div><div><dt>${method === 'points' ? '可用积分' : '支付方式'}</dt><dd>${method === 'points' ? `${ctx.data.points.balance} 积分` : '模拟支付'}</dd></div></dl></section><p class="course-demo-note">这是演示环境，点击后不会扣款，也不会调用真实支付服务。</p><button class="course-primary full" data-course-action="pay" data-product-id="${product.id}" data-method="${method}">确认${method === 'points' ? '兑换' : '模拟支付'} · ${value}</button></main>`;
   }
   function result(ctx,orderId) {
     const order = ctx.data.orders.find(item => item.id === orderId);
     const product = order && getProduct(ctx,order.productId);
     if (!order || !product) return missing(ctx);
     const succeeded = order.status === 'succeeded';
-    return `<main class="course-page course-result">${title('获取结果','courses')}<section class="course-result-card ${succeeded ? 'success' : ''}"><span>${succeeded ? icon('check') : icon('clock')}</span><h1>${succeeded ? '课程已加入我的学习' : order.status === 'processing' ? '正在确认结果' : '这次获取没有完成'}</h1><p>${esc(ctx,product.title)}</p>${succeeded ? '<small>课程有效期 365 天；会员到期后，已获取课程仍可继续学习。</small>' : '<small>演示订单可从课程详情重新发起。</small>'}</section>${succeeded ? `<button class="course-primary full" data-course-action="learn" data-product-id="${product.id}">开始学习</button>` : `<button class="course-primary full" data-course-action="route" data-route="courses/detail/${product.id}">回到课程详情</button>`}</main>`;
+    return `<main class="course-page course-result">${title('获取结果','courses')}<section class="course-result-card ${succeeded ? 'success' : ''}"><span class="${succeeded ? 'course-feature-frame' : ''}">${succeeded ? featureIcon('complete') : icon('clock')}</span><h1>${succeeded ? '课程已加入我的学习' : order.status === 'processing' ? '正在确认结果' : '这次获取没有完成'}</h1><p>${esc(ctx,product.title)}</p>${succeeded ? '<small>课程有效期 365 天；会员到期后，已获取课程仍可继续学习。</small>' : '<small>演示订单可从课程详情重新发起。</small>'}</section>${succeeded ? `<button class="course-primary full" data-course-action="learn" data-product-id="${product.id}">开始学习</button>` : `<button class="course-primary full" data-course-action="route" data-route="courses/detail/${product.id}">回到课程详情</button>`}</main>`;
   }
   function learning(ctx) {
     const owned = ctx.data.entitlements.filter(item => item.status === 'active' && new Date(item.validUntil).getTime() > Date.now()).map(item => ({...item,product:getProduct(ctx,item.productId)})).filter(item => item.product);
@@ -96,7 +98,7 @@
   function player(ctx,productId,lessonId) {
     const product = getProduct(ctx,productId), lesson = product?.lessons.find(item => item.id === lessonId) || product?.lessons[0];
     if (!product || !lesson) return missing(ctx);
-    if (!ctx.model.canLearn(ctx.data,productId,new Date().toISOString())) return `<main class="course-page">${title('课程学习',`courses/detail/${productId}`)}<div class="course-empty"><span>${icon('lock')}</span><b>先获取课程，再开始完整学习</b><p>你可以在详情页试听第一节内容。</p><button class="course-primary" data-course-action="route" data-route="courses/detail/${productId}">查看课程详情</button></div></main>`;
+    if (!ctx.model.canLearn(ctx.data,productId,new Date().toISOString())) return `<main class="course-page">${title('课程学习',`courses/detail/${productId}`)}<div class="course-empty"><span class="course-feature-frame">${featureIcon('lock')}</span><b>先获取课程，再开始完整学习</b><p>你可以在详情页试听第一节内容。</p><button class="course-primary" data-course-action="route" data-route="courses/detail/${productId}">查看课程详情</button></div></main>`;
     return `<main class="course-page course-player">${title('课程学习','my-learning')}<section class="course-video"><span>${icon('play')}</span><b>演示播放器 · 示例内容</b><small>未接入真实课程音视频</small><button data-course-action="complete-lesson" data-product-id="${productId}" data-lesson-id="${lesson.id}">完成本节演示学习</button></section><section class="course-detail-block"><small>${esc(ctx,product.title)}</small><h1>${esc(ctx,lesson.title)}</h1><p>这里将展示课程要点、练习引导和真实授权媒体。当前为可操作的 Demo 学习页。</p></section><section class="course-detail-block"><h2>练习这一小步</h2><p>先在下一次互动里停半步，听完对方想表达的内容，再决定怎样回应。</p><button class="course-secondary" data-course-action="add-action" data-product-id="${productId}" data-lesson-id="${lesson.id}">加入行动</button></section></main>`;
   }
   function points(ctx) {
