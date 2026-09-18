@@ -231,7 +231,9 @@ function installExperience() {
     next = {...next,draft:{},ui};
     commit(next);
     if(status==='reviewing'){navigate(target,{replace:true});requestAnimationFrame(()=>showBottomSheet(moderationSheet(decision)));return;}
-    toast(editing?'修改已保存':'发布成功'); returnToOrigin(target);
+    toast(editing?'修改已保存':'发布成功');
+    if(!editing) window.dispatchEvent(new CustomEvent('qzl:points-v2-reward',{detail:{sourceType:'community_post',sourceId:id}}));
+    returnToOrigin(target);
   }
   function card(type, patch) {
     const data = read();

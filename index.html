@@ -4470,7 +4470,7 @@ html,body,#app{background:var(--qzl-canvas)!important;}
 <style id="v104-about-system-page">
 .app-frame:has(.about-page-v2),.app-frame:has(.about-page-v2) .statusbar{background:#F7F6F2!important;background-image:none!important}.about-page-v2{background:#F7F6F2!important;background-image:none!important}.about-page-v2>.page-titlebar{background:#F7F6F2!important;background-image:none!important;border:0!important;box-shadow:none!important}.about-page-v2 .about-body{padding:18px 20px 36px}.about-brand-card{background:#fff;border:1px solid rgba(62,68,59,.06);border-radius:24px;padding:28px 22px 25px;margin:0 0 24px;text-align:center;box-shadow:0 8px 26px rgba(48,54,45,.035)}.about-app-icon{display:block;width:82px;height:82px;object-fit:cover;border-radius:22px;margin:0 auto 16px;box-shadow:0 8px 22px rgba(76,99,64,.09)}.about-brand-card h1{margin:0;color:#30352F;font-size:23px;line-height:1.25;font-weight:760;letter-spacing:-.2px}.about-brand-card p{margin:8px 0 0;color:#747C72;font-size:14px;line-height:1.55}.about-brand-card small{display:inline-block;margin-top:8px;color:#9A9F97;font-size:12px;line-height:1.4}.about-section-label{padding:0 4px 9px;color:#8A9088;font-size:12px;font-weight:650;letter-spacing:.2px}.about-page-v2 .about-link-list{margin:0;background:#fff!important;border:1px solid rgba(62,68,59,.065)!important;border-radius:20px!important;box-shadow:0 8px 24px rgba(48,54,45,.035)!important;overflow:hidden}.about-page-v2 .about-link-list .list-row{min-height:72px!important;padding:11px 16px!important;gap:13px!important;border-bottom:1px solid #EEF0EC!important;background:#fff!important}.about-page-v2 .about-link-list .list-row:last-child{border-bottom:0!important}.about-page-v2 .about-link-list .list-row-icon{width:44px!important;height:44px!important;flex:0 0 44px;border-radius:14px!important;background:#F3F4F1!important;border:0!important;color:#626B60!important;box-shadow:none!important}.about-page-v2 .about-link-list .list-row-icon svg{width:22px!important;height:22px!important;fill:none!important;stroke:currentColor!important;stroke-width:1.8!important;stroke-linecap:round!important;stroke-linejoin:round!important}.about-page-v2 .about-link-list .list-row-main b{font-size:15px!important;line-height:1.35!important;font-weight:650!important;color:#30342F!important}.about-page-v2 .about-link-list .chevron{font-size:22px!important;color:#B5BAB2!important;margin-left:auto!important}.about-page-v2 .about-link-list .list-row:active{background:#F8F9F6!important}.about-page-v2 .about-link-list .list-row:nth-child(n) .list-row-icon{background:#F3F4F1!important;color:#626B60!important}@media(max-width:390px){.about-page-v2 .about-body{padding-left:16px;padding-right:16px}.about-brand-card{padding-top:24px;padding-bottom:22px}.about-app-icon{width:76px;height:76px;border-radius:20px}.about-page-v2 .about-link-list .list-row{min-height:68px!important;padding-left:14px!important;padding-right:14px!important}}
 </style>
-<link rel="stylesheet" href="assets/course.css?v=68105aa9d3"><link rel="stylesheet" href="assets/course-v2.css?v=affe07fc14"><link rel="stylesheet" href="assets/drawer-v10.css?v=2"><link rel="stylesheet" href="assets/functional-header.css?v=20260918"><link rel="stylesheet" href="assets/icon-soft3d.css?v=b8b816b05f"><link rel="stylesheet" href="assets/message-toolbar.css?v=f911d93d12"></head><body><div id="app" aria-live="polite"></div><script src="assets/growth-report-model.js?v=c66b2046b7"></script>
+<link rel="stylesheet" href="assets/course.css?v=68105aa9d3"><link rel="stylesheet" href="assets/course-v2.css?v=affe07fc14"><link rel="stylesheet" href="assets/drawer-v10.css?v=2"><link rel="stylesheet" href="assets/functional-header.css?v=20260918"><link rel="stylesheet" href="assets/icon-soft3d.css?v=b8b816b05f"><link rel="stylesheet" href="assets/message-toolbar.css?v=f911d93d12"><link rel="stylesheet" href="assets/points-v2.css?v=38eaf8e0f9"></head><body><div id="app" aria-live="polite"></div><script src="assets/growth-report-model.js?v=c66b2046b7"></script>
 <script src="assets/growth-report-view.js?v=9e5a405290"></script>
 <script src="assets/growth-milestone-model.js?v=0a4020d2bc"></script>
 <script src="assets/growth-milestone-view.js?v=2492e9af08"></script>
@@ -4479,6 +4479,8 @@ html,body,#app{background:var(--qzl-canvas)!important;}
 <script src="assets/card-practice.js?v=f58d85522b"></script>
 <script src="assets/course-model.js?v=d11b4f5dba"></script>
 <script src="assets/course-view.js?v=2239141f77"></script>
+<script src="assets/points-v2-model.js?v=8a518bf24f"></script>
+<script src="assets/points-v2-view.js?v=c8adb77814"></script>
 <script>
 (function(){
 'use strict';
@@ -8295,7 +8297,9 @@ function installExperience() {
     next = {...next,draft:{},ui};
     commit(next);
     if(status==='reviewing'){navigate(target,{replace:true});requestAnimationFrame(()=>showBottomSheet(moderationSheet(decision)));return;}
-    toast(editing?'修改已保存':'发布成功'); returnToOrigin(target);
+    toast(editing?'修改已保存':'发布成功');
+    if(!editing) window.dispatchEvent(new CustomEvent('qzl:points-v2-reward',{detail:{sourceType:'community_post',sourceId:id}}));
+    returnToOrigin(target);
   }
   function card(type, patch) {
     const data = read();
@@ -8674,7 +8678,7 @@ function installCourse() {
   }
   function scheduleCheckinPrompt(delay = 850) {
     clearTimeout(checkinTimer);
-    if (!state.loggedIn || routeBase(currentRoute) !== 'home' || state.chat?.active || hasCheckedIn()) return;
+    if (window.QZLPointsV2Installed || !state.loggedIn || routeBase(currentRoute) !== 'home' || state.chat?.active || hasCheckedIn()) return;
     checkinTimer = setTimeout(() => {
       const data = read();
       if (routeBase(currentRoute) !== 'home' || state.chat?.active || hasCheckedIn(data) || data.checkinPromptDay === day()) return;
@@ -8687,7 +8691,7 @@ function installCourse() {
     const data = read(), progress = data.progress[`${productId}:${lessonId}`];
     if (progress?.completedAt) { toast('这节课已经完成过了'); return; }
     commit({...data,progress:{...data.progress,[`${productId}:${lessonId}`]:{completedAt:iso(),covered:1}}});
-    const grant = earn('course_lesson',`${productId}:${lessonId}`,6);
+    const grant = earn('course_lesson',`${productId}:${lessonId}`,5);
     toast(grant ? `完成演示学习，获得 ${grant} 积分` : '完成演示学习，今日积分已达上限');
     renderRoute(currentRoute);
   }
@@ -8765,7 +8769,7 @@ function installCourse() {
   handleConfirmOkV90 = function() {
     const rewardId = state.cards?.activeRunId || state.chat?.conversationId || day();
     oldConfirmSummary();
-    const grant = earn('chat_summary',rewardId,4);
+    const grant = earn('chat_summary',rewardId,1);
     if (grant) toast(`已确认这份理解，获得 ${grant} 积分`);
   };
   const oldActionFeedback = recordActionResult;
@@ -8773,7 +8777,7 @@ function installCourse() {
     const wasDone = (state.actions || []).find(item => item.id === id)?.status === 'done';
     oldActionFeedback(id,result,text);
     if (!wasDone) {
-      const grant = earn('action_feedback',id,8);
+      const grant = earn('action_feedback',id,5);
       if (grant) toast(`已记录行动反馈，获得 ${grant} 积分`);
     }
   };
@@ -8783,7 +8787,7 @@ function installCourse() {
     const data = read(), scroll = drawerEl.querySelector('.v6-drawer-scroll'), orbit = drawerEl.querySelector('.v6-tool-orbit');
     if (scroll && !scroll.querySelector('.course-points-summary')) {
       const checked = hasCheckedIn(data);
-      scroll.insertAdjacentHTML('afterbegin',`<section class="course-points-summary"><button class="course-points-main" data-course-action="route" data-route="points"><span><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M9 12h6M12 9v6"/></svg></span><span><small>成长积分</small><b>${availablePoints(data)}</b><em>查看明细与兑换</em></span><i>›</i></button><button class="course-checkin-mini" data-course-action="${checked ? 'route' : 'checkin'}" ${checked ? 'data-route="points"' : ''}>${checked ? '今日已签到' : '签到 +2'}</button></section>`);
+      scroll.insertAdjacentHTML('afterbegin',`<section class="course-points-summary"><button class="course-points-main" data-course-action="route" data-route="points"><span><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M9 12h6M12 9v6"/></svg></span><span><small>成长积分</small><b>${availablePoints(data)}</b><em>查看明细与兑换</em></span><i>›</i></button><button class="course-checkin-mini" data-course-action="route" data-route="${checked ? 'points' : 'points/checkin'}">${checked ? '今日已签到' : '签到领取'}</button></section>`);
     }
     if (orbit && !orbit.querySelector('.course-drawer-tool')) {
       orbit.insertAdjacentHTML('afterbegin',view.drawerEntry(context()));
@@ -8792,7 +8796,7 @@ function installCourse() {
   };
   window.addEventListener('qzl:reward',event => {
     const detail = event.detail && typeof event.detail === 'object' ? event.detail : {};
-    const rewards = {checkin:2,chat_summary:4,course_lesson:6,action_feedback:8,reflection:6};
+    const rewards = {checkin:2,chat_summary:1,course_lesson:5,action_feedback:5,reflection:3};
     const sourceType = String(detail.sourceType || ''), sourceId = String(detail.sourceId || '').slice(0,160);
     if (!sourceId || !Object.prototype.hasOwnProperty.call(rewards,sourceType)) return;
     const grant = earn(sourceType,sourceId,rewards[sourceType]);
@@ -8827,7 +8831,7 @@ function installCourse() {
       else if (action === 'settle') settle(el.dataset.orderId,el.dataset.result);
       else if (action === 'cancel-order') { const data=read(); commit({...data,orders:data.orders.map(order=>order.id===el.dataset.orderId?{...order,status:'cancelled'}:order)}); go('courses/orders',true); toast('订单已取消'); }
       else if (action === 'complete-lesson') rewardLearning(el.dataset.productId,el.dataset.lessonId);
-      else if (action === 'checkin') { const grant=earn('checkin',day(),2); toast(grant ? `签到成功，获得 ${grant} 积分` : '今天已经签到或积分已达上限'); renderRoute(currentRoute); }
+      else if (action === 'checkin') { go('points/checkin'); }
       else if (action === 'claim-checkin') { const grant=earn('checkin',day(),2); showBottomSheet(checkinPromptHtml(grant > 0 || hasCheckedIn())); }
       else if (action === 'close-checkin') closeOverlay();
       else if (action === 'add-action') addAction(el.dataset.productId,el.dataset.lessonId);
@@ -8844,6 +8848,112 @@ function installCourse() {
 installCourse();
 
 /* END COURSE CONTROLLER */
+
+/* BEGIN POINTS V2 CONTROLLER */
+/* Injected inside the existing H5 closure by tools/build_growth_reports.py. */
+function installPointsV2(){
+  const model=window.QZLPointsV2Model,view=window.QZLPointsV2View,courseModel=window.QZLCourseModel;
+  if(!model||!view||!courseModel)return;
+  window.QZLPointsV2Installed=true;
+  const now=()=>new Date().toISOString();
+  const today=()=>model.localDay(now());
+  let reminderTimer=null;
+  function readCourse(){return courseModel.normalize(state.course&&typeof state.course==='object'?state.course:{});}
+  function readMeta(){return model.normalizeMeta(state.pointsV2);}
+  function context(){
+    const course=readCourse(),meta=readMeta(),balance=courseModel.pointBalances(course,now()).available;
+    return {model,course,meta,balance,today:today(),esc};
+  }
+  function commit(course,meta){
+    const previous=state;
+    const next={...state,course:courseModel.normalize(course),pointsV2:model.normalizeMeta(meta)};
+    try{
+      localStorage.setItem(STORAGE_KEY,JSON.stringify(next));
+      state=next;saveState();
+    }catch(error){state=previous;throw new Error('这次没能保存，请稍后重试。');}
+  }
+  function award(sourceType,sourceId,amount,{dailyLimit=1,title=''}={}){
+    const result=model.addEarn(readCourse(),sourceType,String(sourceId||''),amount,now(),{dailyLimit,title});
+    if(!result.grant)return 0;
+    commit(result.course,readMeta());
+    return result.grant;
+  }
+  function scheduleReminder(delay=900){
+    clearTimeout(reminderTimer);
+    if(!state.loggedIn||routeBase(currentRoute)!=='home'||state.chat?.active)return;
+    reminderTimer=setTimeout(()=>{
+      const ctx=context();
+      if(routeBase(currentRoute)!=='home'||state.chat?.active||model.hasCheckin(ctx.course,ctx.today)||ctx.meta.reminder.dismissedDate===ctx.today)return;
+      if(drawerEl.dataset.state!=='closed'||overlayRoot.innerHTML){scheduleReminder(650);return;}
+      showOverlay(`<div class="pv2-reminder-layer" data-overlay-action="scrim-close"><div class="pv2-reminder-modal">${view.reminder(ctx)}</div></div>`);
+    },delay);
+  }
+  function rewardSheet(reward){
+    const ctx=context(),after=ctx.balance-reward.cost;
+    return `<div class="pv2-redeem-sheet"><span class="pv2-redeem-art">${view.icon(reward.kind==='课程'?'course':reward.kind==='工具'?'reward':'card')}</span><small>积分兑换</small><h2>${esc(reward.title)}</h2><p>需要 <b>${reward.cost}</b> 积分</p><div><span>当前积分</span><strong>${ctx.balance}</strong></div><div><span>兑换后剩余</span><strong>${Math.max(0,after)}</strong></div><button data-points-action="confirm-redeem" data-reward-id="${reward.id}" ${after<0?'disabled':''}>确认兑换</button><button data-points-action="close-sheet">再想想</button></div>`;
+  }
+  const originalRender=renderScreen;
+  renderScreen=function(route){
+    const base=routeBase(route);
+    if(base==='points'||base.startsWith('points/'))return view.render(route,context());
+    const html=originalRender(route);
+    if(base==='home')scheduleReminder();
+    return html;
+  };
+  const oldSaveCard=saveActiveCardV90;
+  saveActiveCardV90=function(){
+    const before=state.cards?.toolbox?.length||0;
+    oldSaveCard();
+    const after=state.cards?.toolbox?.length||0;
+    if(after>before){
+      const card=state.cards.toolbox[0],grant=award('card_saved',card?.id||uid('cardreward'),3,{dailyLimit:1,title:'完成亲子卡'});
+      if(grant)toast('亲子卡已保存，成长积分 +3');
+    }
+  };
+  window.addEventListener('qzl:points-v2-reward',event=>{
+    const d=event.detail&&typeof event.detail==='object'?event.detail:{};
+    const rules={community_post:{amount:1,limit:3,title:'社区发布'}};
+    const rule=rules[d.sourceType];if(!rule||!d.sourceId)return;
+    const grant=award(d.sourceType,d.sourceId,rule.amount,{dailyLimit:rule.limit,title:rule.title});
+    if(grant)toast(`成长积分 +${grant}`);
+  });
+  document.addEventListener('click',event=>{
+    const el=event.target.closest('[data-points-action]');if(!el)return;
+    event.preventDefault();event.stopPropagation();
+    const action=el.dataset.pointsAction;
+    try{
+      if(action==='back')goBack(el.dataset.fallback||'points');
+      else if(action==='route'||action==='task-go')navigate(el.dataset.route||'points');
+      else if(action==='claim-checkin'){
+        const result=model.claimCheckin(readCourse(),readMeta(),now());
+        if(result.already){toast('今天已经签到');return;}
+        commit(result.course,result.meta);
+        renderRoute(currentRoute);
+        toast(`签到成功，成长积分 +${result.grant}`);
+      }
+      else if(action==='calendar')navigate('points/calendar?month='+encodeURIComponent(el.dataset.month||model.monthKey(today())),{replace:true});
+      else if(action==='task-tab')navigate('points/tasks?tab='+encodeURIComponent(el.dataset.tab||'all'),{replace:true});
+      else if(action==='ledger-filter')navigate('points/ledger?filter='+encodeURIComponent(el.dataset.filter||'all'),{replace:true});
+      else if(action==='redeem'){
+        const reward=model.rewardById(el.dataset.rewardId||'');if(reward)showBottomSheet(rewardSheet(reward));
+      }
+      else if(action==='confirm-redeem'){
+        const result=model.redeem(readCourse(),readMeta(),el.dataset.rewardId,now());
+        commit(result.course,result.meta);closeOverlay();renderRoute(currentRoute);toast('兑换成功，已加入你的成长权益');
+      }
+      else if(action==='dismiss-reminder'){
+        const meta=readMeta();meta.reminder.dismissedDate=today();commit(readCourse(),meta);closeOverlay();
+      }
+      else if(action==='reminder-checkin'){
+        const meta=readMeta();meta.reminder.dismissedDate=today();commit(readCourse(),meta);closeOverlay();navigate('points/checkin');
+      }
+      else if(action==='close-sheet')closeOverlay();
+    }catch(error){toast(error.message||'暂时没有完成，请重试');}
+  });
+  state={...state,pointsV2:readMeta()};saveState();
+}
+installPointsV2();
+/* END POINTS V2 CONTROLLER */
 
 /* V9.0 initialization */
 migrateCardsV90();

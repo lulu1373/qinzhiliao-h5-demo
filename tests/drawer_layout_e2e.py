@@ -19,6 +19,12 @@ class DrawerLayoutTests(unittest.TestCase):
             prompt_close.click()
         except PlaywrightTimeoutError:
             pass
+        points_reminder = self.page.locator('[data-points-action="dismiss-reminder"]:visible')
+        try:
+            points_reminder.last.wait_for(state='visible', timeout=1500)
+            points_reminder.last.click()
+        except PlaywrightTimeoutError:
+            pass
 
     def open_drawer(self):
         self.page.goto(self.url + '#/home', wait_until='networkidle')

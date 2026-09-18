@@ -14,6 +14,13 @@ class CourseTests(unittest.TestCase):
     def course_click(self, action, extra=''):
         self.page.locator(f'[data-course-action="{action}"]{extra}:visible').first.click()
 
+    def dismiss_points_reminder(self):
+        self.page.wait_for_timeout(1050)
+        reminder = self.page.locator('.pv2-reminder:visible')
+        if reminder.count():
+            self.page.locator('[data-points-action="dismiss-reminder"]:visible').last.click()
+            self.page.wait_for_timeout(80)
+
     def test_newcomer_bundle_purchase_reaches_learning_and_persists(self):
         self.page.goto(self.url + '#/courses', wait_until='networkidle')
         self.page.wait_for_selector('.course-page:visible')
@@ -29,7 +36,7 @@ class CourseTests(unittest.TestCase):
         self.course_click('complete-lesson')
         stored = self.stored()
         self.assertEqual(len(stored['course']['entitlements']), 1)
-        self.assertEqual(stored['course']['points']['balance'], 6)
+        self.assertEqual(stored['course']['points']['balance'], 5)
         self.page.reload(wait_until='networkidle')
         self.assertIn('演示播放器', self.page.locator('.course-page').inner_text())
 
@@ -44,10 +51,10 @@ class CourseTests(unittest.TestCase):
         self.assertEqual(toggle.get_attribute('aria-pressed'), 'true')
         toggle.click()
         self.assertEqual(self.stored()['course']['preferences']['proactiveRecommendations'], False)
-        self.page.goto(self.url + '#/points', wait_until='networkidle')
-        self.page.locator('.course-page [data-course-action="checkin"]:visible').click()
+        self.page.goto(self.url + '#/points/checkin', wait_until='networkidle')
+        self.page.locator('[data-points-action="claim-checkin"]:visible').click()
         self.assertEqual(self.stored()['course']['points']['balance'], 2)
-        self.assertIn('今日已签到', self.page.locator('.course-page').inner_text())
+        self.assertIn('今日已签到', self.page.locator('.pv2-checkin-card').inner_text())
         for width in (360, 390, 430):
             self.page.set_viewport_size({'width': width, 'height': 844})
             self.assertFalse(self.page.evaluate('document.documentElement.scrollWidth > innerWidth'))
@@ -82,31 +89,29 @@ class CourseTests(unittest.TestCase):
         self.assertEqual(self.page.locator('#drawer').get_attribute('data-state'), 'open')
 
     def test_daily_checkin_prompt_awards_once_and_updates_drawer_balance(self):
-        self.page.wait_for_selector('.course-checkin-prompt:visible', timeout=3000)
-        self.page.locator('[data-course-action="claim-checkin"]:visible').click()
-        self.page.wait_for_selector('.course-checkin-success:visible')
+        self.page.wait_for_selector('.pv2-reminder:visible', timeout=3000)
+        self.page.locator('[data-points-action="reminder-checkin"]:visible').click()
+        self.page.wait_for_selector('.pv2-checkin-card:visible')
+        self.page.locator('[data-points-action="claim-checkin"]:visible').click()
         self.assertEqual(self.stored()['course']['points']['balance'], 2)
-        self.page.locator('[data-course-action="close-checkin"]:visible').click()
-        self.page.reload(wait_until='networkidle')
+        self.page.goto(self.url + '#/home', wait_until='networkidle')
         self.page.wait_for_timeout(1200)
-        self.assertEqual(self.page.locator('.course-checkin-prompt:visible').count(), 0)
+        self.assertEqual(self.page.locator('.pv2-reminder:visible').count(), 0)
         self.page.locator('[data-action="drawer-open"]').click()
         self.assertIn('2', self.page.locator('.course-points-summary').inner_text())
 
     def test_reward_event_is_idempotent_and_light_chat_does_not_sell_immediately(self):
-        self.page.wait_for_selector('.course-checkin-prompt:visible', timeout=3000)
-        self.page.locator('[data-course-action="close-checkin"]:visible').click()
+        self.dismiss_points_reminder()
         self.page.locator('[data-xp-action="chat-start"][data-scene="emotion"]').click()
         self.page.wait_for_timeout(500)
         self.assertEqual(self.page.locator('.course-chat-recommendation').count(), 0)
-        reward = "window.dispatchEvent(new CustomEvent('qzl:reward',{detail:{sourceType:'action_feedback',sourceId:'action-1',amount:8}}))"
+        reward = "window.dispatchEvent(new CustomEvent('qzl:reward',{detail:{sourceType:'action_feedback',sourceId:'action-1',amount:5}}))"
         self.page.evaluate(reward)
         self.page.evaluate(reward)
-        self.assertEqual(self.stored()['course']['points']['balance'], 8)
+        self.assertEqual(self.stored()['course']['points']['balance'], 5)
 
     def test_confirmed_understanding_opens_course_preview_without_losing_chat(self):
-        self.page.wait_for_selector('.course-checkin-prompt:visible', timeout=3000)
-        self.page.locator('[data-course-action="close-checkin"]:visible').click()
+        self.dismiss_points_reminder()
         state = self.stored()
         state['chat'].update(active=True, scenario='homework', node='card-reveal-back',
                              conversationId='recommendation-test', typing=False,
@@ -128,8 +133,7 @@ class CourseTests(unittest.TestCase):
         self.assertEqual(self.page.locator('.course-chat-recommendation').count(), 0)
 
     def test_confirmed_understanding_requires_a_matching_course_topic(self):
-        self.page.wait_for_selector('.course-checkin-prompt:visible', timeout=3000)
-        self.page.locator('[data-course-action="close-checkin"]:visible').click()
+        self.dismiss_points_reminder()
         state = self.stored()
         state['chat'].update(active=True, scenario='homework', node='card-reveal-back',
                              conversationId='topic-match-test', typing=False,

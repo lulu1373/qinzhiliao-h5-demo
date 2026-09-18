@@ -20,8 +20,8 @@ styles = ['growth-report.css', 'growth-milestone.css']
 scripts = ['growth-report-model.js', 'growth-report-view.js', 'growth-milestone-model.js', 'growth-milestone-view.js']
 styles += ['experience.css', 'experience-home.css', 'card-practice.css']
 scripts += ['experience-model.js', 'experience-view.js', 'card-practice.js']
-styles += ['course.css', 'course-v2.css', 'icon-soft3d.css', 'message-toolbar.css']
-scripts += ['course-model.js', 'course-view.js']
+styles += ['course.css', 'course-v2.css', 'icon-soft3d.css', 'message-toolbar.css', 'points-v2.css']
+scripts += ['course-model.js', 'course-view.js', 'points-v2-model.js', 'points-v2-view.js']
 resources = ['community-screen-time.webp', 'community-school-ready.webp', 'community-family-walk.webp', 'icons/jiankuai-classroom.svg', 'icons/my-learning.svg', 'icons/growth-points.svg']
 experience = (ROOT / 'assets/experience-controller.js').read_text()
 xp_begin, xp_end = '/* BEGIN EXPERIENCE CONTROLLER */', '/* END EXPERIENCE CONTROLLER */'
@@ -37,6 +37,13 @@ if course_begin in html:
     html = re.sub(re.escape(course_begin) + r'.*?' + re.escape(course_end) + r'\n?', lambda _: course_block, html, flags=re.S)
 else:
     html = html.replace('/* V9.0 initialization */', course_block + '\n/* V9.0 initialization */', 1)
+points_v2 = (ROOT / 'assets/points-v2-controller.js').read_text()
+points_begin, points_end = '/* BEGIN POINTS V2 CONTROLLER */', '/* END POINTS V2 CONTROLLER */'
+points_block = points_begin + '\n' + points_v2 + '\n' + points_end + '\n'
+if points_begin in html:
+    html = re.sub(re.escape(points_begin) + r'.*?' + re.escape(points_end) + r'\n?', lambda _: points_block, html, flags=re.S)
+else:
+    html = html.replace('/* V9.0 initialization */', points_block + '\n/* V9.0 initialization */', 1)
 for name in styles:
     digest = hashlib.sha256((ROOT / 'assets' / name).read_bytes()).hexdigest()[:10]
     tag = f'<link rel="stylesheet" href="assets/{name}?v={digest}">'

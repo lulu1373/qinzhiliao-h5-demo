@@ -76,7 +76,7 @@ function installCourse() {
   }
   function scheduleCheckinPrompt(delay = 850) {
     clearTimeout(checkinTimer);
-    if (!state.loggedIn || routeBase(currentRoute) !== 'home' || state.chat?.active || hasCheckedIn()) return;
+    if (window.QZLPointsV2Installed || !state.loggedIn || routeBase(currentRoute) !== 'home' || state.chat?.active || hasCheckedIn()) return;
     checkinTimer = setTimeout(() => {
       const data = read();
       if (routeBase(currentRoute) !== 'home' || state.chat?.active || hasCheckedIn(data) || data.checkinPromptDay === day()) return;
@@ -89,7 +89,7 @@ function installCourse() {
     const data = read(), progress = data.progress[`${productId}:${lessonId}`];
     if (progress?.completedAt) { toast('这节课已经完成过了'); return; }
     commit({...data,progress:{...data.progress,[`${productId}:${lessonId}`]:{completedAt:iso(),covered:1}}});
-    const grant = earn('course_lesson',`${productId}:${lessonId}`,6);
+    const grant = earn('course_lesson',`${productId}:${lessonId}`,5);
     toast(grant ? `完成演示学习，获得 ${grant} 积分` : '完成演示学习，今日积分已达上限');
     renderRoute(currentRoute);
   }
@@ -167,7 +167,7 @@ function installCourse() {
   handleConfirmOkV90 = function() {
     const rewardId = state.cards?.activeRunId || state.chat?.conversationId || day();
     oldConfirmSummary();
-    const grant = earn('chat_summary',rewardId,4);
+    const grant = earn('chat_summary',rewardId,1);
     if (grant) toast(`已确认这份理解，获得 ${grant} 积分`);
   };
   const oldActionFeedback = recordActionResult;
@@ -175,7 +175,7 @@ function installCourse() {
     const wasDone = (state.actions || []).find(item => item.id === id)?.status === 'done';
     oldActionFeedback(id,result,text);
     if (!wasDone) {
-      const grant = earn('action_feedback',id,8);
+      const grant = earn('action_feedback',id,5);
       if (grant) toast(`已记录行动反馈，获得 ${grant} 积分`);
     }
   };
@@ -185,7 +185,7 @@ function installCourse() {
     const data = read(), scroll = drawerEl.querySelector('.v6-drawer-scroll'), orbit = drawerEl.querySelector('.v6-tool-orbit');
     if (scroll && !scroll.querySelector('.course-points-summary')) {
       const checked = hasCheckedIn(data);
-      scroll.insertAdjacentHTML('afterbegin',`<section class="course-points-summary"><button class="course-points-main" data-course-action="route" data-route="points"><span><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M9 12h6M12 9v6"/></svg></span><span><small>成长积分</small><b>${availablePoints(data)}</b><em>查看明细与兑换</em></span><i>›</i></button><button class="course-checkin-mini" data-course-action="${checked ? 'route' : 'checkin'}" ${checked ? 'data-route="points"' : ''}>${checked ? '今日已签到' : '签到 +2'}</button></section>`);
+      scroll.insertAdjacentHTML('afterbegin',`<section class="course-points-summary"><button class="course-points-main" data-course-action="route" data-route="points"><span><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M9 12h6M12 9v6"/></svg></span><span><small>成长积分</small><b>${availablePoints(data)}</b><em>查看明细与兑换</em></span><i>›</i></button><button class="course-checkin-mini" data-course-action="route" data-route="${checked ? 'points' : 'points/checkin'}">${checked ? '今日已签到' : '签到领取'}</button></section>`);
     }
     if (orbit && !orbit.querySelector('.course-drawer-tool')) {
       orbit.insertAdjacentHTML('afterbegin',view.drawerEntry(context()));
@@ -194,7 +194,7 @@ function installCourse() {
   };
   window.addEventListener('qzl:reward',event => {
     const detail = event.detail && typeof event.detail === 'object' ? event.detail : {};
-    const rewards = {checkin:2,chat_summary:4,course_lesson:6,action_feedback:8,reflection:6};
+    const rewards = {checkin:2,chat_summary:1,course_lesson:5,action_feedback:5,reflection:3};
     const sourceType = String(detail.sourceType || ''), sourceId = String(detail.sourceId || '').slice(0,160);
     if (!sourceId || !Object.prototype.hasOwnProperty.call(rewards,sourceType)) return;
     const grant = earn(sourceType,sourceId,rewards[sourceType]);
@@ -229,7 +229,7 @@ function installCourse() {
       else if (action === 'settle') settle(el.dataset.orderId,el.dataset.result);
       else if (action === 'cancel-order') { const data=read(); commit({...data,orders:data.orders.map(order=>order.id===el.dataset.orderId?{...order,status:'cancelled'}:order)}); go('courses/orders',true); toast('订单已取消'); }
       else if (action === 'complete-lesson') rewardLearning(el.dataset.productId,el.dataset.lessonId);
-      else if (action === 'checkin') { const grant=earn('checkin',day(),2); toast(grant ? `签到成功，获得 ${grant} 积分` : '今天已经签到或积分已达上限'); renderRoute(currentRoute); }
+      else if (action === 'checkin') { go('points/checkin'); }
       else if (action === 'claim-checkin') { const grant=earn('checkin',day(),2); showBottomSheet(checkinPromptHtml(grant > 0 || hasCheckedIn())); }
       else if (action === 'close-checkin') closeOverlay();
       else if (action === 'add-action') addAction(el.dataset.productId,el.dataset.lessonId);
