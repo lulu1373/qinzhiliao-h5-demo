@@ -4470,7 +4470,7 @@ html,body,#app{background:var(--qzl-canvas)!important;}
 <style id="v104-about-system-page">
 .app-frame:has(.about-page-v2),.app-frame:has(.about-page-v2) .statusbar{background:#F7F6F2!important;background-image:none!important}.about-page-v2{background:#F7F6F2!important;background-image:none!important}.about-page-v2>.page-titlebar{background:#F7F6F2!important;background-image:none!important;border:0!important;box-shadow:none!important}.about-page-v2 .about-body{padding:18px 20px 36px}.about-brand-card{background:#fff;border:1px solid rgba(62,68,59,.06);border-radius:24px;padding:28px 22px 25px;margin:0 0 24px;text-align:center;box-shadow:0 8px 26px rgba(48,54,45,.035)}.about-app-icon{display:block;width:82px;height:82px;object-fit:cover;border-radius:22px;margin:0 auto 16px;box-shadow:0 8px 22px rgba(76,99,64,.09)}.about-brand-card h1{margin:0;color:#30352F;font-size:23px;line-height:1.25;font-weight:760;letter-spacing:-.2px}.about-brand-card p{margin:8px 0 0;color:#747C72;font-size:14px;line-height:1.55}.about-brand-card small{display:inline-block;margin-top:8px;color:#9A9F97;font-size:12px;line-height:1.4}.about-section-label{padding:0 4px 9px;color:#8A9088;font-size:12px;font-weight:650;letter-spacing:.2px}.about-page-v2 .about-link-list{margin:0;background:#fff!important;border:1px solid rgba(62,68,59,.065)!important;border-radius:20px!important;box-shadow:0 8px 24px rgba(48,54,45,.035)!important;overflow:hidden}.about-page-v2 .about-link-list .list-row{min-height:72px!important;padding:11px 16px!important;gap:13px!important;border-bottom:1px solid #EEF0EC!important;background:#fff!important}.about-page-v2 .about-link-list .list-row:last-child{border-bottom:0!important}.about-page-v2 .about-link-list .list-row-icon{width:44px!important;height:44px!important;flex:0 0 44px;border-radius:14px!important;background:#F3F4F1!important;border:0!important;color:#626B60!important;box-shadow:none!important}.about-page-v2 .about-link-list .list-row-icon svg{width:22px!important;height:22px!important;fill:none!important;stroke:currentColor!important;stroke-width:1.8!important;stroke-linecap:round!important;stroke-linejoin:round!important}.about-page-v2 .about-link-list .list-row-main b{font-size:15px!important;line-height:1.35!important;font-weight:650!important;color:#30342F!important}.about-page-v2 .about-link-list .chevron{font-size:22px!important;color:#B5BAB2!important;margin-left:auto!important}.about-page-v2 .about-link-list .list-row:active{background:#F8F9F6!important}.about-page-v2 .about-link-list .list-row:nth-child(n) .list-row-icon{background:#F3F4F1!important;color:#626B60!important}@media(max-width:390px){.about-page-v2 .about-body{padding-left:16px;padding-right:16px}.about-brand-card{padding-top:24px;padding-bottom:22px}.about-app-icon{width:76px;height:76px;border-radius:20px}.about-page-v2 .about-link-list .list-row{min-height:68px!important;padding-left:14px!important;padding-right:14px!important}}
 </style>
-<link rel="stylesheet" href="assets/course.css?v=68105aa9d3"><link rel="stylesheet" href="assets/course-v2.css?v=6618d743d3"><link rel="stylesheet" href="assets/drawer-v10.css?v=2"><link rel="stylesheet" href="assets/functional-header.css?v=20260918"><link rel="stylesheet" href="assets/icon-3d-fluency.css?v=752b07a9c6"></head><body><div id="app" aria-live="polite"></div><script src="assets/growth-report-model.js?v=c66b2046b7"></script>
+<link rel="stylesheet" href="assets/course.css?v=68105aa9d3"><link rel="stylesheet" href="assets/course-v2.css?v=affe07fc14"><link rel="stylesheet" href="assets/drawer-v10.css?v=2"><link rel="stylesheet" href="assets/functional-header.css?v=20260918"></head><body><div id="app" aria-live="polite"></div><script src="assets/growth-report-model.js?v=c66b2046b7"></script>
 <script src="assets/growth-report-view.js?v=9e5a405290"></script>
 <script src="assets/growth-milestone-model.js?v=0a4020d2bc"></script>
 <script src="assets/growth-milestone-view.js?v=2492e9af08"></script>
@@ -4478,7 +4478,7 @@ html,body,#app{background:var(--qzl-canvas)!important;}
 <script src="assets/experience-view.js?v=9d65c2ed09"></script>
 <script src="assets/card-practice.js?v=f58d85522b"></script>
 <script src="assets/course-model.js?v=d11b4f5dba"></script>
-<script src="assets/course-view.js?v=928d69eb2d"></script>
+<script src="assets/course-view.js?v=7f73d8a302"></script>
 <script>
 (function(){
 'use strict';
@@ -7352,30 +7352,17 @@ svg.info=v80Tone('info','#8875C8','#F0ECFA','<circle cx="12" cy="12" r="8.3" fil
 svg.infoCircle=svg.info;
 svg.task=v80Tone('task','#E58B4B','#FCEBDD','<rect x="5.6" y="4.2" width="12.8" height="15.7" rx="2.5" fill="var(--v80-fill)" stroke="var(--v80-stroke)"/><path d="M9 4.2V3h6v1.2M8.9 9h6.2M8.9 12.6h6.2" fill="none" stroke="var(--v80-stroke)"/><path d="m8.9 16.4 1.35 1.35 2.7-2.9" fill="none" stroke="var(--v80-stroke)"/>');
 
-/* V13 — business features use one Icons8 3D Fluency family. */
-const qzl3d=(name,extra='')=>`<img class="qzl-3d-icon qzl-3d-${name} ${extra}" src="assets/icons/3d-fluency/${name}.png" alt="" aria-hidden="true" draggable="false">`;
-svg.assessment=qzl3d('test-passed','qzl-3d-feature');
-svg.guide=qzl3d('group-7','qzl-3d-feature');
-svg.growthLeaf=qzl3d('sprout','qzl-3d-feature');svg.growth=svg.growthLeaf;svg.sprout=svg.growthLeaf;
-svg.treasureBox=qzl3d('treasure-chest','qzl-3d-feature');
-svg.task=qzl3d('planner','qzl-3d-feature');
-svg.notification=qzl3d('bell','qzl-3d-feature');svg.bell=svg.notification;
-svg.communication=qzl3d('chat','qzl-3d-feature');svg.newChat=svg.communication;
-svg.conflict=qzl3d('chat','qzl-3d-scenario');
-svg.heart=qzl3d('like--v7','qzl-3d-scenario');
-svg.repeat=qzl3d('synchronize','qzl-3d-scenario');
-
 
 /* ======================================================================
    V9.0 · structured card domain
    Source UX: teammate MD V0.11. Product shell/state compatibility: V8.4.
    ====================================================================== */
 const V90_CARD_DEFS={
-  interpretation:{label:'解读卡',title:'解读卡·亲子翻译',icon:()=>qzl3d('report-file','qzl-3d-card'),value:'帮你重新看看，孩子行为背后的意思。',prompt:'最近哪件事最让你想不明白。'},
-  action:{label:'行动卡',title:'行动卡·获得改变',icon:()=>qzl3d('checked-checkbox','qzl-3d-card'),value:'帮你把想改变的事，变成一个真正能开始的行动。',prompt:'最近哪件事你最想试着改变。'},
-  strength:{label:'优势卡',title:'优势卡·夸夸孩子',icon:()=>qzl3d('sparkling','qzl-3d-card'),value:'帮你从日常的小事里，看见孩子容易被忽略的闪光点。',prompt:'最近孩子哪件事让你印象比较深。'},
-  mirror:{label:'镜子卡',title:'镜子卡·读懂自己',icon:()=>qzl3d('view','qzl-3d-card'),value:'帮你回头看看，自己的情绪和反应从哪里来。',prompt:'最近哪件事让你对自己的反应有点在意。'},
-  repair:{label:'修复卡',title:'修复卡·修复关系',icon:()=>qzl3d('heart-with-pulse','qzl-3d-card'),value:'帮你找到一个方式，让有点卡住的关系重新靠近。',prompt:'最近你和孩子之间发生了什么。'}
+  interpretation:{label:'解读卡',title:'解读卡·亲子翻译',icon:()=>svg.file,value:'帮你重新看看，孩子行为背后的意思。',prompt:'最近哪件事最让你想不明白。'},
+  action:{label:'行动卡',title:'行动卡·获得改变',icon:()=>svg.task,value:'帮你把想改变的事，变成一个真正能开始的行动。',prompt:'最近哪件事你最想试着改变。'},
+  strength:{label:'优势卡',title:'优势卡·夸夸孩子',icon:()=>svg.sparkle,value:'帮你从日常的小事里，看见孩子容易被忽略的闪光点。',prompt:'最近孩子哪件事让你印象比较深。'},
+  mirror:{label:'镜子卡',title:'镜子卡·读懂自己',icon:()=>svg.relation,value:'帮你回头看看，自己的情绪和反应从哪里来。',prompt:'最近哪件事让你对自己的反应有点在意。'},
+  repair:{label:'修复卡',title:'修复卡·修复关系',icon:()=>svg.heart,value:'帮你找到一个方式，让有点卡住的关系重新靠近。',prompt:'最近你和孩子之间发生了什么。'}
 };
 const V90_CARD_TYPES=Object.keys(V90_CARD_DEFS);
 const V90_CARD_PHASE={INTRO:'intro',INTAKE:'intake',RESTORE:'restore',RELATION:'relation',CONFIRM:'confirm',REVEAL_BACK:'reveal_back',REVEAL_FRONT:'reveal_front',DONE:'done'};
