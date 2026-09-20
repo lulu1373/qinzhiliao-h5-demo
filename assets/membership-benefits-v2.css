@@ -1,0 +1,95 @@
+/* Membership benefit visual system v2 — one dimensional icon family, one optical scale. */
+.membership-page .benefit-grid{
+  gap:14px!important;
+}
+.membership-page .benefit-card{
+  min-height:164px!important;
+  padding:18px 17px 16px!important;
+  border-radius:24px!important;
+  border:1px solid rgba(91,72,53,.055)!important;
+  background:linear-gradient(145deg,#fff,#FFFDF9)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.95),0 8px 22px rgba(77,59,42,.055)!important;
+}
+.membership-page .benefit-card>span{
+  width:56px!important;
+  height:56px!important;
+  margin:0 0 14px!important;
+  border-radius:18px!important;
+  display:grid!important;
+  place-items:center!important;
+  background:linear-gradient(145deg,#FFFDF9,#F5EEE5)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.95),0 5px 14px rgba(87,67,47,.055)!important;
+  color:inherit!important;
+  overflow:visible!important;
+}
+.membership-page .benefit-card>span::before{display:none!important}
+.membership-page .benefit-card>span .member-benefit-art{
+  width:46px!important;
+  height:46px!important;
+  max-width:none!important;
+  overflow:visible!important;
+  display:block!important;
+  fill:initial!important;
+  stroke:initial!important;
+}
+.membership-page .benefit-card b{
+  display:block!important;
+  margin:0 0 7px!important;
+  color:#3B352F!important;
+  font-size:17px!important;
+  line-height:1.28!important;
+  font-weight:680!important;
+  letter-spacing:-.15px!important;
+}
+.membership-page .benefit-card p{
+  margin:0!important;
+  color:#8C837A!important;
+  font-size:13.5px!important;
+  line-height:1.52!important;
+}
+.membership-page .benefit-card:nth-child(1)>span{background:linear-gradient(145deg,#FBF8FF,#F2EDFF)!important}
+.membership-page .benefit-card:nth-child(2)>span{background:linear-gradient(145deg,#F8FCFF,#EAF4FF)!important}
+.membership-page .benefit-card:nth-child(3)>span{background:linear-gradient(145deg,#FFFDF8,#FFF0E2)!important}
+.membership-page .benefit-card:nth-child(4)>span{background:linear-gradient(145deg,#FBFFF8,#EAF6E5)!important}
+.membership-page .benefit-card:nth-child(5)>span{background:linear-gradient(145deg,#FAFDFF,#EAF5FF)!important}
+.membership-page .benefit-card:nth-child(6)>span{background:linear-gradient(145deg,#FCF9FF,#F2ECFF)!important}
+
+/* Reuse the same art in the benefit usage panel, but at a restrained compact scale. */
+.membership-page .list-row-icon:has(.member-benefit-art){
+  width:42px!important;
+  height:42px!important;
+  border-radius:14px!important;
+  display:grid!important;
+  place-items:center!important;
+  background:linear-gradient(145deg,#fff,#F7F1E9)!important;
+  box-shadow:inset 0 1px 0 #fff,0 4px 12px rgba(77,59,42,.04)!important;
+}
+.membership-page .list-row-icon .member-benefit-art{
+  width:34px!important;
+  height:34px!important;
+  fill:initial!important;
+  stroke:initial!important;
+  overflow:visible!important;
+}
+@media(max-width:370px){
+  .membership-page .benefit-grid{gap:10px!important}
+  .membership-page .benefit-card{
+    min-height:154px!important;
+    padding:15px 14px 14px!important;
+  }
+  .membership-page .benefit-card>span{
+    width:52px!important;
+    height:52px!important;
+    margin-bottom:12px!important;
+  }
+  .membership-page .benefit-card>span .member-benefit-art{
+    width:43px!important;
+    height:43px!important;
+  }
+  .membership-page .benefit-card b{
+    font-size:16px!important;
+  }
+  .membership-page .benefit-card p{
+    font-size:12.5px!important;
+  }
+}
