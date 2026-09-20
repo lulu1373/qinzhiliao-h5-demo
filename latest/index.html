@@ -4477,7 +4477,7 @@ html,body,#app{background:var(--qzl-canvas)!important;}
 <style id="v104-about-system-page">
 .app-frame:has(.about-page-v2),.app-frame:has(.about-page-v2) .statusbar{background:#F7F6F2!important;background-image:none!important}.about-page-v2{background:#F7F6F2!important;background-image:none!important}.about-page-v2>.page-titlebar{background:#F7F6F2!important;background-image:none!important;border:0!important;box-shadow:none!important}.about-page-v2 .about-body{padding:18px 20px 36px}.about-brand-card{background:#fff;border:1px solid rgba(62,68,59,.06);border-radius:24px;padding:28px 22px 25px;margin:0 0 24px;text-align:center;box-shadow:0 8px 26px rgba(48,54,45,.035)}.about-app-icon{display:block;width:82px;height:82px;object-fit:cover;border-radius:22px;margin:0 auto 16px;box-shadow:0 8px 22px rgba(76,99,64,.09)}.about-brand-card h1{margin:0;color:#30352F;font-size:23px;line-height:1.25;font-weight:760;letter-spacing:-.2px}.about-brand-card p{margin:8px 0 0;color:#747C72;font-size:14px;line-height:1.55}.about-brand-card small{display:inline-block;margin-top:8px;color:#9A9F97;font-size:12px;line-height:1.4}.about-section-label{padding:0 4px 9px;color:#8A9088;font-size:12px;font-weight:650;letter-spacing:.2px}.about-page-v2 .about-link-list{margin:0;background:#fff!important;border:1px solid rgba(62,68,59,.065)!important;border-radius:20px!important;box-shadow:0 8px 24px rgba(48,54,45,.035)!important;overflow:hidden}.about-page-v2 .about-link-list .list-row{min-height:72px!important;padding:11px 16px!important;gap:13px!important;border-bottom:1px solid #EEF0EC!important;background:#fff!important}.about-page-v2 .about-link-list .list-row:last-child{border-bottom:0!important}.about-page-v2 .about-link-list .list-row-icon{width:44px!important;height:44px!important;flex:0 0 44px;border-radius:14px!important;background:#F3F4F1!important;border:0!important;color:#626B60!important;box-shadow:none!important}.about-page-v2 .about-link-list .list-row-icon svg{width:22px!important;height:22px!important;fill:none!important;stroke:currentColor!important;stroke-width:1.8!important;stroke-linecap:round!important;stroke-linejoin:round!important}.about-page-v2 .about-link-list .list-row-main b{font-size:15px!important;line-height:1.35!important;font-weight:650!important;color:#30342F!important}.about-page-v2 .about-link-list .chevron{font-size:22px!important;color:#B5BAB2!important;margin-left:auto!important}.about-page-v2 .about-link-list .list-row:active{background:#F8F9F6!important}.about-page-v2 .about-link-list .list-row:nth-child(n) .list-row-icon{background:#F3F4F1!important;color:#626B60!important}@media(max-width:390px){.about-page-v2 .about-body{padding-left:16px;padding-right:16px}.about-brand-card{padding-top:24px;padding-bottom:22px}.about-app-icon{width:76px;height:76px;border-radius:20px}.about-page-v2 .about-link-list .list-row{min-height:68px!important;padding-left:14px!important;padding-right:14px!important}}
 </style>
-<link rel="stylesheet" href="assets/course.css?v=68105aa9d3"><link rel="stylesheet" href="assets/course-v2.css?v=c1c56569e0"><link rel="stylesheet" href="assets/drawer-v10.css?v=2"><link rel="stylesheet" href="assets/functional-header.css?v=20260918"><link rel="stylesheet" href="assets/icon-soft3d.css?v=58e09d9ee8"><link rel="stylesheet" href="assets/message-toolbar.css?v=f911d93d12"><link rel="stylesheet" href="assets/points-v2.css?v=38eaf8e0f9"><link rel="stylesheet" href="assets/points-v3.css?v=9eb12f3ffa"><link rel="stylesheet" href="assets/membership-benefits-v2.css?v=97e8543cce"><link rel="stylesheet" href="assets/settings-icons-v2.css?v=59393a39c6"><link rel="stylesheet" href="assets/icon-v4-drawer.css?v=0602992d58"></head><body><div id="app" aria-live="polite"></div><script src="assets/growth-report-model.js?v=c66b2046b7"></script>
+<link rel="stylesheet" href="assets/course.css?v=68105aa9d3"><link rel="stylesheet" href="assets/course-v2.css?v=c1c56569e0"><link rel="stylesheet" href="assets/drawer-v10.css?v=2"><link rel="stylesheet" href="assets/functional-header.css?v=20260918"><link rel="stylesheet" href="assets/icon-soft3d.css?v=58e09d9ee8"><link rel="stylesheet" href="assets/message-toolbar.css?v=f911d93d12"><link rel="stylesheet" href="assets/points-v2.css?v=38eaf8e0f9"><link rel="stylesheet" href="assets/points-v3.css?v=9eb12f3ffa"><link rel="stylesheet" href="assets/membership-benefits-v2.css?v=97e8543cce"><link rel="stylesheet" href="assets/settings-icons-v2.css?v=59393a39c6"><link rel="stylesheet" href="assets/icon-v4-drawer.css?v=0602992d58"><link rel="stylesheet" href="assets/archive-v3.css?v=31718f36ed"></head><body><div id="app" aria-live="polite"></div><script src="assets/growth-report-model.js?v=c66b2046b7"></script>
 <script src="assets/growth-report-view.js?v=9e5a405290"></script>
 <script src="assets/growth-milestone-model.js?v=0a4020d2bc"></script>
 <script src="assets/growth-milestone-view.js?v=2492e9af08"></script>
@@ -5509,25 +5509,87 @@ function renderArchiveOverview(){
   const children=state.family?.children||[];
   const others=state.family?.others||[];
   const child=children[0]||{id:'child1',name:'小明',age:10,grade:'小学四年级'};
-  const total=1+children.length+others.length;
-  const people=[{type:'parent',id:'',name:state.user.name,desc:roleLabel(state.user.role)},...children.map(x=>({type:'child',id:x.id,name:x.name,desc:`${x.age||''} 岁`})),...others.map(x=>({type:'other',id:x.id,name:x.name,desc:x.relation||'家庭成员'}))].slice(0,5);
+  const members=[{type:'parent',id:'',name:state.user.name,desc:roleLabel(state.user.role)},...others.map(x=>({type:'other',id:x.id,name:x.name,desc:x.relation||'家庭成员'}))].slice(0,4);
+  const memories=(state.archive.memories||[]).filter(x=>x.enabled!==false);
+  const insights=state.archive.insights||[];
+  const confirmed=insights.filter(x=>x.status==='confirmed');
   const doneCount=state.actions.filter(a=>a.status==='done').length;
-  return `<div class="v79-overview">
-    <section class="panel v79-family-panel"><div class="v79-section-head"><span><small>我们的家庭</small><h2>我们家 · ${total} 位成员</h2></span><button class="text-link" data-action="archive-tab" data-value="members">管理成员</button></div><div class="v79-family-people">${people.map(p=>`<button class="v79-family-person" data-action="archive-member-profile" data-member-type="${p.type}" data-member-id="${esc(p.id)}">${memberAvatarMarkup(p.type,p.id,'v79-family-avatar')}<b>${esc(p.name)}</b><small>${esc(p.desc)}</small></button>`).join('')}</div><p class="v79-family-note">家庭档案只整理你提供、确认或允许小亲使用的信息；理解错了可以随时修正。</p></section>
-
-    <section class="panel qzl-education-region-panel"><div class="v79-section-head"><span><small>家庭基本信息</small><h2>教育地区</h2></span><button class="text-link" data-action="education-region-open">修改</button></div><button class="qzl-education-region-row" data-action="education-region-open"><i>${svg.location}</i><span><b>${esc(educationRegionLabel())}</b><small>用于筛选招生、入学和当地教育资讯</small></span><em>›</em></button></section>
-
-    <section class="panel"><div class="v79-section-head"><span><small>最近形成的理解</small><h2>小亲目前这样理解你们</h2></span></div><div class="v79-insight-list">${state.archive.insights.slice(0,3).map(renderArchiveInsightCard).join('')}</div></section>
-
-    <section class="panel"><div class="v79-section-head"><span><small>动态状态</small><h2>最近在关注</h2></span></div>
-      ${renderArchiveFocusRow(svg.task,'作业启动','最近两周出现得比较多','作业启动')}
-      ${renderArchiveFocusRow(svg.relation,'催促后的冲突','已连续记录 3 次类似互动','催促后的冲突')}
-      ${renderArchiveFocusRow(svg.growthLeaf,'希望孩子更自主','这是你目前最在意的目标','孩子的自主性')}
+  const milestones=state.growthReports?.milestones||[];
+  const childMeta=[child.age?child.age+' 岁':'',child.grade||''].filter(Boolean).join(' · ');
+  const memoryIcons=[svg.task,svg.growthLeaf,svg.relation];
+  const memoryTones=['mint','peach','lavender'];
+  const tags=[...insights.map(x=>x.title),...memories.map(x=>x.title)].filter(Boolean).slice(0,6);
+  const pathItems=[
+    {label:'成长记忆',value:memories.length,done:memories.length>0},
+    {label:'确认理解',value:confirmed.length,done:confirmed.length>0},
+    {label:'成长行动',value:doneCount,done:doneCount>0},
+    {label:'里程碑',value:milestones.length,done:milestones.length>0}
+  ];
+  const lead=insights[0]||null;
+  return `<div class="a3-overview">
+    <section class="a3-hero">
+      <div class="a3-hero-visual">
+        <div class="a3-orbit-ring ring-one"></div><div class="a3-orbit-ring ring-two"></div>
+        <button class="a3-child-portrait" data-action="archive-member-profile" data-member-type="child" data-member-id="${esc(child.id)}">
+          ${memberAvatarMarkup('child',child.id,'a3-child-avatar')}
+        </button>
+        <button class="a3-float-badge badge-memory" data-action="archive-tab" data-value="memory"><b>${memories.length}</b><span>记忆</span></button>
+        <button class="a3-float-badge badge-insight" data-action="archive-tab" data-value="relationships"><b>${confirmed.length}</b><span>理解</span></button>
+        <button class="a3-float-badge badge-action" data-action="route" data-route="growth"><b>${doneCount}</b><span>行动</span></button>
+      </div>
+      <div class="a3-hero-copy">
+        <small>小亲正在慢慢了解</small>
+        <h1>${esc(child.name)}的成长档案</h1>
+        <p>${esc(childMeta||'孩子档案')}</p>
+        <button class="a3-context-pill" data-action="education-region-open">${svg.location}<span>${esc(educationRegionLabel())}</span></button>
+      </div>
     </section>
 
-    <section class="panel v79-relation-summary"><div class="v79-section-head"><span><small>关系不是人物标签</small><h2>妈妈 × ${esc(child.name)}</h2></span><button class="text-link" data-action="archive-tab" data-value="relationships">查看画像</button></div><div class="v79-pair-row"><span class="v79-pair-avatar">${memberAvatarMarkup('parent','','')}</span><span class="v79-pair-link">↔</span><span class="v79-pair-avatar">${memberAvatarMarkup('child',child.id,'')}</span><span class="v79-pair-state"><b>总体连接稳定</b><small>学习任务时容易卡住</small></span></div><div class="v79-flow"><span>担心</span><i>→</i><span>催促</span><i>→</i><span>压力</span><i>→</i><span>抵抗</span></div></section>
+    <section class="a3-visual-section a3-relation">
+      <div class="a3-section-head"><div><small>家庭关系图</small><h2>谁陪在孩子身边</h2></div><button data-action="archive-tab" data-value="relationships">关系画像 →</button></div>
+      <div class="a3-relation-stage">
+        <div class="a3-link-line line-parent"></div>
+        <button class="a3-relation-center" data-action="archive-member-profile" data-member-type="child" data-member-id="${esc(child.id)}">
+          ${memberAvatarMarkup('child',child.id,'a3-relation-avatar')}<b>${esc(child.name)}</b>
+        </button>
+        ${members.map((m,i)=>`<button class="a3-relation-node node-${i+1}" data-action="archive-member-profile" data-member-type="${m.type}" data-member-id="${esc(m.id)}">
+          ${memberAvatarMarkup(m.type,m.id,'a3-relation-avatar')}<b>${esc(m.name)}</b><small>${esc(m.desc)}</small>
+        </button>`).join('')}
+        <button class="a3-relation-theme theme-1" data-action="archive-focus-chat" data-topic="作业启动">作业启动</button>
+        <button class="a3-relation-theme theme-2" data-action="archive-focus-chat" data-topic="催促后的冲突">催促冲突</button>
+        <div class="a3-relation-state"><i></i><span><b>总体连接稳定</b><small>学习任务时容易卡住</small></span></div>
+      </div>
+    </section>
 
-    <section class="panel"><div class="v79-section-head"><span><small>最近两周</small><h2>正在发生的变化</h2></span><button class="text-link" data-action="route" data-route="growth">成长总结</button></div><div class="v79-change-row up"><b>任务开始前的冲突减少了</b><span>比前两周少一些</span></div><div class="v79-change-row up"><b>你减少了连续催促</b><span>已记录 ${Math.max(2,doneCount)} 次尝试</span></div><div class="v79-change-row flat"><b>${esc(child.name)}的自主启动还不稳定</b><span>继续观察，不急着下结论</span></div></section>
+    <section class="a3-visual-section a3-memories">
+      <div class="a3-section-head"><div><small>成长记忆相册</small><h2>我们一起经历过</h2></div><button data-action="archive-tab" data-value="memory">全部记忆 →</button></div>
+      <div class="a3-memory-rail">
+        ${memories.slice(0,3).map((m,i)=>`<button class="a3-memory-photo ${memoryTones[i%memoryTones.length]}" data-action="archive-tab" data-value="memory">
+          <span class="a3-memory-art">${memoryIcons[i%memoryIcons.length]}</span>
+          <span class="a3-memory-meta">${esc(m.source||'近期对话')}</span>
+          <b>${esc(m.title||'成长记忆')}</b>
+          <p>${esc(m.content)}</p>
+        </button>`).join('')}
+      </div>
+    </section>
+
+    <section class="a3-visual-section a3-milestones">
+      <div class="a3-section-head"><div><small>成长路径</small><h2>每一步都算数</h2></div><button data-action="route" data-route="growth">成长总结 →</button></div>
+      <div class="a3-path">
+        <div class="a3-path-line"></div>
+        ${pathItems.map((x,i)=>`<button class="a3-path-node ${x.done?'done':''}" data-action="${i<2?'archive-tab':'route'}" ${i===0?'data-value="memory"':i===1?'data-value="relationships"':'data-route="growth"'}>
+          <span class="a3-path-dot">${x.done?'✓':i+1}</span><b>${x.value}</b><small>${x.label}</small>
+        </button>`).join('')}
+      </div>
+    </section>
+
+    <section class="a3-visual-section a3-observe">
+      <div class="a3-section-head"><div><small>小亲观察</small><h2>最近常出现的主题</h2></div><button data-action="archive-tab" data-value="relationships">查看全部 →</button></div>
+      <div class="a3-tag-cloud">${tags.map((t,i)=>`<span class="tone-${(i%4)+1}">${esc(t)}</span>`).join('')}</div>
+      ${lead?`<button class="a3-lead-insight" data-action="archive-insight-chat" data-id="${lead.id}">
+        <span class="a3-lead-mark">✦</span><span><small>最近的一条理解</small><b>${esc(lead.content)}</b></span><i>›</i>
+      </button>`:''}
+    </section>
   </div>`;
 }
 function renderArchiveInsightCard(item){

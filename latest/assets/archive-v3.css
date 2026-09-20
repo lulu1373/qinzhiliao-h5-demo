@@ -1,0 +1,150 @@
+/* Archive V3 Preview — visual-first family growth archive. */
+.v79-archive-page .qzl-page-scroll>.page-body{padding:8px 16px 30px!important}
+.a3-overview{display:grid;gap:14px}
+.a3-overview button{font:inherit;color:inherit}
+
+/* 1. Child visual hero */
+.a3-hero{
+  min-height:224px;display:grid;grid-template-columns:1.08fr .92fr;gap:8px;align-items:center;
+  padding:14px;border-radius:28px;overflow:hidden;position:relative;
+  background:
+    radial-gradient(95% 90% at 16% 12%,rgba(191,231,154,.40),transparent 58%),
+    radial-gradient(70% 90% at 92% 90%,rgba(255,220,188,.34),transparent 65%),
+    linear-gradient(145deg,#fffefb,#f6f8f1 62%,#fff7ef);
+  border:1px solid rgba(89,103,75,.07);
+  box-shadow:0 14px 34px rgba(64,72,57,.06);
+}
+.a3-hero:before,.a3-hero:after{content:"";position:absolute;border-radius:50%;pointer-events:none}
+.a3-hero:before{width:54px;height:54px;right:-13px;top:18px;background:rgba(255,255,255,.48)}
+.a3-hero:after{width:30px;height:30px;left:8px;bottom:10px;background:rgba(255,255,255,.40)}
+.a3-hero-visual{height:190px;position:relative;display:grid;place-items:center}
+.a3-orbit-ring{position:absolute;border-radius:50%;border:1px solid rgba(111,144,91,.13)}
+.a3-orbit-ring.ring-one{width:142px;height:142px}
+.a3-orbit-ring.ring-two{width:176px;height:176px;border-style:dashed;border-color:rgba(203,159,114,.16)}
+.a3-child-portrait{
+  width:92px;height:92px;border:0;border-radius:31px;padding:0;overflow:hidden;
+  background:linear-gradient(145deg,#fff,#eff6e9);display:grid;place-items:center;
+  box-shadow:inset 0 1px 0 #fff,0 12px 26px rgba(77,97,66,.11);z-index:2
+}
+.a3-child-avatar{width:82px!important;height:82px!important;border-radius:27px!important}
+.a3-float-badge{
+  position:absolute;z-index:3;width:48px;height:48px;border:0;border-radius:17px;
+  display:grid;place-items:center;padding:5px;background:rgba(255,255,255,.91);
+  box-shadow:0 7px 18px rgba(61,67,56,.08);backdrop-filter:blur(8px)
+}
+.a3-float-badge b{font-size:16px;line-height:17px;color:#445044}
+.a3-float-badge span{font-size:8.5px;line-height:10px;color:#93988f}
+.a3-float-badge.badge-memory{left:4px;top:21px}
+.a3-float-badge.badge-insight{right:1px;top:34px}
+.a3-float-badge.badge-action{right:10px;bottom:12px}
+.a3-float-badge.badge-memory b{color:#7aa16a}.a3-float-badge.badge-insight b{color:#7d83c7}.a3-float-badge.badge-action b{color:#d08b5c}
+.a3-hero-copy{position:relative;z-index:2;min-width:0;padding-right:4px}
+.a3-hero-copy>small{display:block;font-size:10px;line-height:14px;color:#90988b;margin-bottom:5px}
+.a3-hero-copy h1{margin:0;font-size:24px;line-height:1.18;letter-spacing:-.5px;color:#343934}
+.a3-hero-copy p{margin:6px 0 14px;font-size:12px;color:#898f86}
+.a3-context-pill{
+  border:0;min-height:34px;max-width:100%;border-radius:14px;background:rgba(255,255,255,.72);
+  padding:0 10px;display:flex;align-items:center;gap:6px;color:#778071;box-shadow:inset 0 0 0 1px rgba(85,104,73,.04)
+}
+.a3-context-pill svg{width:14px;height:14px;flex:0 0 14px}.a3-context-pill span{font-size:10.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* Shared visual section */
+.a3-visual-section{
+  border-radius:24px;padding:15px;background:rgba(255,255,255,.84);
+  border:1px solid rgba(88,72,55,.05);box-shadow:0 6px 20px rgba(58,48,39,.03);overflow:hidden
+}
+.a3-section-head{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin-bottom:10px}
+.a3-section-head small{display:block;font-size:9.5px;line-height:13px;color:#a19d95;margin-bottom:2px}
+.a3-section-head h2{margin:0;font-size:18px;line-height:23px;color:#3d413d;letter-spacing:-.25px}
+.a3-section-head>button{border:0;background:none;padding:4px 0;font-size:10.5px;color:#8d9389;white-space:nowrap}
+
+/* 2. Family relation constellation */
+.a3-relation-stage{
+  height:214px;position:relative;border-radius:20px;overflow:hidden;
+  background:
+    radial-gradient(circle at 50% 47%,rgba(213,233,200,.36) 0 18%,transparent 19%),
+    radial-gradient(circle at 50% 47%,transparent 0 34%,rgba(124,151,108,.08) 35% 35.6%,transparent 36%),
+    linear-gradient(145deg,#fafcf8,#f7f5f1);
+}
+.a3-relation-stage:before,.a3-relation-stage:after{
+  content:"";position:absolute;left:50%;top:47%;height:1px;width:76%;transform-origin:left center;
+  background:linear-gradient(90deg,rgba(125,151,108,.23),rgba(125,151,108,0));z-index:0
+}
+.a3-relation-stage:before{transform:rotate(-28deg) translateX(-5%)}
+.a3-relation-stage:after{transform:rotate(152deg) translateX(-5%)}
+.a3-link-line{position:absolute;height:1px;background:rgba(127,153,112,.20);z-index:0}
+.a3-relation-center,.a3-relation-node{position:absolute;border:0;background:none;padding:0;text-align:center;z-index:2}
+.a3-relation-center{left:50%;top:47%;transform:translate(-50%,-50%);width:88px}
+.a3-relation-node{width:76px}
+.a3-relation-node.node-1{left:18px;top:24px}
+.a3-relation-node.node-2{right:18px;top:24px}
+.a3-relation-node.node-3{left:20px;bottom:24px}
+.a3-relation-node.node-4{right:20px;bottom:24px}
+.a3-relation-avatar{width:54px!important;height:54px!important;margin:0 auto 5px;border-radius:18px!important;background:#fff!important;box-shadow:0 6px 16px rgba(64,71,58,.075)}
+.a3-relation-center .a3-relation-avatar{width:68px!important;height:68px!important;border-radius:23px!important}
+.a3-relation-center b,.a3-relation-node b{display:block;font-size:11px;line-height:14px;color:#4b504a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.a3-relation-node small{display:block;font-size:8.5px;line-height:11px;color:#9b9b94;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.a3-relation-state{
+  position:absolute;left:50%;bottom:8px;transform:translateX(-50%);z-index:3;min-width:168px;
+  display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:14px;background:rgba(255,255,255,.90);
+  box-shadow:0 5px 14px rgba(56,62,52,.055)
+}
+.a3-relation-state>i{width:8px;height:8px;border-radius:50%;background:#8fb77d;box-shadow:0 0 0 4px rgba(143,183,125,.13)}
+.a3-relation-state b,.a3-relation-state small{display:block}.a3-relation-state b{font-size:10.5px;line-height:13px;color:#50564e}.a3-relation-state small{font-size:8.5px;line-height:11px;color:#989b94;margin-top:1px}
+
+/* 3. Memory photo rail */
+.a3-memory-rail{display:flex;gap:9px;overflow-x:auto;padding:1px 1px 5px;scroll-snap-type:x proximity;scrollbar-width:none}
+.a3-memory-rail::-webkit-scrollbar{display:none}
+.a3-memory-photo{
+  flex:0 0 154px;min-height:166px;border:0;border-radius:20px;padding:12px;text-align:left;position:relative;overflow:hidden;
+  scroll-snap-align:start;box-shadow:0 7px 19px rgba(58,48,39,.045)
+}
+.a3-memory-photo:after{content:"";position:absolute;width:74px;height:74px;border-radius:50%;right:-22px;top:-18px;background:rgba(255,255,255,.36)}
+.a3-memory-photo.mint{background:linear-gradient(150deg,#f8fff5,#e8f4e2)}
+.a3-memory-photo.peach{background:linear-gradient(150deg,#fffaf5,#fbe8dc)}
+.a3-memory-photo.lavender{background:linear-gradient(150deg,#fcfaff,#eeeafa)}
+.a3-memory-art{width:42px;height:42px;border-radius:14px;background:rgba(255,255,255,.78);display:grid;place-items:center;margin-bottom:13px;position:relative;z-index:1}
+.a3-memory-art svg{width:24px;height:24px}
+.a3-memory-meta{display:block;font-size:8.5px;line-height:11px;color:#96988f;margin-bottom:4px}
+.a3-memory-photo b{display:block;font-size:14px;line-height:18px;color:#454a44;margin-bottom:5px}
+.a3-memory-photo p{margin:0;font-size:10.5px;line-height:1.5;color:#777c74;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;overflow:hidden}
+
+/* 4. Milestone path */
+.a3-path{height:100px;position:relative;display:grid;grid-template-columns:repeat(4,1fr);align-items:start;padding-top:7px}
+.a3-path-line{position:absolute;left:10%;right:10%;top:25px;height:3px;border-radius:2px;background:linear-gradient(90deg,#9bbd88 0 58%,#e2dfd9 58% 100%)}
+.a3-path-node{border:0;background:none;padding:0;text-align:center;position:relative;z-index:2}
+.a3-path-dot{width:38px;height:38px;border-radius:50%;margin:0 auto 5px;background:#f0efec;color:#aaa79f;display:grid;place-items:center;font-size:12px;font-weight:700;border:4px solid #fff;box-shadow:0 4px 11px rgba(61,67,56,.06)}
+.a3-path-node.done .a3-path-dot{background:linear-gradient(145deg,#a7cc93,#79a967);color:#fff}
+.a3-path-node b{display:block;font-size:14px;line-height:17px;color:#4a5048}
+.a3-path-node small{display:block;font-size:8.5px;line-height:11px;color:#9b9c96;margin-top:1px}
+
+/* 5. AI observation cloud */
+.a3-tag-cloud{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:11px}
+.a3-tag-cloud span{padding:7px 10px;border-radius:13px;font-size:10.5px;line-height:13px}
+.a3-tag-cloud .tone-1{background:#edf5e9;color:#66815a}.a3-tag-cloud .tone-2{background:#fff0e7;color:#b17453}
+.a3-tag-cloud .tone-3{background:#eef1fb;color:#687db2}.a3-tag-cloud .tone-4{background:#f3eff9;color:#8372a6}
+.a3-lead-insight{
+  width:100%;border:0;border-radius:17px;background:linear-gradient(145deg,#fafaf7,#f3f5ef);
+  padding:10px 11px;display:grid;grid-template-columns:32px minmax(0,1fr) 14px;gap:9px;align-items:center;text-align:left
+}
+.a3-lead-mark{width:32px;height:32px;border-radius:11px;background:#fff;display:grid;place-items:center;color:#8ca57f}
+.a3-lead-insight small{display:block;font-size:8.5px;color:#9b9d96;margin-bottom:2px}
+.a3-lead-insight b{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;font-size:11px;line-height:15px;font-weight:590;color:#4d514c}
+.a3-lead-insight>i{font-style:normal;color:#aaa79f;font-size:17px}
+
+@media(max-width:375px){
+  .v79-archive-page .qzl-page-scroll>.page-body{padding-left:12px!important;padding-right:12px!important}
+  .a3-hero{grid-template-columns:1fr .88fr;min-height:210px;padding:12px}
+  .a3-hero-visual{height:180px}.a3-orbit-ring.ring-one{width:132px;height:132px}.a3-orbit-ring.ring-two{width:164px;height:164px}
+  .a3-child-portrait{width:86px;height:86px}.a3-child-avatar{width:76px!important;height:76px!important}
+  .a3-hero-copy h1{font-size:21px}.a3-memory-photo{flex-basis:144px}
+  .a3-relation-stage{height:205px}.a3-visual-section{padding:13px}.a3-section-head h2{font-size:17px}
+}
+
+.a3-relation-theme{
+  position:absolute;z-index:2;border:0;border-radius:12px;padding:6px 9px;
+  font-size:9.5px;line-height:12px;color:#777d74;background:rgba(255,255,255,.82);
+  box-shadow:0 4px 12px rgba(58,64,53,.045)
+}
+.a3-relation-theme.theme-1{right:18px;top:70px;color:#9d724f;background:#fff4ea}
+.a3-relation-theme.theme-2{right:22px;bottom:48px;color:#b06d67;background:#fbeeed}

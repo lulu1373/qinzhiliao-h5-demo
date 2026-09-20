@@ -332,7 +332,31 @@ class ExperienceTests(unittest.TestCase):
         self.page.goto(self.url + '?education=settings#/settings/location', wait_until='networkidle')
         self.assertIn('深圳市 · 南山区', self.page.locator('.location-settings-page').inner_text())
         self.page.goto(self.url + '?education=archive#/archive', wait_until='networkidle')
-        self.assertIn('深圳市 · 南山区', self.page.locator('.qzl-education-region-panel').inner_text())
+        self.assertIn('深圳市 · 南山区', self.page.locator('.a3-context-pill').inner_text())
+
+    def test_archive_v3_visual_overview_and_core_routes(self):
+        self.page.goto(self.url + '#/archive', wait_until='networkidle')
+        self.page.wait_for_selector('.a3-overview:visible')
+        self.assertEqual(self.page.locator('.a3-hero').count(), 1)
+        self.assertEqual(self.page.locator('.a3-relation').count(), 1)
+        self.assertEqual(self.page.locator('.a3-memory-photo').count(), 3)
+        self.assertEqual(self.page.locator('.a3-path-node').count(), 4)
+        self.assertGreaterEqual(self.page.locator('.a3-tag-cloud span').count(), 4)
+        self.assertEqual(self.page.locator('.a3-relation-theme').count(), 2)
+        self.assertLessEqual(self.page.evaluate('document.documentElement.scrollWidth'), self.page.evaluate('innerWidth'))
+
+        self.page.locator('.badge-memory').click()
+        self.assertEqual(self.page.locator('.v79-archive-tabs .segment-btn.active').inner_text(), '小亲记忆')
+
+        self.page.goto(self.url + '#/archive', wait_until='networkidle')
+        self.page.locator('.v79-archive-tabs .segment-btn').filter(has_text='家庭总览').click()
+        self.page.locator('.badge-insight').click()
+        self.assertEqual(self.page.locator('.v79-archive-tabs .segment-btn.active').inner_text(), '关系画像')
+
+        self.page.goto(self.url + '#/archive', wait_until='networkidle')
+        self.page.locator('.v79-archive-tabs .segment-btn').filter(has_text='家庭总览').click()
+        self.page.locator('.a3-memory-photo').first.click()
+        self.assertEqual(self.page.locator('.v79-archive-tabs .segment-btn.active').inner_text(), '小亲记忆')
 
     def test_education_geolocation_requires_confirmation_and_stores_no_coordinates(self):
         self.page.goto(self.url + '#/settings/location')
