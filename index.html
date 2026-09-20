@@ -8521,7 +8521,7 @@ function installExperience() {
         return;
       }
       if (action === 'home-memory') {
-        state.archive={...state.archive,tab:'memory'};
+        state.archive={...state.archive,tab:'overview'};
         saveState();
         return navigate('archive');
       }
@@ -8740,7 +8740,7 @@ function installExperienceHome({read}) {
         </div>
       </section>
       <section class="xp-home-v22-growth">
-        <button class="xp-home-v22-growth-card memory" data-xp-action="home-memory"><i>${svg.familyArchive}</i><span><b>成长记忆</b><small>${memories.length} 条</small></span></button>
+        <button class="xp-home-v22-growth-card memory" data-xp-action="home-memory"><i>${svg.familyArchive}</i><span><b>家庭档案</b><small>${memories.length} 条记忆</small></span></button>
         <button class="xp-home-v22-growth-card milestone" data-xp-action="home-milestone"><i>${svg.growthLeaf}</i><span><b>里程碑</b><small>${milestones.length} 个</small></span></button>
       </section>
     </div>`;

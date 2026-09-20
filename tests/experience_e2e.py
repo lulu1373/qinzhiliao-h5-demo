@@ -421,6 +421,17 @@ class ExperienceTests(unittest.TestCase):
         self.assertEqual(self.stored()['chat']['scenario'], 'home-homework')
         self.assertEqual(self.page.locator('.v90-card-pill:visible').count(), 5)
 
+    def test_home_family_archive_entry_opens_archive_overview(self):
+        self.page.goto(self.url + '#/home', wait_until='networkidle')
+        self.page.wait_for_selector('.xp-home-v22:visible')
+        entry = self.page.locator('.xp-home-v22-growth-card.memory')
+        self.assertIn('家庭档案', entry.inner_text())
+        self.assertNotIn('成长记忆', entry.inner_text())
+        entry.click()
+        self.page.wait_for_selector('.a3-overview:visible')
+        self.assertTrue(self.page.url.endswith('#/archive'))
+        self.assertEqual(self.page.locator('.v79-archive-tabs .segment-btn.active').inner_text(), '家庭总览')
+
     def test_drawer_common_tools_has_no_placeholder_more_entry(self):
         self.page.goto(self.url + '#/home')
         self.page.locator('[data-action="drawer-open"]').click()
