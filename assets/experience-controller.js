@@ -333,6 +333,24 @@ function installExperience() {
       if (action === 'action-confirm') return accept(id);
       if (action === 'feedback') return feedback(id,val);
       if (action === 'journey-end') { patchJourney(id,{ended:true,step:'done'}); return refresh(); }
+      if (action === 'home-focus') {
+        const input=document.getElementById('chatInput');
+        input?.scrollIntoView({behavior:'smooth',block:'nearest'});
+        setTimeout(()=>input?.focus({preventScroll:true}),140);
+        return;
+      }
+      if (action === 'home-memory') {
+        state.archive={...state.archive,tab:'memory'};
+        saveState();
+        return navigate('archive');
+      }
+      if (action === 'home-milestone') {
+        state.growthReports={...state.growthReports,source:'personal',screen:'report',section:'milestones',anchor:date()};
+        saveState();
+        navigate('growth');
+        setTimeout(()=>document.querySelector('[data-gr-action="milestone-section"]')?.click(),120);
+        return;
+      }
       if (action === 'record-milestone') {
         const journey = getJourney(id), a = state.actions.find(item => item.id === journey?.actionId);
         state.growthReports = {...state.growthReports,source:'personal',screen:'report',section:'milestones',anchor:date()};
@@ -522,11 +540,36 @@ function prepareCommunityImage(file) {
 
 function installExperienceHome({read}) {
   renderHomeIdle = function() {
-    return `<div class="xp-home xp-home-clean"><section class="xp-home-hero"><div><h1>今天想和我<br>聊聊吗？</h1><p>不用想好怎么说，从此刻的感受开始就好。</p></div><img src="${ASSETS.mascotHome}" alt="小亲"></section>
-      <div class="xp-home-starters" aria-label="你可以这样开始"><button data-action="start-scenario" data-scenario="homework"><i>${svg.conflict}</i><span><b>刚刚发生什么了？</b><small>从一件具体的事聊起</small></span>${svg.back}</button><button data-xp-action="chat-start" data-scene="emotion"><i>${svg.heart}</i><span><b>我有点情绪卡住了</b><small>先聊聊，不急着做练习</small></span>${svg.back}</button><button data-xp-action="chat-start" data-scene="repeat"><i>${svg.repeat}</i><span><b>这个问题总是反复</b><small>先从最近一次聊起</small></span>${svg.back}</button></div></div>`;
+    const memories=(state.archive?.memories||[]).filter(item=>item.enabled!==false);
+    const memory=memories.find(item=>item.status==='confirmed')||memories[0]||null;
+    const milestones=state.growthReports?.milestones||[];
+    const milestone=milestones.slice().sort((a,b)=>String(b.date||'').localeCompare(String(a.date||'')))[0]||null;
+    const memoryText=memory?memory.content:'小亲会把你确认过的重要信息留在这里。';
+    const milestoneText=milestone?(milestone.title||'一个值得留下的时刻'):'还没有里程碑，遇到值得记住的变化时再慢慢留下。';
+    return `<div class="xp-home xp-home-chat-first">
+      <section class="xp-home-v2-hero">
+        <div class="xp-home-v2-copy"><span class="xp-home-v2-kicker">小亲在这里</span><h1>今天想从哪里开始？</h1><p>不用想好怎么说，先从一句话开始。</p></div>
+        <img src="${ASSETS.mascotHome}" alt="小亲">
+      </section>
+      <section class="xp-home-prompt-section">
+        <header><h2>从一句提示开始</h2><button class="xp-home-focus-link" data-xp-action="home-focus">直接说一句</button></header>
+        <div class="xp-home-prompt-rail">
+          <button data-action="start-scenario" data-scenario="homework"><i>${svg.conflict}</i><span><b>刚刚发生了什么？</b><small>从一件具体的事说起</small></span></button>
+          <button data-xp-action="chat-start" data-scene="emotion"><i>${svg.heart}</i><span><b>此刻最难受的是什么？</b><small>先说感受，不急着解决</small></span></button>
+          <button data-xp-action="chat-start" data-scene="repeat"><i>${svg.repeat}</i><span><b>这个问题最近又出现了吗？</b><small>从最近一次聊起</small></span></button>
+        </div>
+      </section>
+      <section class="xp-home-growth-section">
+        <header><h2>最近的成长</h2><span>轻轻回看一下</span></header>
+        <div class="xp-home-growth-grid">
+          <button class="xp-home-growth-card memory" data-xp-action="home-memory"><i>${svg.familyArchive}</i><span><small>成长记忆 · ${memories.length} 条</small><b>${esc(memoryText)}</b></span><em>回看记忆 →</em></button>
+          <button class="xp-home-growth-card milestone" data-xp-action="home-milestone"><i>${svg.growthLeaf}</i><span><small>成长里程碑 · ${milestones.length} 个</small><b>${esc(milestoneText)}</b></span><em>${milestone?'回看这个时刻':'留下一个时刻'} →</em></button>
+        </div>
+      </section>
+    </div>`;
   };
   renderComposer = function() {
-    return `<div class="composer xp-composer">${renderCardQuickBarV90()}<div class="composer-row"><button class="composer-btn" data-action="voice-start" aria-label="语音输入">${svg.mic}</button><div class="composer-input"><textarea id="chatInput" rows="1" placeholder="${state.chat.active ? '继续和小亲说…' : '和小亲说说…'}"></textarea></div><button class="composer-btn" data-action="attachment-sheet" aria-label="添加附件">${svg.plus}</button><button class="composer-btn" id="chatSendBtn" data-action="chat-send" aria-label="发送">${svg.send}</button></div></div>`;
+    return `<div class="composer xp-composer xp-composer-home-v2"><div class="xp-explore-label" aria-hidden="true">继续探索</div>${renderCardQuickBarV90()}<div class="composer-row"><button class="composer-btn" data-action="voice-start" aria-label="语音输入">${svg.mic}</button><div class="composer-input"><textarea id="chatInput" rows="1" placeholder="${state.chat.active ? '继续和小亲说…' : '和小亲说说…'}"></textarea></div><button class="composer-btn" data-action="attachment-sheet" aria-label="添加附件">${svg.plus}</button><button class="composer-btn" id="chatSendBtn" data-action="chat-send" aria-label="发送">${svg.send}</button></div></div>`;
   };
 }
 installExperience();
