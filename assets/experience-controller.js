@@ -583,33 +583,28 @@ function installExperienceHome({read}) {
     const memory=memories.find(item=>item.status==='confirmed')||memories[0]||null;
     const milestones=state.growthReports?.milestones||[];
     const milestone=milestones.slice().sort((a,b)=>String(b.date||'').localeCompare(String(a.date||'')))[0]||null;
-    const memoryText=memory?memory.content:'小亲会把你确认过的重要信息留在这里。';
-    const milestoneText=milestone?(milestone.title||'一个值得留下的时刻'):'还没有里程碑，遇到值得记住的变化时再慢慢留下。';
-    return `<div class="xp-home xp-home-chat-first">
-      <section class="xp-home-v2-hero">
-        <div class="xp-home-v2-copy"><span class="xp-home-v2-kicker">小亲在这里</span><h1>今天想从哪里开始？</h1><p>不用想好怎么说，先从一句话开始。</p></div>
+    return `<div class="xp-home xp-home-v22">
+      <section class="xp-home-v22-hero">
+        <div class="xp-home-v22-copy"><h1>今天想聊什么？</h1></div>
         <img src="${ASSETS.mascotHome}" alt="小亲">
       </section>
-      <section class="xp-home-prompt-section">
-        <header><h2>可以从这些问题开始</h2><button class="xp-home-focus-link" data-xp-action="home-focus">直接说一句</button></header>
-        <div class="xp-home-prompt-rail">
-          <button data-xp-action="home-topic" data-topic="homework"><i>${svg.task}</i><span><b>孩子写作业很困难</b><small>写作业总是很费劲</small></span></button>
-          <button data-xp-action="home-topic" data-topic="phone"><i>${svg.phoneRule}</i><span><b>孩子玩手机时间很多</b><small>一说放下手机就容易冲突</small></span></button>
-          <button data-xp-action="home-topic" data-topic="backtalk"><i>${svg.conflict}</i><span><b>孩子一说就顶嘴</b><small>一开口就容易变成争执</small></span></button>
-          <button data-xp-action="home-topic" data-topic="procrastination"><i>${svg.repeat}</i><span><b>孩子总是拖拖拉拉</b><small>很多事情都要催好几次</small></span></button>
+      <section class="xp-home-v22-topics">
+        <header><h2>想聊哪一件？</h2><button class="xp-home-focus-link" data-xp-action="home-focus">直接说</button></header>
+        <div class="xp-home-prompt-rail xp-home-v22-topic-rail">
+          <button data-xp-action="home-topic" data-topic="homework"><i>${svg.task}</i><b>孩子写作业很困难</b></button>
+          <button data-xp-action="home-topic" data-topic="phone"><i>${svg.phoneRule}</i><b>孩子玩手机时间很多</b></button>
+          <button data-xp-action="home-topic" data-topic="backtalk"><i>${svg.conflict}</i><b>孩子一说就顶嘴</b></button>
+          <button data-xp-action="home-topic" data-topic="procrastination"><i>${svg.repeat}</i><b>孩子总是拖拖拉拉</b></button>
         </div>
       </section>
-      <section class="xp-home-growth-section">
-        <header><h2>最近的成长</h2><span>轻轻回看一下</span></header>
-        <div class="xp-home-growth-grid">
-          <button class="xp-home-growth-card memory" data-xp-action="home-memory"><i>${svg.familyArchive}</i><span><small>成长记忆 · ${memories.length} 条</small><b>${esc(memoryText)}</b></span><em>回看记忆 →</em></button>
-          <button class="xp-home-growth-card milestone" data-xp-action="home-milestone"><i>${svg.growthLeaf}</i><span><small>成长里程碑 · ${milestones.length} 个</small><b>${esc(milestoneText)}</b></span><em>${milestone?'回看这个时刻':'留下一个时刻'} →</em></button>
-        </div>
+      <section class="xp-home-v22-growth">
+        <button class="xp-home-v22-growth-card memory" data-xp-action="home-memory"><i>${svg.familyArchive}</i><span><b>成长记忆</b><small>${memories.length} 条</small></span></button>
+        <button class="xp-home-v22-growth-card milestone" data-xp-action="home-milestone"><i>${svg.growthLeaf}</i><span><b>里程碑</b><small>${milestones.length} 个</small></span></button>
       </section>
     </div>`;
   };
   renderComposer = function() {
-    return `<div class="composer xp-composer xp-composer-home-v2"><div class="xp-explore-label" aria-hidden="true">继续探索</div>${renderCardQuickBarV90()}<div class="composer-row"><button class="composer-btn" data-action="voice-start" aria-label="语音输入">${svg.mic}</button><div class="composer-input"><textarea id="chatInput" rows="1" placeholder="${state.chat.active ? '继续和小亲说…' : '和小亲说说…'}"></textarea></div><button class="composer-btn" data-action="attachment-sheet" aria-label="添加附件">${svg.plus}</button><button class="composer-btn" id="chatSendBtn" data-action="chat-send" aria-label="发送">${svg.send}</button></div></div>`;
+    return `<div class="composer xp-composer xp-composer-home-v2">${renderCardQuickBarV90()}<div class="composer-row"><button class="composer-btn" data-action="voice-start" aria-label="语音输入">${svg.mic}</button><div class="composer-input"><textarea id="chatInput" rows="1" placeholder="${state.chat.active ? '继续和小亲说…' : '和小亲说说…'}"></textarea></div><button class="composer-btn" data-action="attachment-sheet" aria-label="添加附件">${svg.plus}</button><button class="composer-btn" id="chatSendBtn" data-action="chat-send" aria-label="发送">${svg.send}</button></div></div>`;
   };
 }
 installExperience();

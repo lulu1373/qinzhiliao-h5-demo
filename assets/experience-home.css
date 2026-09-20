@@ -164,3 +164,180 @@
   .xp-home-prompt-rail button{flex-basis:154px;min-height:62px}
   .xp-home-growth-card{min-height:80px;padding-left:9px;padding-right:9px}
 }
+
+/* Home V2.2 — less copy, larger type, fewer layers. */
+.xp-home-v22{
+  max-width:600px;
+  margin:0 auto;
+  padding:0 15px 14px;
+  color:#354133;
+}
+.xp-home-v22-hero{
+  position:relative;
+  height:112px;
+  display:flex;
+  align-items:center;
+  overflow:hidden;
+  padding:8px 8px 4px 10px;
+  margin:0 0 4px;
+}
+.xp-home-v22-copy{position:relative;z-index:2;width:68%;min-width:0}
+.xp-home-v22-copy h1{
+  margin:0;
+  font-size:29px;
+  line-height:1.16;
+  letter-spacing:-.7px;
+  font-weight:690;
+  color:#30332e;
+}
+.xp-home-v22-hero>img{
+  position:absolute;
+  right:4px;
+  bottom:-1px;
+  width:94px;
+  height:108px;
+  object-fit:contain;
+  filter:drop-shadow(0 7px 10px rgba(83,104,65,.06));
+}
+
+.xp-home-v22-topics{margin-top:2px}
+.xp-home-v22-topics>header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  margin:0 2px 8px;
+}
+.xp-home-v22-topics h2{
+  margin:0;
+  font-size:16px;
+  line-height:22px;
+  font-weight:660;
+  color:#3e413c;
+}
+.xp-home-v22 .xp-home-focus-link{
+  min-height:30px;
+  padding:4px 0 4px 10px;
+  font-size:12px;
+  color:#838a7e;
+}
+.xp-home-v22-topic-rail{
+  display:flex;
+  gap:8px;
+  overflow-x:auto;
+  padding:1px 1px 4px;
+  scroll-snap-type:x proximity;
+  scrollbar-width:none;
+}
+.xp-home-v22-topic-rail::-webkit-scrollbar{display:none}
+.xp-home-v22-topic-rail button{
+  flex:0 0 164px;
+  min-height:72px;
+  display:grid;
+  grid-template-columns:36px minmax(0,1fr);
+  gap:10px;
+  align-items:center;
+  padding:10px 11px;
+  border:1px solid rgba(83,67,51,.05);
+  border-radius:18px;
+  background:rgba(255,255,255,.72);
+  box-shadow:0 3px 11px rgba(54,48,39,.022);
+  text-align:left;
+  scroll-snap-align:start;
+}
+.xp-home-v22-topic-rail button>i{
+  width:36px;
+  height:36px;
+  border-radius:12px;
+  display:grid;
+  place-items:center;
+}
+.xp-home-v22-topic-rail button:nth-child(1)>i{background:#fff3e9;color:#d98955}
+.xp-home-v22-topic-rail button:nth-child(2)>i{background:#eef2fb;color:#6f8edb}
+.xp-home-v22-topic-rail button:nth-child(3)>i{background:#f8efec;color:#d47b66}
+.xp-home-v22-topic-rail button:nth-child(4)>i{background:#f2f0fa;color:#8a79d6}
+.xp-home-v22-topic-rail button>i svg{width:20px;height:20px}
+.xp-home-v22-topic-rail b{
+  display:-webkit-box;
+  -webkit-box-orient:vertical;
+  -webkit-line-clamp:2;
+  overflow:hidden;
+  font-size:15px;
+  line-height:20px;
+  font-weight:640;
+  color:#3f423e;
+}
+
+.xp-home-v22-growth{
+  margin-top:14px;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+}
+.xp-home-v22-growth-card{
+  min-height:68px;
+  display:grid;
+  grid-template-columns:36px minmax(0,1fr);
+  gap:10px;
+  align-items:center;
+  padding:10px 12px;
+  border:1px solid rgba(83,67,51,.045);
+  border-radius:18px;
+  text-align:left;
+  box-shadow:0 3px 12px rgba(54,48,39,.02);
+}
+.xp-home-v22-growth-card.memory{background:linear-gradient(145deg,#fff,#f7faf5)}
+.xp-home-v22-growth-card.milestone{background:linear-gradient(145deg,#fff,#fff8f2)}
+.xp-home-v22-growth-card>i{
+  width:36px;
+  height:36px;
+  border-radius:12px;
+  display:grid;
+  place-items:center;
+  background:#fff;
+  font-style:normal;
+}
+.xp-home-v22-growth-card.memory>i{color:#83a476}
+.xp-home-v22-growth-card.milestone>i{color:#d39a68}
+.xp-home-v22-growth-card>i svg{width:21px;height:21px}
+.xp-home-v22-growth-card span{min-width:0}
+.xp-home-v22-growth-card b{
+  display:block;
+  font-size:14.5px;
+  line-height:19px;
+  font-weight:640;
+  color:#454842;
+}
+.xp-home-v22-growth-card small{
+  display:block;
+  margin-top:2px;
+  font-size:11.5px;
+  line-height:15px;
+  color:#979991;
+}
+
+.xp-composer-home-v2 .v90-card-quickbar{
+  opacity:.76;
+  gap:5px;
+  padding-bottom:5px;
+}
+.xp-composer-home-v2 .v90-card-pill{
+  height:31px;
+  border-radius:16px;
+  font-size:11px;
+}
+.xp-composer-home-v2 .v90-card-pill i{width:19px!important;height:19px!important}
+.xp-composer-home-v2 .v90-card-pill i .qzl-soft3d-icon{
+  width:19px!important;height:19px!important;
+}
+
+@media(max-width:375px){
+  .xp-home-v22{padding-left:13px;padding-right:13px}
+  .xp-home-v22-hero{height:104px}
+  .xp-home-v22-copy h1{font-size:27px}
+  .xp-home-v22-hero>img{width:86px;height:100px}
+  .xp-home-v22-topic-rail button{flex-basis:150px;min-height:70px}
+  .xp-home-v22-topic-rail b{font-size:14px;line-height:19px}
+  .xp-home-v22-growth-card{min-height:64px;padding-left:10px;padding-right:10px}
+  .xp-home-v22-growth-card b{font-size:14px}
+}
