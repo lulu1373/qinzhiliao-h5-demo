@@ -52,3 +52,13 @@
   .settings-page:not(.account-settings-page):not(.notification-settings-page):not(.location-settings-page):not(.privacy-page):not(.help-page):not(.about-page) > .page-body > .settings-group .list-row-icon{width:46px!important;height:46px!important;flex-basis:46px!important}
   .settings-page:not(.account-settings-page):not(.notification-settings-page):not(.location-settings-page):not(.privacy-page):not(.help-page):not(.about-page) > .page-body > .settings-group .settings-soft3d-icon{width:36px!important;height:36px!important}
 }
+
+/* Help-center FAQ reuses the same help artwork at list hierarchy. */
+.help-page .list-row-icon .settings-soft3d-icon.settings-help-compact{
+  width:30px!important;
+  height:30px!important;
+  display:block!important;
+  overflow:visible!important;
+  fill:initial!important;
+  stroke:initial!important;
+}

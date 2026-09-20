@@ -41,14 +41,18 @@
     help:id=>`
       <circle cx="32" cy="32" r="23" fill="url(#${id}a)"/>
       <circle cx="32" cy="32" r="16" fill="#F8FBFF" opacity=".96"/>
-      <path d="M25 26c1-5 4-8 9-8 5 0 9 3 9 8 0 4-2 6-6 8-3 2-4 3-4 7" fill="none" stroke="#6796E1" stroke-width="3.2" stroke-linecap="round"/>
-      <circle cx="33" cy="47" r="2.3" fill="#6796E1"/>
+      <g transform="translate(32 33) scale(.82) translate(-32 -33)">
+        <path d="M25 26c1-5 4-8 9-8 5 0 9 3 9 8 0 4-2 6-6 8-3 2-4 3-4 7" fill="none" stroke="#6796E1" stroke-width="3.2" stroke-linecap="round"/>
+        <circle cx="33" cy="47" r="2.3" fill="#6796E1"/>
+      </g>
       <path d="M19 21c4-6 10-9 17-8" fill="none" stroke="#fff" stroke-opacity=".55" stroke-width="2.2" stroke-linecap="round"/>`,
     about:id=>`
       <circle cx="32" cy="32" r="23" fill="url(#${id}a)"/>
       <circle cx="32" cy="32" r="16" fill="#FAF7FF" opacity=".96"/>
-      <circle cx="32" cy="22" r="2.8" fill="#8A70D7"/>
-      <path d="M32 29v18" stroke="#8A70D7" stroke-width="4" stroke-linecap="round"/>
+      <g transform="translate(32 34) scale(.8) translate(-32 -34)">
+        <circle cx="32" cy="22" r="2.8" fill="#8A70D7"/>
+        <path d="M32 29v18" stroke="#8A70D7" stroke-width="4" stroke-linecap="round"/>
+      </g>
       <path d="M19 21c4-6 10-9 17-8" fill="none" stroke="#fff" stroke-opacity=".55" stroke-width="2.2" stroke-linecap="round"/>`
   };
   function render(name,extra=''){
