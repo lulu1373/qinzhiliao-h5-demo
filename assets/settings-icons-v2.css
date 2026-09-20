@@ -1,0 +1,54 @@
+/* Settings primary navigation icons v2 */
+.settings-page:not(.account-settings-page):not(.notification-settings-page):not(.location-settings-page):not(.privacy-page):not(.help-page):not(.about-page) > .page-body > .settings-group .list-row{
+  min-height:82px!important;
+  padding:12px 16px!important;
+  gap:14px!important;
+}
+.settings-page:not(.account-settings-page):not(.notification-settings-page):not(.location-settings-page):not(.privacy-page):not(.help-page):not(.about-page) > .page-body > .settings-group .list-row-icon{
+  width:56px!important;
+  height:56px!important;
+  flex:0 0 56px!important;
+  border-radius:18px!important;
+  display:grid!important;
+  place-items:center!important;
+  overflow:visible!important;
+  background:linear-gradient(145deg,#FFFDF9,#F5EFE7)!important;
+  border:1px solid rgba(81,67,53,.055)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.96),0 5px 14px rgba(73,58,43,.05)!important;
+}
+.settings-page:not(.account-settings-page):not(.notification-settings-page):not(.location-settings-page):not(.privacy-page):not(.help-page):not(.about-page) > .page-body > .settings-group .list-row-icon:before{display:none!important}
+.settings-page:not(.account-settings-page):not(.notification-settings-page):not(.location-settings-page):not(.privacy-page):not(.help-page):not(.about-page) > .page-body > .settings-group .settings-soft3d-icon{
+  width:46px!important;
+  height:46px!important;
+  display:block!important;
+  overflow:visible!important;
+  fill:initial!important;
+  stroke:initial!important;
+}
+.settings-page:not(.account-settings-page):not(.notification-settings-page):not(.location-settings-page):not(.privacy-page):not(.help-page):not(.about-page) > .page-body > .settings-group .list-row-main b{
+  font-size:17px!important;
+  line-height:1.3!important;
+  font-weight:650!important;
+  color:#31352F!important;
+}
+.settings-page:not(.account-settings-page):not(.notification-settings-page):not(.location-settings-page):not(.privacy-page):not(.help-page):not(.about-page) > .page-body > .settings-group .list-row-main span{
+  margin-top:5px!important;
+  font-size:13.5px!important;
+  line-height:1.45!important;
+  color:#908A82!important;
+}
+.settings-page:not(.account-settings-page):not(.notification-settings-page):not(.location-settings-page):not(.privacy-page):not(.help-page):not(.about-page) > .page-body > .settings-group .chevron{
+  font-size:24px!important;
+  color:#B3ADA5!important;
+}
+.settings-page:not(.account-settings-page):not(.notification-settings-page):not(.location-settings-page):not(.privacy-page):not(.help-page):not(.about-page) > .page-body > .settings-group .list-row:nth-child(1) .list-row-icon{background:linear-gradient(145deg,#FAFCFF,#EDF3FF)!important}
+.settings-page:not(.account-settings-page):not(.notification-settings-page):not(.location-settings-page):not(.privacy-page):not(.help-page):not(.about-page) > .page-body > .settings-group .list-row:nth-child(2) .list-row-icon{background:linear-gradient(145deg,#FFFDF7,#FFF1D5)!important}
+.settings-page:not(.account-settings-page):not(.notification-settings-page):not(.location-settings-page):not(.privacy-page):not(.help-page):not(.about-page) > .page-body > .settings-group .list-row:nth-child(3) .list-row-icon{background:linear-gradient(145deg,#FBFFF8,#EEF8E9)!important}
+.settings-page:not(.account-settings-page):not(.notification-settings-page):not(.location-settings-page):not(.privacy-page):not(.help-page):not(.about-page) > .page-body > .settings-group .list-row:nth-child(4) .list-row-icon{background:linear-gradient(145deg,#FBFFF8,#EAF6EA)!important}
+.settings-page:not(.account-settings-page):not(.notification-settings-page):not(.location-settings-page):not(.privacy-page):not(.help-page):not(.about-page) > .page-body > .settings-group:nth-of-type(2) .list-row:nth-child(1) .list-row-icon{background:linear-gradient(145deg,#FAFCFF,#EDF3FF)!important}
+.settings-page:not(.account-settings-page):not(.notification-settings-page):not(.location-settings-page):not(.privacy-page):not(.help-page):not(.about-page) > .page-body > .settings-group:nth-of-type(2) .list-row:nth-child(2) .list-row-icon{background:linear-gradient(145deg,#FCFAFF,#F1EDFF)!important}
+@media(max-width:370px){
+  .settings-page:not(.account-settings-page):not(.notification-settings-page):not(.location-settings-page):not(.privacy-page):not(.help-page):not(.about-page) > .page-body > .settings-group .list-row{min-height:76px!important;padding:10px 13px!important}
+  .settings-page:not(.account-settings-page):not(.notification-settings-page):not(.location-settings-page):not(.privacy-page):not(.help-page):not(.about-page) > .page-body > .settings-group .list-row-icon{width:52px!important;height:52px!important;flex-basis:52px!important}
+  .settings-page:not(.account-settings-page):not(.notification-settings-page):not(.location-settings-page):not(.privacy-page):not(.help-page):not(.about-page) > .page-body > .settings-group .settings-soft3d-icon{width:43px!important;height:43px!important}
+}
