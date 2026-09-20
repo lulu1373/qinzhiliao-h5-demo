@@ -40,16 +40,20 @@ class PointsV2Tests(unittest.TestCase):
                 self.page.set_viewport_size({'width':width,'height':844})
                 self.assertFalse(self.page.evaluate('document.documentElement.scrollWidth > innerWidth'))
 
-    def test_daily_reminder_routes_to_checkin_and_claims_once(self):
+    def test_daily_reminder_claims_inline_and_stays_home(self):
         self.seed(dismissed=False)
         self.page.goto(self.url + '#/home', wait_until='networkidle')
         self.page.wait_for_selector('.pv2-reminder:visible', timeout=3000)
         self.page.locator('[data-points-action="reminder-checkin"]:visible').click()
-        self.page.wait_for_selector('.pv2-checkin-card:visible')
-        self.page.locator('[data-points-action="claim-checkin"]:visible').click()
+        self.page.wait_for_selector('.pv2-reminder', state='detached')
+        self.assertTrue(self.page.url.endswith('#/home'))
         self.assertEqual(self.stored()['course']['points']['balance'], 2)
-        self.assertIn('今日已签到', self.page.locator('.pv2-checkin-card').inner_text())
+        self.assertEqual(len([x for x in self.stored()['course']['points']['ledger'] if x.get('sourceType') == 'checkin']), 1)
         self.page.reload(wait_until='networkidle')
+        self.page.wait_for_timeout(1200)
+        self.assertEqual(self.page.locator('.pv2-reminder:visible').count(), 0)
+        self.page.goto(self.url + '#/points/checkin', wait_until='networkidle')
+        self.assertIn('今日已签到', self.page.locator('.pv2-checkin-card').inner_text())
         self.assertTrue(self.page.locator('[data-points-action="claim-checkin"]').is_disabled())
 
     def test_checkin_updates_calendar_tasks_and_ledger(self):

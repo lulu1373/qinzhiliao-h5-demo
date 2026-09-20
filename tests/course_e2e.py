@@ -88,13 +88,12 @@ class CourseTests(unittest.TestCase):
         self.page.wait_for_function("location.hash === '#/home'")
         self.assertEqual(self.page.locator('#drawer').get_attribute('data-state'), 'open')
 
-    def test_daily_checkin_prompt_awards_once_and_updates_drawer_balance(self):
+    def test_daily_checkin_prompt_awards_inline_and_updates_drawer_balance(self):
         self.page.wait_for_selector('.pv2-reminder:visible', timeout=3000)
         self.page.locator('[data-points-action="reminder-checkin"]:visible').click()
-        self.page.wait_for_selector('.pv2-checkin-card:visible')
-        self.page.locator('[data-points-action="claim-checkin"]:visible').click()
+        self.page.wait_for_selector('.pv2-reminder', state='detached')
+        self.assertTrue(self.page.url.endswith('#/home'))
         self.assertEqual(self.stored()['course']['points']['balance'], 2)
-        self.page.goto(self.url + '#/home', wait_until='networkidle')
         self.page.wait_for_timeout(1200)
         self.assertEqual(self.page.locator('.pv2-reminder:visible').count(), 0)
         self.page.locator('[data-action="drawer-open"]').click()

@@ -93,7 +93,16 @@ function installPointsV2(){
         const meta=readMeta();meta.reminder.dismissedDate=today();commit(readCourse(),meta);closeOverlay();
       }
       else if(action==='reminder-checkin'){
-        const meta=readMeta();meta.reminder.dismissedDate=today();commit(readCourse(),meta);closeOverlay();navigate('points/checkin');
+        const result=model.claimCheckin(readCourse(),readMeta(),now());
+        if(result.already){
+          closeOverlay();
+          toast('今天已经签到');
+          return;
+        }
+        commit(result.course,result.meta);
+        closeOverlay();
+        if(routeBase(currentRoute)==='home')renderRoute(currentRoute);
+        toast(`签到成功，成长积分 +${result.grant}`);
       }
       else if(action==='close-sheet')closeOverlay();
     }catch(error){toast(error.message||'暂时没有完成，请重试');}
