@@ -5,10 +5,10 @@
   gap:14px!important;
 }
 .settings-page:not(.account-settings-page):not(.notification-settings-page):not(.location-settings-page):not(.privacy-page):not(.help-page):not(.about-page) > .page-body > .settings-group .list-row-icon{
-  width:56px!important;
-  height:56px!important;
-  flex:0 0 56px!important;
-  border-radius:18px!important;
+  width:48px!important;
+  height:48px!important;
+  flex:0 0 48px!important;
+  border-radius:15px!important;
   display:grid!important;
   place-items:center!important;
   overflow:visible!important;
@@ -18,8 +18,8 @@
 }
 .settings-page:not(.account-settings-page):not(.notification-settings-page):not(.location-settings-page):not(.privacy-page):not(.help-page):not(.about-page) > .page-body > .settings-group .list-row-icon:before{display:none!important}
 .settings-page:not(.account-settings-page):not(.notification-settings-page):not(.location-settings-page):not(.privacy-page):not(.help-page):not(.about-page) > .page-body > .settings-group .settings-soft3d-icon{
-  width:46px!important;
-  height:46px!important;
+  width:38px!important;
+  height:38px!important;
   display:block!important;
   overflow:visible!important;
   fill:initial!important;
@@ -49,6 +49,6 @@
 .settings-page:not(.account-settings-page):not(.notification-settings-page):not(.location-settings-page):not(.privacy-page):not(.help-page):not(.about-page) > .page-body > .settings-group:nth-of-type(2) .list-row:nth-child(2) .list-row-icon{background:linear-gradient(145deg,#FCFAFF,#F1EDFF)!important}
 @media(max-width:370px){
   .settings-page:not(.account-settings-page):not(.notification-settings-page):not(.location-settings-page):not(.privacy-page):not(.help-page):not(.about-page) > .page-body > .settings-group .list-row{min-height:76px!important;padding:10px 13px!important}
-  .settings-page:not(.account-settings-page):not(.notification-settings-page):not(.location-settings-page):not(.privacy-page):not(.help-page):not(.about-page) > .page-body > .settings-group .list-row-icon{width:52px!important;height:52px!important;flex-basis:52px!important}
-  .settings-page:not(.account-settings-page):not(.notification-settings-page):not(.location-settings-page):not(.privacy-page):not(.help-page):not(.about-page) > .page-body > .settings-group .settings-soft3d-icon{width:43px!important;height:43px!important}
+  .settings-page:not(.account-settings-page):not(.notification-settings-page):not(.location-settings-page):not(.privacy-page):not(.help-page):not(.about-page) > .page-body > .settings-group .list-row-icon{width:46px!important;height:46px!important;flex-basis:46px!important}
+  .settings-page:not(.account-settings-page):not(.notification-settings-page):not(.location-settings-page):not(.privacy-page):not(.help-page):not(.about-page) > .page-body > .settings-group .settings-soft3d-icon{width:36px!important;height:36px!important}
 }

@@ -236,14 +236,14 @@
 /* V3 task page icon treatment */
 .pv3-task-row{
   min-height:76px!important;
-  grid-template-columns:56px 1fr 34px 58px!important;
+  grid-template-columns:50px 1fr 34px 58px!important;
   gap:9px!important;
   padding:10px 11px!important;
   border-radius:19px!important;
   box-shadow:0 6px 18px rgba(75,60,43,.035);
 }
-.pv3-task-icon{width:54px;height:54px;display:grid;place-items:center;border-radius:16px;background:linear-gradient(145deg,#fff,#f7f2e9)}
-.pv3-task-icon .pv3-icon{width:48px;height:48px}
+.pv3-task-icon{width:48px;height:48px;display:grid;place-items:center;border-radius:15px;background:linear-gradient(145deg,#fff,#f7f2e9)}
+.pv3-task-icon .pv3-icon{width:40px;height:40px}
 .pv3-task-row>div>b{font-size:12.5px!important}
 .pv3-task-row>div>small{margin-top:3px!important;color:#8f8a82!important;font-size:9px!important}
 .pv3-task-row>div>strong{display:block;margin-top:5px;color:#ef7d4b;font-size:10px}
@@ -251,9 +251,9 @@
 .pv3-task-row>button:disabled{color:#9b978f!important;background:#ebe8e2!important}
 
 /* V3 reward rows */
-.pv3-reward-row{grid-template-columns:64px 1fr 64px!important;min-height:80px!important;border-radius:19px!important}
-.pv3-reward-row .pv2-reward-art{width:60px!important;height:60px!important;background:linear-gradient(145deg,#fff,#f7f1e8)!important}
-.pv3-reward-row .pv2-reward-art .pv3-icon{width:52px;height:52px}
+.pv3-reward-row{grid-template-columns:54px 1fr 64px!important;min-height:80px!important;border-radius:19px!important}
+.pv3-reward-row .pv2-reward-art{width:50px!important;height:50px!important;background:linear-gradient(145deg,#fff,#f7f1e8)!important}
+.pv3-reward-row .pv2-reward-art .pv3-icon{width:42px;height:42px}
 
 /* My points: ledger + redemption in one page */
 .pv3-wallet-hero{
@@ -329,9 +329,9 @@
 .pv3-wallet-row small,.pv3-wallet-reward small{margin-top:3px;color:#999187;font-size:8.5px}
 .pv3-wallet-row>strong{font-size:13px}
 .pv3-wallet-row>strong.earn{color:#4fa85b}.pv3-wallet-row>strong.spend{color:#e26f4b}
-.pv3-wallet-reward{grid-template-columns:54px 1fr 61px}
-.pv3-wallet-reward>span{width:52px;height:52px}
-.pv3-wallet-reward>span .pv3-icon{width:47px;height:47px}
+.pv3-wallet-reward{grid-template-columns:48px 1fr 61px}
+.pv3-wallet-reward>span{width:46px;height:46px}
+.pv3-wallet-reward>span .pv3-icon{width:40px;height:40px}
 .pv3-wallet-reward>strong{margin-top:5px;color:#ff7142;font-size:10px}
 .pv3-wallet-reward>button{
   height:31px;
@@ -353,5 +353,7 @@
   .pv3-checkin-entry,.pv3-feature-entry{grid-template-columns:52px 1fr 32px;padding-left:10px}
   .pv3-entry-icon{width:52px;height:52px}
   .pv3-entry-icon .pv3-icon{width:45px;height:45px}
-  .pv3-task-row{grid-template-columns:50px 1fr 30px 54px!important}
+  .pv3-task-row{grid-template-columns:46px 1fr 30px 54px!important}
+  .pv3-task-icon{width:44px;height:44px}
+  .pv3-task-icon .pv3-icon{width:37px;height:37px}
 }
