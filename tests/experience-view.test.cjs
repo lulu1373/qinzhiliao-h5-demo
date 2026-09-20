@@ -113,11 +113,17 @@ test('community reply action enters focused reply mode and uses send language',(
   assert.doesNotMatch(detail,/保存回应/); assert.match(detail,/data-xp-action="focus-reply"/); assert.match(detail,/xp-social-label">收藏/);
 });
 
-test('clean home keeps core chat starters and the card quickbar above the composer',()=>{
+test('chat-first home exposes four concrete family topics that send directly into light chat',()=>{
   const controller=fs.readFileSync(path.join(__dirname,'../assets/experience-controller.js'),'utf8');
-  assert.match(controller,/function startLightChat\(/);
-  assert.match(controller,/data-xp-action="chat-start" data-scene="emotion"/);
-  assert.match(controller,/data-xp-action="chat-start" data-scene="repeat"/);
+  assert.match(controller,/function startHomeTopic\(/);
+  for(const topic of ['homework','phone','backtalk','procrastination']){
+    assert.match(controller,new RegExp('data-xp-action="home-topic" data-topic="'+topic+'"'));
+  }
+  for(const text of ['孩子写作业很困难','孩子玩手机时间很多','孩子一说就顶嘴','孩子总是拖拖拉拉']){
+    assert.match(controller,new RegExp(text));
+  }
+  assert.match(controller,/孩子写作业很困难，我不知道该怎么帮他。/);
+  assert.match(controller,/mode:'light'/);
   assert.doesNotMatch(controller,/xp-home-light/);
   assert.match(controller,/return startLightChat\('post',post\)/);
   assert.match(controller,/renderCardQuickBarV90\(\)/);

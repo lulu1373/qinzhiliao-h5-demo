@@ -99,9 +99,10 @@
 .xp-home-prompt-rail button>i{
   width:32px;height:32px;border-radius:11px;display:grid;place-items:center;
 }
-.xp-home-prompt-rail button:nth-child(1)>i{background:#f4f2ea;color:#d47b66}
-.xp-home-prompt-rail button:nth-child(2)>i{background:#f8f1ed;color:#d87d78}
-.xp-home-prompt-rail button:nth-child(3)>i{background:#eff2f7;color:#6f8edb}
+.xp-home-prompt-rail button:nth-child(1)>i{background:#fff3e9;color:#d98955}
+.xp-home-prompt-rail button:nth-child(2)>i{background:#eef2fb;color:#6f8edb}
+.xp-home-prompt-rail button:nth-child(3)>i{background:#f8efec;color:#d47b66}
+.xp-home-prompt-rail button:nth-child(4)>i{background:#f2f0fa;color:#8a79d6}
 .xp-home-prompt-rail button>i svg{width:18px;height:18px}
 .xp-home-prompt-rail b{
   display:block;font-size:12px;line-height:16px;font-weight:620;color:#40423e;

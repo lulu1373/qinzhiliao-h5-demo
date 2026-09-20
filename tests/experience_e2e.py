@@ -62,7 +62,7 @@ class ExperienceTests(unittest.TestCase):
         self.assertEqual(len(self.stored()['growthReports']['milestones']), 1)
 
     def test_private_support_can_end_without_action(self):
-        self.xp('chat-start', '[data-scene="emotion"]')
+        self.xp('home-topic', '[data-topic="homework"]')
         self.page.wait_for_selector('.v36-conversation.active')
         self.assertEqual(self.page.locator('#xpDescription').count(), 0)
         self.start_internal_journey('self')
@@ -75,9 +75,9 @@ class ExperienceTests(unittest.TestCase):
 
     def test_light_home_and_post_entries_stay_in_chat_until_user_asks_for_structure(self):
         self.page.goto(self.url + '#/home')
-        self.xp('chat-start', '[data-scene="emotion"]')
+        self.xp('home-topic', '[data-topic="homework"]')
         self.page.wait_for_selector('.v36-conversation.active')
-        self.assertIn('先不做练习', self.page.locator('.v36-conversation').inner_text())
+        self.assertIn('最近一次写作业困难时', self.page.locator('.v36-conversation').inner_text())
         self.assertEqual(self.page.locator('#xpDescription').count(), 0)
         self.page.locator('#chatInput').fill('孩子正在搭积木。')
         self.page.locator('[data-action="chat-send"]').click()
@@ -245,7 +245,7 @@ class ExperienceTests(unittest.TestCase):
 
     def test_clear_conversations_removes_private_journeys(self):
         self.page.goto(self.url + '#/home')
-        self.xp('chat-start', '[data-scene="emotion"]')
+        self.xp('home-topic', '[data-topic="homework"]')
         self.start_internal_journey('self')
         self.page.locator('#xpDescription').fill('这句只在私人练习里。')
         self.xp('journey-save-context')
@@ -271,7 +271,7 @@ class ExperienceTests(unittest.TestCase):
         self.assertIn('先说清自己的责任', self.page.locator('#xpActionTitle').input_value())
 
     def test_resume_after_end_and_relation_change_preserve_completed_action(self):
-        self.xp('chat-start', '[data-scene="emotion"]')
+        self.xp('home-topic', '[data-topic="homework"]')
         self.start_internal_journey('self')
         self.page.locator('#xpDescription').fill('我想先留两分钟给自己。')
         self.xp('journey-save-context')
@@ -361,25 +361,34 @@ class ExperienceTests(unittest.TestCase):
         self.assertIn('广州市 · 天河区', self.page.locator('.xp-education-region-bar').inner_text())
         self.assertEqual(self.page.locator('.xp-news-card').count(), 5)
 
-    def test_home_clean_layout_keeps_composer_bottom_and_removes_feature_hub(self):
+    def test_home_chat_first_layout_uses_concrete_topics_and_keeps_composer_bottom(self):
         self.page.goto(self.url + '#/home')
-        self.page.wait_for_selector('.xp-home-clean:visible')
-        home = self.page.locator('.xp-home-clean')
-        self.assertEqual(home.locator('.xp-home-primary').count(), 0)
-        self.assertEqual(home.locator('.xp-home-light').count(), 0)
-        self.assertEqual(home.locator('.xp-home-utilities').count(), 0)
-        self.assertEqual(home.locator('.xp-home-starters > button').count(), 3)
+        self.page.wait_for_selector('.xp-home-chat-first:visible')
+        home = self.page.locator('.xp-home-chat-first')
+        self.assertEqual(home.locator('.xp-home-chat-cta').count(), 0)
+        topics = home.locator('.xp-home-prompt-rail > button')
+        self.assertEqual(topics.count(), 4)
+        self.assertEqual(
+            [topics.nth(i).locator('b').inner_text() for i in range(4)],
+            ['孩子写作业很困难','孩子玩手机时间很多','孩子一说就顶嘴','孩子总是拖拖拉拉']
+        )
+        self.assertEqual(home.locator('.xp-home-growth-card').count(), 2)
         self.assertEqual(self.page.locator('.v90-card-pill:visible').count(), 5)
         self.assertEqual(self.page.locator('#chatInput').count(), 1)
         composer = self.page.locator('.ai-shell > .composer:visible').bounding_box()
-        hero = self.page.locator('.xp-home-hero:visible').bounding_box()
-        starters = self.page.locator('.xp-home-starters:visible').bounding_box()
-        self.assertLessEqual(hero['height'], 160)
-        self.assertGreater(starters['y'], hero['y'])
-        self.assertGreater(composer['y'], starters['y'] + starters['height'])
-        self.assertGreater(composer['y'], 620)
-        self.page.locator('.xp-home-starters > button').first.click()
+        hero = home.locator('.xp-home-v2-hero:visible').bounding_box()
+        prompts = home.locator('.xp-home-prompt-section:visible').bounding_box()
+        growth = home.locator('.xp-home-growth-section:visible').bounding_box()
+        self.assertLessEqual(hero['height'], 140)
+        self.assertGreater(prompts['y'], hero['y'])
+        self.assertGreater(growth['y'], prompts['y'])
+        self.assertGreater(composer['y'], growth['y'] + growth['height'])
+        topics.first.click()
         self.page.wait_for_selector('.v36-conversation.active')
+        conversation = self.page.locator('.v36-conversation')
+        self.assertIn('孩子写作业很困难，我不知道该怎么帮他。', conversation.inner_text())
+        self.assertIn('不会做、不愿开始', conversation.inner_text())
+        self.assertEqual(self.stored()['chat']['scenario'], 'home-homework')
         self.assertEqual(self.page.locator('.v90-card-pill:visible').count(), 5)
 
     def test_drawer_common_tools_has_no_placeholder_more_entry(self):

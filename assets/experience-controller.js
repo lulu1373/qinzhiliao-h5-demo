@@ -108,6 +108,44 @@ function installExperience() {
     const child=state.family?.children?.[0]||{};
     return [child.age?child.age+'岁':'',child.gender||'',child.grade||''].filter(Boolean).join(' · ');
   }
+  const HOME_CHAT_TOPICS={
+    homework:{
+      seed:'孩子写作业很困难，我不知道该怎么帮他。',
+      reply:'我听到了。先不用急着想办法。最近一次写作业困难时，他更像是哪一种：不会做、不愿开始，还是一坐下就很容易分心？',
+      scene:'homework'
+    },
+    phone:{
+      seed:'孩子玩手机时间很多，我有点担心，也不知道怎么管。',
+      reply:'这类问题很容易变成反复拉扯。最近一次你让他放下手机时，他当时在做什么？你说了什么，他又怎么回应的？',
+      scene:'phone'
+    },
+    backtalk:{
+      seed:'孩子一说就顶嘴，我不知道怎么和他沟通。',
+      reply:'被顶回来时确实很容易一下子上火。最近一次发生时，你最开始说的是哪一句？他回了什么？我们先看那个转折点。',
+      scene:'backtalk'
+    },
+    procrastination:{
+      seed:'孩子总是拖拖拉拉，我很容易着急。',
+      reply:'一直催却还是慢下来，会很消耗。你最困扰的是哪一种拖拉：早上出门、写作业、洗漱睡觉，还是别的事情？',
+      scene:'procrastination'
+    }
+  };
+  function startHomeTopic(key){
+    const topic=HOME_CHAT_TOPICS[key];
+    if(!topic)return;
+    state.chat={
+      active:true,scenario:'home-'+key,node:'done',
+      messages:[
+        {role:'user',html:esc(topic.seed),time:todayTime()},
+        {role:'ai',html:topic.reply,time:todayTime()}
+      ],
+      typing:false,reviewResult:null,freeTurns:0,
+      conversationId:uid('conv'),mode:'light',sourceScene:topic.scene,sourcePostId:''
+    };
+    pendingConversationStart=true;
+    saveState();
+    navigate('home');
+  }
   function startLightChat(kind, post=null) {
     const profile=childContext();
     const sourceScene=post?.scene||post?.group||({emotion:'self',repeat:'repeat',play:'play'}[kind]||'self');
@@ -274,7 +312,7 @@ function installExperience() {
     event.preventDefault(); event.stopImmediatePropagation();
     if (busy) return;
     busy = true;
-    const {xpAction:action,id,scene,route,type,value:val,step} = button.dataset;
+    const {xpAction:action,id,scene,route,type,topic,value:val,step} = button.dataset;
     try {
       if (action.startsWith('card-')) return cardAction(action,type);
       if (action === 'route') {
@@ -305,6 +343,7 @@ function installExperience() {
         return;
       }
       if (action === 'journey-start') return start(scene,state.chat?.sourcePostId||'');
+      if (action === 'home-topic') return startHomeTopic(topic);
       if (action === 'chat-start') return startLightChat(scene);
       if (action === 'adopt') {
         const post = [...model.POSTS,...read().posts].find(item => item.id === id);
@@ -552,11 +591,12 @@ function installExperienceHome({read}) {
         <img src="${ASSETS.mascotHome}" alt="小亲">
       </section>
       <section class="xp-home-prompt-section">
-        <header><h2>从一句提示开始</h2><button class="xp-home-focus-link" data-xp-action="home-focus">直接说一句</button></header>
+        <header><h2>可以从这些问题开始</h2><button class="xp-home-focus-link" data-xp-action="home-focus">直接说一句</button></header>
         <div class="xp-home-prompt-rail">
-          <button data-action="start-scenario" data-scenario="homework"><i>${svg.conflict}</i><span><b>刚刚发生了什么？</b><small>从一件具体的事说起</small></span></button>
-          <button data-xp-action="chat-start" data-scene="emotion"><i>${svg.heart}</i><span><b>此刻最难受的是什么？</b><small>先说感受，不急着解决</small></span></button>
-          <button data-xp-action="chat-start" data-scene="repeat"><i>${svg.repeat}</i><span><b>这个问题最近又出现了吗？</b><small>从最近一次聊起</small></span></button>
+          <button data-xp-action="home-topic" data-topic="homework"><i>${svg.task}</i><span><b>孩子写作业很困难</b><small>写作业总是很费劲</small></span></button>
+          <button data-xp-action="home-topic" data-topic="phone"><i>${svg.phoneRule}</i><span><b>孩子玩手机时间很多</b><small>一说放下手机就容易冲突</small></span></button>
+          <button data-xp-action="home-topic" data-topic="backtalk"><i>${svg.conflict}</i><span><b>孩子一说就顶嘴</b><small>一开口就容易变成争执</small></span></button>
+          <button data-xp-action="home-topic" data-topic="procrastination"><i>${svg.repeat}</i><span><b>孩子总是拖拖拉拉</b><small>很多事情都要催好几次</small></span></button>
         </div>
       </section>
       <section class="xp-home-growth-section">
