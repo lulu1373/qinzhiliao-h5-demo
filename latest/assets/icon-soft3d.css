@@ -91,6 +91,18 @@
 .list-row-icon .qzl-soft3d-icon,
 .message-icon .qzl-soft3d-icon{width:24px!important;height:24px!important}
 
+/* Completed tasks are a feature/status composite, not a generic restrained list icon. */
+.v80-completed-panel .v83-completed-feature .qzl-soft3d-icon{
+  width:28px!important;
+  height:28px!important;
+}
+@media(max-width:360px){
+  .v80-completed-panel .v83-completed-feature .qzl-soft3d-icon{
+    width:27px!important;
+    height:27px!important;
+  }
+}
+
 @media(max-width:359px){
   .v6-tool-orbit button>span:has(> .qzl-soft3d-icon),
   .course-drawer-icon:has(> .qzl-soft3d-icon){width:48px!important;height:48px!important}

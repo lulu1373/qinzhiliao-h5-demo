@@ -203,3 +203,13 @@
 @media(max-width:359px){
   .course-drawer-icon.course-feature-frame .course-feature-art{width:42px!important;height:42px!important;}
 }
+/* One soft-3D gift family across newcomer, member and detail surfaces. */
+.course-cover.type-newcomer .course-gift-soft3d{
+  width:30px!important;height:30px!important;display:block;
+}
+.course-member-strip>span .course-gift-soft3d{
+  width:24px!important;height:24px!important;display:block;
+}
+.course-detail-hero.type-newcomer>span .course-gift-soft3d{
+  width:36px!important;height:36px!important;display:block;
+}

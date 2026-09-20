@@ -7,11 +7,23 @@
   const money = fen => `¥${(Number(fen || 0) / 100).toFixed(2)}`;
   const storeMoney = fen => `¥${Number(fen || 0) / 100}`;
   const mins = seconds => `${Math.max(1, Math.round(Number(seconds || 0) / 60))} 分钟`;
+  let giftSeq = 0;
+  const giftSoft3d = () => {
+    const id = 'qcg' + (++giftSeq);
+    return `<svg class="course-gift-soft3d" viewBox="0 0 64 64" aria-hidden="true">
+      <defs><linearGradient id="${id}" x1="10" y1="16" x2="54" y2="56"><stop stop-color="#FFD984"/><stop offset=".55" stop-color="#F6B445"/><stop offset="1" stop-color="#E49B2D"/></linearGradient></defs>
+      <rect x="11" y="25" width="42" height="31" rx="9" fill="url(#${id})"/>
+      <rect x="8" y="19" width="48" height="12" rx="6" fill="#FFD98A"/>
+      <rect x="28" y="19" width="8" height="37" rx="4" fill="#FFF3C6"/>
+      <path d="M32 19c-8-13-20-8-15-1 3 4 9 2 15 1Zm0 0c8-13 20-8 15-1-3 4-9 2-15 1Z" fill="#FFCF64"/>
+      <path d="M13 28c9-2 28-2 38 0" fill="none" stroke="#FFF" stroke-opacity=".4" stroke-width="2" stroke-linecap="round"/>
+    </svg>`;
+  };
   const icon = name => ({
     book:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H11v16H6.5A2.5 2.5 0 0 0 4 21.5v-16Zm16 0A2.5 2.5 0 0 0 17.5 3H13v16h4.5a2.5 2.5 0 0 1 2.5 2.5v-16Z"/></svg>',
     play:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 7 8 5-8 5V7Z"/></svg>',
     coin:'<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M9.5 9.5h5M9 12h6M12 7.5v9"/></svg>',
-    gift:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10h16v10H4V10Zm-1-4h18v4H3V6Zm9 0v14M12 6c-1.5-3-5-3-5 0h5Zm0 0c1.5-3 5-3 5 0h-5Z"/></svg>',
+    gift:giftSoft3d(),
     lock:'<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10" width="14" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>',
     clock:'<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>',
     check:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg>'

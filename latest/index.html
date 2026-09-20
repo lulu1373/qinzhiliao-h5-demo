@@ -4288,23 +4288,30 @@ svg{vertical-align:middle}
 <style id="v83-completed-item-icon-system">
 /* V8.3 — completed items: feature icon carries content type; badge carries status. */
 .v80-completed-panel .list-row-icon.v83-completed-icon{
-  position:relative!important;width:48px!important;height:48px!important;border-radius:15px!important;
+  position:relative!important;width:46px!important;height:46px!important;border-radius:14px!important;
   background:#F7F4EF!important;border:1px solid rgba(70,63,55,.055)!important;box-shadow:none!important;
   overflow:visible!important;display:grid!important;place-items:center!important;
 }
 .v83-completed-icon:before{display:none!important}
 .v83-completed-feature{display:grid;place-items:center;width:28px;height:28px}
-.v83-completed-feature .qzl-v80-tone{width:26px!important;height:26px!important}
-.v83-completed-feature .qzl-ref-icon{width:28px!important;height:28px!important;object-fit:contain!important;filter:saturate(.94) contrast(.98)!important}
+.v83-completed-feature .qzl-v80-tone,
+.v83-completed-feature .qzl-soft3d-icon,
+.v83-completed-feature .qzl-ref-icon{width:28px!important;height:28px!important}
+.v83-completed-feature .qzl-ref-icon{object-fit:contain!important;filter:saturate(.94) contrast(.98)!important}
 .v83-completed-badge{
-  position:absolute;right:-3px;top:-3px;width:18px;height:18px;border-radius:50%;
+  position:absolute;right:-2px;top:-2px;width:15px;height:15px;border-radius:50%;
   background:#fff;box-shadow:0 2px 7px rgba(55,75,48,.10);display:grid;place-items:center;padding:1px;
 }
-.qzl-v83-completed-badge-svg{display:block;width:16px;height:16px}
+.v83-completed-badge>.qzl-v83-completed-badge-svg{display:block;width:13px!important;height:13px!important}
 .v83-completed-row .v80-completed-meta em{background:#F3F0EB;color:#817C75}
 @media(max-width:360px){
-  .v80-completed-panel .list-row-icon.v83-completed-icon{width:46px!important;height:46px!important}
+  .v80-completed-panel .list-row-icon.v83-completed-icon{width:44px!important;height:44px!important}
+  .v83-completed-feature{width:27px!important;height:27px!important}
+  .v83-completed-feature .qzl-v80-tone,
+  .v83-completed-feature .qzl-soft3d-icon,
   .v83-completed-feature .qzl-ref-icon{width:27px!important;height:27px!important}
+  .v83-completed-badge{width:14px!important;height:14px!important}
+  .v83-completed-badge>.qzl-v83-completed-badge-svg{width:12px!important;height:12px!important}
 }
 
 /* V8.4 — selected mascot replacement; same artwork across product surfaces. */
@@ -4470,7 +4477,7 @@ html,body,#app{background:var(--qzl-canvas)!important;}
 <style id="v104-about-system-page">
 .app-frame:has(.about-page-v2),.app-frame:has(.about-page-v2) .statusbar{background:#F7F6F2!important;background-image:none!important}.about-page-v2{background:#F7F6F2!important;background-image:none!important}.about-page-v2>.page-titlebar{background:#F7F6F2!important;background-image:none!important;border:0!important;box-shadow:none!important}.about-page-v2 .about-body{padding:18px 20px 36px}.about-brand-card{background:#fff;border:1px solid rgba(62,68,59,.06);border-radius:24px;padding:28px 22px 25px;margin:0 0 24px;text-align:center;box-shadow:0 8px 26px rgba(48,54,45,.035)}.about-app-icon{display:block;width:82px;height:82px;object-fit:cover;border-radius:22px;margin:0 auto 16px;box-shadow:0 8px 22px rgba(76,99,64,.09)}.about-brand-card h1{margin:0;color:#30352F;font-size:23px;line-height:1.25;font-weight:760;letter-spacing:-.2px}.about-brand-card p{margin:8px 0 0;color:#747C72;font-size:14px;line-height:1.55}.about-brand-card small{display:inline-block;margin-top:8px;color:#9A9F97;font-size:12px;line-height:1.4}.about-section-label{padding:0 4px 9px;color:#8A9088;font-size:12px;font-weight:650;letter-spacing:.2px}.about-page-v2 .about-link-list{margin:0;background:#fff!important;border:1px solid rgba(62,68,59,.065)!important;border-radius:20px!important;box-shadow:0 8px 24px rgba(48,54,45,.035)!important;overflow:hidden}.about-page-v2 .about-link-list .list-row{min-height:72px!important;padding:11px 16px!important;gap:13px!important;border-bottom:1px solid #EEF0EC!important;background:#fff!important}.about-page-v2 .about-link-list .list-row:last-child{border-bottom:0!important}.about-page-v2 .about-link-list .list-row-icon{width:44px!important;height:44px!important;flex:0 0 44px;border-radius:14px!important;background:#F3F4F1!important;border:0!important;color:#626B60!important;box-shadow:none!important}.about-page-v2 .about-link-list .list-row-icon svg{width:22px!important;height:22px!important;fill:none!important;stroke:currentColor!important;stroke-width:1.8!important;stroke-linecap:round!important;stroke-linejoin:round!important}.about-page-v2 .about-link-list .list-row-main b{font-size:15px!important;line-height:1.35!important;font-weight:650!important;color:#30342F!important}.about-page-v2 .about-link-list .chevron{font-size:22px!important;color:#B5BAB2!important;margin-left:auto!important}.about-page-v2 .about-link-list .list-row:active{background:#F8F9F6!important}.about-page-v2 .about-link-list .list-row:nth-child(n) .list-row-icon{background:#F3F4F1!important;color:#626B60!important}@media(max-width:390px){.about-page-v2 .about-body{padding-left:16px;padding-right:16px}.about-brand-card{padding-top:24px;padding-bottom:22px}.about-app-icon{width:76px;height:76px;border-radius:20px}.about-page-v2 .about-link-list .list-row{min-height:68px!important;padding-left:14px!important;padding-right:14px!important}}
 </style>
-<link rel="stylesheet" href="assets/course.css?v=68105aa9d3"><link rel="stylesheet" href="assets/course-v2.css?v=affe07fc14"><link rel="stylesheet" href="assets/drawer-v10.css?v=2"><link rel="stylesheet" href="assets/functional-header.css?v=20260918"><link rel="stylesheet" href="assets/icon-soft3d.css?v=b8b816b05f"><link rel="stylesheet" href="assets/message-toolbar.css?v=f911d93d12"><link rel="stylesheet" href="assets/points-v2.css?v=38eaf8e0f9"><link rel="stylesheet" href="assets/points-v3.css?v=9eb12f3ffa"><link rel="stylesheet" href="assets/membership-benefits-v2.css?v=97e8543cce"><link rel="stylesheet" href="assets/settings-icons-v2.css?v=59393a39c6"><link rel="stylesheet" href="assets/icon-v4-drawer.css?v=0602992d58"></head><body><div id="app" aria-live="polite"></div><script src="assets/growth-report-model.js?v=c66b2046b7"></script>
+<link rel="stylesheet" href="assets/course.css?v=68105aa9d3"><link rel="stylesheet" href="assets/course-v2.css?v=c1c56569e0"><link rel="stylesheet" href="assets/drawer-v10.css?v=2"><link rel="stylesheet" href="assets/functional-header.css?v=20260918"><link rel="stylesheet" href="assets/icon-soft3d.css?v=58e09d9ee8"><link rel="stylesheet" href="assets/message-toolbar.css?v=f911d93d12"><link rel="stylesheet" href="assets/points-v2.css?v=38eaf8e0f9"><link rel="stylesheet" href="assets/points-v3.css?v=9eb12f3ffa"><link rel="stylesheet" href="assets/membership-benefits-v2.css?v=97e8543cce"><link rel="stylesheet" href="assets/settings-icons-v2.css?v=59393a39c6"><link rel="stylesheet" href="assets/icon-v4-drawer.css?v=0602992d58"></head><body><div id="app" aria-live="polite"></div><script src="assets/growth-report-model.js?v=c66b2046b7"></script>
 <script src="assets/growth-report-view.js?v=9e5a405290"></script>
 <script src="assets/growth-milestone-model.js?v=0a4020d2bc"></script>
 <script src="assets/growth-milestone-view.js?v=2492e9af08"></script>
@@ -4478,7 +4485,7 @@ html,body,#app{background:var(--qzl-canvas)!important;}
 <script src="assets/experience-view.js?v=9d65c2ed09"></script>
 <script src="assets/card-practice.js?v=f58d85522b"></script>
 <script src="assets/course-model.js?v=d11b4f5dba"></script>
-<script src="assets/course-view.js?v=2239141f77"></script>
+<script src="assets/course-view.js?v=b27e261a29"></script>
 <script src="assets/points-v2-model.js?v=8a518bf24f"></script>
 <script src="assets/points-v2-view.js?v=7e2074dc7b"></script>
 <script src="assets/points-v3-icons.js?v=f4d9f1b625"></script>
