@@ -53,6 +53,7 @@
     }[name];
     return art || '';
   };
+  const appFeatureIcon = name => (typeof window!=='undefined'&&window.QZLIconSystemV3?.render?.(name)) || featureIcon(name);
   const productVisual = product => product.type === 'points' ? featureIcon('points') : product.type === 'newcomer' ? icon('gift') : featureIcon('classroom');
   const productFrameClass = product => product.type === 'newcomer' ? '' : ' course-feature-frame';
   const getProduct = (ctx,id) => ctx.model.CATALOG.find(item => item.id === id);
@@ -70,7 +71,7 @@
   }
   function drawerEntry(ctx) {
     const count = ctx.data.entitlements.filter(item => item.status === 'active').length;
-    return `<button class="course-drawer-tool classroom" data-course-action="route" data-route="courses"><span class="course-drawer-icon course-feature-frame">${featureIcon('classroom')}</span><b>简快课堂</b><small>亲子与家庭课程</small></button><button class="course-drawer-tool learning" data-course-action="route" data-route="my-learning"><span class="course-drawer-icon course-feature-frame">${featureIcon('learning')}</span><b>我的学习</b><small>${count ? `已获取 ${count} 门` : '继续已获取课程'}</small></button>`;
+    return `<button class="course-drawer-tool classroom" data-course-action="route" data-route="courses"><span class="course-drawer-icon icon-v3-blue">${appFeatureIcon('classroom')}</span><b>简快课堂</b><small>亲子与家庭课程</small></button><button class="course-drawer-tool learning" data-course-action="route" data-route="my-learning"><span class="course-drawer-icon icon-v3-violet">${appFeatureIcon('learning')}</span><b>我的学习</b><small>${count ? `已获取 ${count} 门` : '继续已获取课程'}</small></button>`;
   }
   function classroom(ctx) {
     const newcomer = getProduct(ctx,'B001');

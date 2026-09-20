@@ -83,6 +83,25 @@ class DrawerLayoutTests(unittest.TestCase):
                                  (frame_box['y'] + frame_box['height'])), 1)
         self.assertEqual(footer.locator('[data-route="settings/help"]').count(), 1)
 
+    def test_global_icon_v3_is_optically_consistent_in_drawer(self):
+        self.page.set_viewport_size({'width':390,'height':844})
+        self.open_drawer()
+        self.assertEqual(self.page.locator('.v6-drawer-shell .app-feature-icon-v3').count(), 11)
+        self.assertEqual(self.page.locator('.course-points-summary .pv3-icon').count(), 1)
+        self.assertEqual(
+            self.page.locator('.v6-tool-orbit button b').all_inner_texts(),
+            ['简快课堂','我的学习','我的测评','家长社区','成长总结','百宝箱','任务中心','消息通知'],
+        )
+        feature_sizes = self.page.locator('.v6-drawer-feature .v6-feature-icon').evaluate_all(
+            "els => els.map(el => [Math.round(el.getBoundingClientRect().width),Math.round(el.getBoundingClientRect().height)])"
+        )
+        tool_sizes = self.page.locator('.v6-tool-orbit button>span').evaluate_all(
+            "els => els.map(el => [Math.round(el.getBoundingClientRect().width),Math.round(el.getBoundingClientRect().height)])"
+        )
+        self.assertEqual(feature_sizes, [[48,48],[48,48]])
+        self.assertEqual(tool_sizes, [[52,52]] * 8)
+        self.assertFalse(self.page.evaluate('document.documentElement.scrollWidth > innerWidth'))
+
     def test_short_screen_scroll_does_not_hide_or_cover_footer(self):
         self.page.set_viewport_size({'width': 320, 'height': 568})
         self.open_drawer()
