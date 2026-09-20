@@ -185,14 +185,11 @@ function installCourse() {
     const data = read(), scroll = drawerEl.querySelector('.v6-drawer-scroll'), orbit = drawerEl.querySelector('.v6-tool-orbit');
     if (scroll && !scroll.querySelector('.course-points-summary')) {
       const checked = hasCheckedIn(data);
-      const pointsArt=window.QZLPointsV3Icons?.render?.('medal')||'<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M9 12h6M12 9v6"/></svg>';
-      scroll.insertAdjacentHTML('afterbegin',`<section class="course-points-summary"><button class="course-points-main" data-course-action="route" data-route="points"><span>${pointsArt}</span><span><small>成长积分</small><b>${availablePoints(data)}</b><em>查看明细与兑换</em></span><i>›</i></button><button class="course-checkin-mini" data-course-action="route" data-route="${checked ? 'points' : 'points/checkin'}">${checked ? '今日已签到' : '签到领取'}</button></section>`);
+      scroll.insertAdjacentHTML('afterbegin',`<section class="course-points-summary"><button class="course-points-main" data-course-action="route" data-route="points"><span><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M9 12h6M12 9v6"/></svg></span><span><small>成长积分</small><b>${availablePoints(data)}</b><em>查看明细与兑换</em></span><i>›</i></button><button class="course-checkin-mini" data-course-action="route" data-route="${checked ? 'points' : 'points/checkin'}">${checked ? '今日已签到' : '签到领取'}</button></section>`);
     }
     if (orbit && !orbit.querySelector('.course-drawer-tool')) {
       orbit.insertAdjacentHTML('afterbegin',view.drawerEntry(context()));
-      const taskArt=window.QZLIconSystemV3?.render?.('task')||svg.task;
-      const noticeArt=window.QZLIconSystemV3?.render?.('notification')||svg.notification;
-      orbit.insertAdjacentHTML('beforeend',`<button data-action="route" data-route="task-center"><span class="course-tool-task icon-v3-orange">${taskArt}</span><b>任务中心</b></button><button data-action="route" data-route="messages"><span class="course-tool-message icon-v3-gold">${noticeArt}</span><b>消息通知</b></button>`);
+      orbit.insertAdjacentHTML('beforeend',`<button data-action="route" data-route="task-center"><span class="course-tool-task">${svg.task}</span><b>任务中心</b></button><button data-action="route" data-route="messages"><span class="course-tool-message">${svg.notification}</span><b>消息通知</b></button>`);
     }
   };
   window.addEventListener('qzl:reward',event => {
