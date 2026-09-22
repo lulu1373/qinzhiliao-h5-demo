@@ -1,5 +1,6 @@
 .fixed-flow-card{margin:18px 0 8px;padding:18px;border:1px solid rgba(96,112,92,.15);border-radius:24px;background:linear-gradient(145deg,#fffdfa 0%,#f8f4ed 100%);box-shadow:0 14px 35px rgba(72,65,52,.08);animation:fixed-rise .28s ease both}
 .fixed-flow-example{display:none!important}
+.fixed-flow-pause{display:block;margin:12px auto 0;padding:5px 8px;border:0;background:transparent;color:#9a927f;font-size:11px;cursor:pointer}.fixed-flow-pause:hover{color:#627fc2}
 .fixed-flow-head{display:flex;align-items:center;gap:10px;margin-bottom:14px}.fixed-flow-head .fixed-flow-mark{display:grid;place-items:center;width:34px;height:34px;border-radius:12px;background:#eef3fb;color:#627fc2}.fixed-flow-head b{display:block;color:#30362d;font-size:14px}.fixed-flow-head small{display:block;margin-top:3px;color:#8a8d84;font-size:11px}
 .fixed-flow-progress{display:flex;gap:5px;margin:0 0 16px}.fixed-flow-progress span{height:5px;flex:1;border-radius:99px;background:#e7e5df;transition:background .24s ease,transform .24s ease}.fixed-flow-progress span.is-done{background:#9eafd8}.fixed-flow-progress span.is-current{background:#627fc2;transform:scaleY(1.35)}
 .fixed-flow-labels{display:flex;justify-content:space-between;margin:-8px 0 16px;color:#a0a198;font-size:10px}.fixed-flow-labels .is-current{color:#627fc2;font-weight:700}
