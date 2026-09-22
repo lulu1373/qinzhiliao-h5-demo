@@ -94,11 +94,15 @@
     const mascot = deps.mascot ? `<img class="gr-mascot" src="${esc(deps.mascot)}" alt="小亲">` : icon('growth',deps);
     return `<section class="gr-summary"><div class="gr-summary-head">${mascot}<div><span class="gr-eyebrow">小亲的${MODES[ui.mode] || '周'}回顾</span>${report.ongoing ? '<span class="gr-badge">进行中</span>' : ''}</div></div><h2>${esc(summary.title)}</h2><p>${esc(summary.body)}</p><div class="gr-stats"><span><b>${esc(stats.conversations || 0)}</b> 次对话</span><span><b>${esc(stats.actions || 0)}</b> 个行动</span><span><b>${esc(stats.feedbacks || 0)}</b> 条反馈</span></div>${summary.corrected ? '<p class="gr-meta">已保留你的校正</p>' : ''}</section>`;
   }
+  function dailyCard(kind, iconName, label, body, deps) {
+    return `<section class="gr-daily-card gr-daily-${kind}"><header><span class="gr-daily-icon">${icon(iconName,deps)}</span><div><span class="gr-eyebrow">${esc(label)}</span><h2>${esc(kind === 'review' ? '今日回顾' : kind === 'method' ? '今日解锁' : '今日尝试')}</h2></div></header><div class="gr-daily-card-body">${body}</div></section>`;
+  }
   function daily(report,deps) {
-    const records = report.records || [], methods = report.methods || [];
-    const review = records.slice(-2).map(record => `<div class="gr-review-item"><span class="gr-eyebrow">沟通主题</span><h3>${esc(record.topic || record.title)}</h3><p class="gr-meta">${esc(record.concern ? '当时最困扰你的' : '你留下的记录')}</p><p>${esc(record.concern || record.excerpt || record.summary)}</p>${record.concern && (record.excerpt || record.summary) ? `<blockquote class="gr-excerpt">${esc(record.excerpt || record.summary)}</blockquote>` : ''}${sourceLink([record.id])}</div>`).join('');
-    const methodCards = methods.map(method => `<article class="gr-method"><div class="gr-row"><h3>${esc(method.title)}</h3><span class="gr-badge">${esc(method.status || '了解过')}</span></div><p>${esc(method.summary)}</p>${button('method','查看方法与话术 <span aria-hidden="true">›</span>',{id:method.id},'gr-evidence')}</article>`).join('');
-    return section('今日回顾',`<div class="gr-panel">${review || '<p class="gr-muted">今天还没有对话记录，先从行动记录回顾。</p>'}</div>`) + (methods.length ? section('今天了解的方法',methodCards) : '') + actionSection(report,'今天的尝试',deps);
+    const records = report.records || [], methods = report.methods || [], actions = report.actions || [];
+    const review = records.slice(-2).map(record => `<div class="gr-review-item"><span class="gr-eyebrow">沟通主题</span><h3>${esc(record.topic || record.title)}</h3><p class="gr-meta">${esc(record.concern ? '当时最困扰你的' : '你留下的记录')}</p><p>${esc(record.concern || record.excerpt || record.summary)}</p>${record.concern && (record.excerpt || record.summary) ? `<blockquote class="gr-excerpt">${esc(record.excerpt || record.summary)}</blockquote>` : ''}${sourceLink([record.id])}</div>`).join('') || '<p class="gr-muted">今天还没有对话记录，先从一次真实尝试开始。</p>';
+    const methodContent = methods.length ? methods.map(method => `<article class="gr-method"><div class="gr-row"><h3>${esc(method.title)}</h3><span class="gr-badge">${esc(method.status || '了解过')}</span></div><p>${esc(method.summary)}</p>${button('method','查看方法与话术 <span aria-hidden="true">›</span>',{id:method.id},'gr-evidence')}</article>`).join('') : '<p class="gr-muted">今天还没有解锁的方法。对话里的具体片段会在这里沉淀。</p>';
+    const attempt = actions.slice(-2).map(action => actionRow(action,deps)).join('') || '<p class="gr-muted">今天还没有行动记录。想尝试时，再选一件小事就好。</p>';
+    return `<div class="gr-daily-flow">${dailyCard('review','chat','沟通主题',review,deps)}${dailyCard('method','guide','方法标签',methodContent,deps)}${dailyCard('attempt','action','行动记录',attempt + button('records','查看行动记录 <span aria-hidden="true">›</span>',{},'gr-records-link'),deps)}</div>`;
   }
   function weekly(report,deps) {
     const highlights = report.highlights || {};

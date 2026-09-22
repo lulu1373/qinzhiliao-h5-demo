@@ -60,7 +60,11 @@ function installGrowthMilestones({settings,day,validDate,localDate,reportModel,d
   function render() {
     reconcile();
     const gr = config();
-    return view.render(items(),{source:gr.source,today:day(),undoAvailable:removed?.source === gr.source},deps);
+    const all=items();
+    const years=[...new Set([day().slice(0,4),...all.map(item=>String(item.date || '').slice(0,4)).filter(Boolean)])].sort((a,b)=>b.localeCompare(a));
+    const selectedYear=years.includes(String(gr.milestoneYear || '')) ? String(gr.milestoneYear) : years[0];
+    if (gr.milestoneYear !== selectedYear) gr.milestoneYear=selectedYear;
+    return view.render(all,{source:gr.source,today:day(),undoAvailable:removed?.source === gr.source,years,selectedYear},deps);
   }
   function summary(report) { return view.renderSummary(items(report.source,report.period),deps); }
   function find(id, source = config().source) { return items(source).find(item=>item.id === id); }
@@ -156,7 +160,9 @@ function installGrowthMilestones({settings,day,validDate,localDate,reportModel,d
     else if (action === 'milestone-remove') remove(data.id);
     else if (action === 'milestone-undo') undo();
     else if (action === 'milestone-reviewed') reviewed(data.id);
-    else if (['milestone-section','growth-review'].includes(action)) {
+    else if (action === 'milestone-year' && /^\d{4}$/.test(String(data.value || ''))) {
+      const gr=config(); gr.milestoneYear=String(data.value); saveState(); refresh({top:0});
+    } else if (['milestone-section','growth-review'].includes(action)) {
       const gr = config(); gr.section = action === 'milestone-section' ? 'milestones' : 'review'; gr.screen = 'report';
       saveState(); refresh({top:0});
     } else return false;

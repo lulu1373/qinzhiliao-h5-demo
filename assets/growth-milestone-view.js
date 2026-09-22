@@ -26,16 +26,27 @@
     if (!item.source) return '<p class="gr-meta">由你记录</p>';
     return `<aside class="gm-source-preview"><span class="gr-eyebrow">确认时的来源摘录</span><p>${esc(item.source.title || '一条记录')}</p>${item.source.excerpt ? `<blockquote>${esc(item.source.excerpt)}</blockquote>` : ''}</aside>`;
   }
-  function card(item, compact) {
-    return `<article class="gm-card${compact ? ' gm-card-compact' : ''}"><div class="gm-card-meta"><time datetime="${esc(item.date)}">${esc(item.date)}</time><span class="gm-tag">${esc(CATEGORIES[item.category] || CATEGORIES.other)}</span></div><h3>${button('milestone-detail',esc(item.title || '一个值得留下的时刻'),{id:item.id},'gm-card-title')}</h3>${!compact && item.description ? `<p class="gm-card-description">${esc(item.description)}</p>` : ''}<div class="gm-card-footer"><span class="gr-meta">${esc(origin(item))}</span>${compact ? '' : button('milestone-detail','回看这个时刻 <span aria-hidden="true">›</span>',{id:item.id},'gr-evidence')}</div>${sourceNotice(item)}</article>`;
+  function cardIcon(item,deps) {
+    const icons=(deps && deps.icons) || {};
+    return `<span class="gm-card-icon gm-card-icon-${esc(item.category || 'other')}" aria-hidden="true">${icons[item.category] || icons.other || icons.growth || ''}</span>`;
+  }
+  function card(item, compact, deps) {
+    return `<article class="gm-card${compact ? ' gm-card-compact' : ''}">${compact ? '' : cardIcon(item,deps)}<div class="gm-card-content"><div class="gm-card-meta"><time datetime="${esc(item.date)}">${esc(item.date)}</time><span class="gm-tag">${esc(CATEGORIES[item.category] || CATEGORIES.other)}</span></div><h3>${button('milestone-detail',esc(item.title || '一个值得留下的时刻'),{id:item.id},'gm-card-title')}</h3>${!compact && item.description ? `<p class="gm-card-description">${esc(item.description)}</p>` : ''}<div class="gm-card-footer"><span class="gr-meta">${esc(origin(item))}</span>${compact ? '' : button('milestone-detail','回看这个时刻 <span aria-hidden="true">›</span>',{id:item.id},'gr-evidence')}</div>${sourceNotice(item)}</div></article>`;
+  }
+  function timeAxis(records,ui) {
+    const years=(ui.years || [...new Set(records.map(item=>String(item.date || '').slice(0,4)).filter(value=>/^\d{4}$/.test(value)))]).map(String).filter(value=>/^\d{4}$/.test(value));
+    const selected=String(ui.selectedYear || years[0] || 'all');
+    const chips=years.map(year=>button('milestone-year',year,{value:year},`gm-time-chip${selected === year ? ' is-active' : ''}`,'')).join('');
+    return years.length ? `<nav class="gm-time-axis" aria-label="按年份查看里程碑"><span>时间</span><div class="gm-time-axis-scroll">${chips}</div></nav>` : '';
   }
   function render(items, ui, deps) {
-    ui = ui || {};
-    const example = ui.source === 'example', records = confirmed(items);
+    ui = ui || {}; deps = deps || {};
+    const example = ui.source === 'example', all = confirmed(items), selectedYear=String(ui.selectedYear || 'all');
+    const records=selectedYear === 'all' ? all : all.filter(item=>String(item.date || '').slice(0,4) === selectedYear);
     const sourceBar = `<div class="gr-source-bar"><span class="gr-source-label${example ? ' is-example' : ''}">${example ? '示例里程碑 · 非你的真实记录' : '我的里程碑'}</span>${button('source',example ? '查看我的记录' : '看看示例',{value:example ? 'personal' : 'example'})}</div>`;
     const undo = ui.undoAvailable ? `<div class="gm-undo" role="status"><span>已移除这条里程碑</span>${button('milestone-undo','撤销')}</div>` : '';
-    const body = records.length ? `<div class="gm-intro"><p>把想记住的变化，留给以后的自己。</p>${button('milestone-new','记下一个时刻',{},'gr-primary')}</div><div class="gm-timeline">${records.map(item=>card(item,false)).join('')}</div>` : `<section class="gm-empty"><div class="gm-empty-mark" aria-hidden="true">✦</div><h2>留下一点真实的变化</h2><p>有些变化很小，却值得留下。可以从一次停下来、一次尝试，或一次重新开口开始。</p>${button('milestone-new','记下一个时刻',{},'gr-primary')}</section>`;
-    return `<div class="gm-page">${sourceBar}${undo}${body}<p class="gr-meta gm-bottom-note">只留下你确认过的时刻，按事情发生的日期排列。</p></div>`;
+    const body = records.length ? `<div class="gm-intro"><p>把想记住的变化，留给以后的自己。</p>${button('milestone-new','记下一个时刻',{},'gr-primary')}</div><div class="gm-timeline">${records.map(item=>card(item,false,deps)).join('')}</div>` : `<section class="gm-empty"><span class="gm-empty-icon" aria-hidden="true">${(deps.icons || {}).growth || ''}</span><h2>${all.length ? `${selectedYear} 年还没有留下时刻` : '留下一点真实的变化'}</h2><p>有些变化很小，却值得留下。可以从一次停下来、一次尝试，或一次重新开口开始。</p>${button('milestone-new','记下一个时刻',{},'gr-primary')}</section>`;
+    return `<div class="gm-page">${sourceBar}${timeAxis(all,ui)}${undo}${body}<p class="gr-meta gm-bottom-note">只留下你确认过的时刻，按事情发生的日期排列。</p></div>`;
   }
   function options(values, selected) {
     return Object.entries(values).map(([value,label])=>`<option value="${esc(value)}"${value === selected ? ' selected' : ''}>${esc(label)}</option>`).join('');
@@ -57,7 +68,7 @@
   }
   function renderSummary(items,deps) {
     const records = confirmed(items).slice(0,2);
-    return `<section class="gr-section gm-summary"><div class="gm-summary-heading"><h2>本期里程碑</h2>${button('milestone-section','查看全部 <span aria-hidden="true">›</span>',{},'gr-evidence')}</div>${records.length ? records.map(item=>card(item,true)).join('') : `<div class="gr-panel gm-summary-empty"><p>本期还没有确认的里程碑</p><p class="gr-meta">遇到想记住的时刻，再慢慢留下。</p>${button('milestone-new','记下一个时刻',{},'gr-evidence')}</div>`}</section>`;
+    return `<section class="gr-section gm-summary"><div class="gm-summary-heading"><h2>本期里程碑</h2>${button('milestone-section','查看全部 <span aria-hidden="true">›</span>',{},'gr-evidence')}</div>${records.length ? records.map(item=>card(item,true,deps)).join('') : `<div class="gr-panel gm-summary-empty"><p>本期还没有确认的里程碑</p><p class="gr-meta">遇到想记住的时刻，再慢慢留下。</p>${button('milestone-new','记下一个时刻',{},'gr-evidence')}</div>`}</section>`;
   }
   return {render,renderEditor,renderDetail,renderSummary};
 }));

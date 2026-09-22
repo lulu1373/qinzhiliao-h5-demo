@@ -57,9 +57,17 @@ test('weekly report distinguishes parent evidence and contains concrete practice
 });
 test('daily report surfaces a source, method summary and recap action',()=>{
  const html=view.render({...populated,mode:'day'},{...ui,mode:'day',source:'example'},{});
- assert.match(html,/今日回顾/); assert.match(html,/提醒多了/);
- assert.match(html,/困难分解启动法/); assert.match(html,/data-gr-action="method" data-id="m1"/);
- assert.match(html,/和小亲复盘/); assert.doesNotMatch(html,/能力评分/);
+  assert.match(html,/今日回顾/); assert.match(html,/提醒多了/);
+  assert.match(html,/困难分解启动法/); assert.match(html,/data-gr-action="method" data-id="m1"/);
+  assert.match(html,/和小亲复盘/); assert.doesNotMatch(html,/能力评分/);
+});
+test('daily report groups the recap, method and attempt into three scannable story cards',()=>{
+ const html=view.render({...populated,mode:'day'},{...ui,mode:'day',source:'example'},{icons:{chat:'<svg></svg>',guide:'<svg></svg>',action:'<svg></svg>'}});
+ assert.match(html,/gr-daily-flow/);
+ for (const kind of ['review','method','attempt']) assert.match(html,new RegExp(`gr-daily-card gr-daily-${kind}`));
+ for (const label of ['今日回顾','今日解锁','今日尝试']) assert.match(html,new RegExp(label));
+ assert.match(html,/沟通主题/);
+ assert.match(html,/行动记录/);
 });
 test('monthly report avoids fabricated emotion chart and supports topic corrections and timelines',()=>{
  const html=view.render({...populated,mode:'month'},{...ui,mode:'month',source:'example',corrections:{t1:{value:'disagree',text:'其实是没睡好'}}},{});

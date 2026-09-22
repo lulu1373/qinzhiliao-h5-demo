@@ -17,6 +17,14 @@ test('timeline preserves model order and only displays confirmed items', () => {
   assert.match(html,/尝试改变/);
   assert.match(html,/由你记录/);
 });
+test('timeline provides a compact time axis and category-aligned cards without placeholder glyphs', () => {
+  const html=view.render([item,{...item,id:'m-2',date:'2025-12-31'}],{source:'personal',years:['2026','2025'],selectedYear:'2026'}, {icons:{'try-change':'<svg></svg>'}});
+  assert.match(html,/gm-time-axis/);
+  assert.match(html,/data-gr-action="milestone-year" data-value="2026"/);
+  assert.match(html,/gm-card-icon/);
+  assert.match(html,/gm-card-content/);
+  assert.doesNotMatch(html,/gm-empty-mark[^>]*>✦/);
+});
 test('example timeline identifies its isolation and toggle target', () => {
   const html = view.render([item],{source:'example',undoAvailable:true});
   assert.match(html,/示例里程碑 · 非你的真实记录/);

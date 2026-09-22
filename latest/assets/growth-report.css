@@ -201,3 +201,42 @@
 .gr-page .gr-source-bar > .gr-link {flex: 0 0 auto; white-space: nowrap;}
 
 .gr-page .gr-record-date > span {display: block; line-height: 1.7;}
+
+/* Growth summary: the title and primary navigation stay above the single scroll region. */
+.gr-page.qzl-stacked-page > .page-titlebar,
+.gr-page .qzl-growth-subnav {background: #faf8f3;}
+.gr-page .qzl-growth-scroll {background: #faf8f3;}
+.gr-page .gr-report {padding-top: 8px; padding-bottom: calc(34px + var(--safe-bottom));}
+.gr-page .gr-summary {margin-bottom: 21px; background: #edf3e7; border-color: rgba(105, 132, 82, .15);}
+.gr-page .gr-summary-head {margin-bottom: 7px;}
+.gr-page .gr-summary h2 {font-size: 21px; margin-bottom: 7px;}
+.gr-page .gr-stats {margin-top: 12px; padding-top: 10px;}
+
+/* A day is a small story: what happened, what was understood, and what was tried. */
+.gr-page .gr-daily-flow {display: grid; gap: 12px; margin-top: 4px;}
+.gr-page .gr-daily-card {position: relative; overflow: hidden; padding: 17px 17px 14px; border: 1px solid var(--gr-line); border-radius: 22px; background: var(--gr-paper); box-shadow: 0 5px 16px rgba(72, 69, 45, .025);}
+.gr-page .gr-daily-card::after {content: ''; position: absolute; right: -18px; bottom: -30px; width: 88px; height: 88px; border-radius: 50%; opacity: .32; pointer-events: none;}
+.gr-page .gr-daily-review {background: #f7faf3; border-color: rgba(114, 147, 87, .18);}
+.gr-page .gr-daily-review::after {background: #dcebcf;}
+.gr-page .gr-daily-method {background: #fffaf1; border-color: rgba(213, 168, 91, .19);}
+.gr-page .gr-daily-method::after {background: #f6e0b3;}
+.gr-page .gr-daily-attempt {background: #f6faf2; border-color: rgba(114, 147, 87, .16);}
+.gr-page .gr-daily-attempt::after {background: #d8ebc8;}
+.gr-page .gr-daily-card > header {position: relative; z-index: 1; display: flex; align-items: center; gap: 11px; min-height: 44px;}
+.gr-page .gr-daily-card > header h2 {font-size: 18px; line-height: 1.25; margin-top: 1px;}
+.gr-page .gr-daily-icon {display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; flex: 0 0 44px; border-radius: 15px; background: #e9f1e1; color: #668554;}
+.gr-page .gr-daily-method .gr-daily-icon {background: #f9e4bd; color: #b98531;}
+.gr-page .gr-daily-icon .gr-icon {width: 24px; height: 24px; flex-basis: 24px;}
+.gr-page .gr-daily-icon .gr-icon svg {width: 22px; height: 22px;}
+.gr-page .gr-daily-card-body {position: relative; z-index: 1; margin-top: 13px;}
+.gr-page .gr-daily-card .gr-review-item + .gr-review-item {margin-top: 13px; padding-top: 13px;}
+.gr-page .gr-daily-card .gr-method {padding: 0; border: 0; border-radius: 0; background: transparent;}
+.gr-page .gr-daily-card .gr-method + .gr-method {margin-top: 12px; border-top: 1px solid rgba(162, 129, 73, .16); padding-top: 12px;}
+.gr-page .gr-daily-card .gr-action {padding-bottom: 12px;}
+.gr-page .gr-daily-card .gr-action:last-of-type {padding-bottom: 0;}
+.gr-page .gr-daily-card .gr-records-link {position: relative; z-index: 1; margin-top: 12px; border-top-color: rgba(99, 125, 79, .14);}
+
+@media (max-width: 374px) {
+  .gr-page .gr-daily-card {padding: 15px 14px 13px;}
+  .gr-page .gr-daily-card > header h2 {font-size: 17px;}
+}

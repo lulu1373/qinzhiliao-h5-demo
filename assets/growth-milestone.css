@@ -57,3 +57,34 @@
 .gr-page .gm-module-tabs {display: flex; gap: 5px; padding: 4px; max-width: 330px; margin: 5px auto 12px; border-radius: 17px; background: #eeeee5;}
 .gr-page .gm-module-tabs > button {flex: 1; border: 0; border-radius: 13px; background: transparent; color: #7c8571; padding: 10px 16px; min-height: 44px; font-size: 15px;}
 .gr-page .gm-module-tabs > button.is-active, .gr-page .gm-module-tabs > button[aria-pressed="true"] {color: #506841; background: var(--gr-paper); box-shadow: 0 2px 7px rgba(66, 86, 43, .06);}
+
+/* Horizontal time filters remain compact, while the vertical track carries the reading flow. */
+.gr-page .gm-time-axis {display: flex; align-items: center; gap: 10px; margin: 5px 0 17px; min-height: 44px;}
+.gr-page .gm-time-axis > span {flex: 0 0 auto; color: #76836a; font-size: 13px; font-weight: 600;}
+.gr-page .gm-time-axis-scroll {display: flex; min-width: 0; gap: 8px; overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch; scroll-snap-type: x proximity; padding: 1px 1px 2px;}
+.gr-page .gm-time-axis-scroll::-webkit-scrollbar {display: none;}
+.gr-page .gm-time-chip {flex: 0 0 auto; scroll-snap-align: start; min-width: 62px; min-height: 38px; padding: 7px 13px; border: 1px solid #e3e6d9; border-radius: 13px; background: #fffefb; color: #78836e; font: inherit; font-size: 14px;}
+.gr-page .gm-time-chip.is-active {border-color: #719457; background: #6d8d56; color: #fffefa; box-shadow: 0 4px 9px rgba(81, 112, 58, .13);}
+.gr-page .gm-timeline {padding-left: 28px;}
+.gr-page .gm-timeline::before {left: 7px;}
+.gr-page .gm-card {display: grid; grid-template-columns: 44px minmax(0, 1fr); gap: 11px; padding: 16px;}
+.gr-page .gm-card-compact {display: block; padding: 15px 16px;}
+.gr-page .gm-timeline > .gm-card::before {top: 27px; left: -25px; width: 9px; height: 9px; background: #efb24e; box-shadow: 0 0 0 4px #faf8f3;}
+.gr-page .gm-card-content {min-width: 0;}
+.gr-page .gm-card-icon {display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; border-radius: 15px; color: #62834f; background: #e9f1e1;}
+.gr-page .gm-card-icon svg {width: 23px; height: 23px; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round;}
+.gr-page .gm-card-icon-try-change {background: #fff0d5; color: #bc8330;}
+.gr-page .gm-card-icon-reconnect {background: #f7e7e3; color: #a9655b;}
+.gr-page .gm-card-icon-other {background: #eef0e7; color: #748264;}
+.gr-page .gm-card-meta {margin-bottom: 5px;}
+.gr-page .gm-card-title {font-size: 18px; line-height: 1.45; min-height: 31px;}
+.gr-page .gm-card-description {font-size: 14px; line-height: 1.75;}
+.gr-page .gm-empty-icon {display: inline-flex; width: 62px; height: 62px; align-items: center; justify-content: center; margin: 0 auto 20px; border-radius: 24px; color: #7c9b66; background: #eef2e7;}
+.gr-page .gm-empty-icon svg {width: 30px; height: 30px; stroke: currentColor; fill: none; stroke-width: 1.8;}
+.gr-page .gm-empty-mark {display: none;}
+@media (max-width: 374px) {
+  .gr-page .gm-page {padding-left: 15px; padding-right: 15px;}
+  .gr-page .gm-card {grid-template-columns: 40px minmax(0, 1fr); gap: 9px; padding: 14px;}
+  .gr-page .gm-card-icon {width: 40px; height: 40px; border-radius: 14px;}
+  .gr-page .gm-card-title {font-size: 17px;}
+}

@@ -51,6 +51,9 @@ class GrowthReportTests(unittest.TestCase):
         return self.page.evaluate('(key)=>JSON.parse(localStorage.getItem(key))', KEY)
 
     def open_growth(self):
+        reminder = self.page.locator('[data-points-action="dismiss-reminder"]:visible').first
+        if reminder.count():
+            reminder.click()
         self.page.locator('[data-action="drawer-open"]').click()
         self.page.locator('button[data-route="growth"]:visible').first.click()
         self.page.wait_for_function("location.hash === '#/growth'")

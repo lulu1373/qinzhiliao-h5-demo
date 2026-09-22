@@ -22,7 +22,8 @@ function installGrowthReports() {
   const deps = {esc, mascot:ASSETS.mascotHome, icons:{growth:svg.growthLeaf,
     chat:svg.chat || svg.relation, action:svg.sprout, guide:svg.guide,
     calendar:svg.calendar, archive:svg.family, assessment:svg.assessment,
-    treasure:svg.treasureBox}};
+    treasure:svg.treasureBox, 'see-self':svg.growthLeaf, 'try-change':svg.sprout,
+    reconnect:svg.heart, other:svg.growthLeaf}};
   function settings() {
     const old = state.growthReports || {};
     const legacyFeedback = old.version ? {} : Object.fromEntries((state.actions || [])
@@ -125,10 +126,9 @@ function installGrowthReports() {
     const gr = settings();
     if (gr.source === 'personal' && gr.lastOpened !== day()) gr.anchor = day();
     gr.lastOpened = day();
-    return `<div class="secondary-page growth-page gr-page qzl-stacked-page ${gr.screen === 'records' ? 'is-records' : ''}">${titleBar('成长记录',{back:'home',right:{label:'行动记录',action:'growth-records'}})}
+    return `<div class="secondary-page growth-page gr-page qzl-stacked-page ${gr.screen === 'records' ? 'is-records' : ''}">${titleBar('成长总结',{back:'home',right:{label:'行动记录',action:'growth-records'}})}
       <div class="qzl-page-subnav qzl-growth-subnav" id="grSubnav" ${gr.screen === 'records' ? 'hidden' : ''}>${gr.screen === 'records' ? '' : (milestones?.renderNavigation() || '')}</div>
-      <div class="qzl-page-scroll qzl-growth-scroll"><div class="xp-growth-entry" id="grUtilityEntry" ${gr.screen === 'records' ? 'hidden' : ''}><button data-xp-action="route" data-route="experience/history">我的练习 <span aria-hidden="true">›</span></button><button data-xp-action="route" data-route="experience/stages">阶段准备 <span aria-hidden="true">›</span></button><button data-gr-action="milestone-new">记一笔 <span aria-hidden="true">＋</span></button></div>
-      <div id="grContent" aria-live="polite">${content()}</div></div></div>`;
+      <div class="qzl-page-scroll qzl-growth-scroll"><div id="grContent" aria-live="polite">${content()}</div></div></div>`;
   }
   renderGrowth = shell;
   // Existing weekly links remain useful entry points into the report.
@@ -141,7 +141,6 @@ function installGrowthReports() {
     slot.innerHTML = content();
     const subnav=document.getElementById('grSubnav');
     if(subnav){subnav.hidden=settings().screen === 'records';subnav.innerHTML=subnav.hidden?'':(milestones?.renderNavigation() || '');}
-    const utility=document.getElementById('grUtilityEntry');if(utility)utility.hidden=settings().screen === 'records';
     page.classList.toggle('is-records',settings().screen === 'records');
     const right=page.querySelector('.right-action[data-action="growth-records"]');if(right)right.hidden=settings().screen === 'records';
     scroller.scrollTop = options.top !== undefined ? options.top : top;
