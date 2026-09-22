@@ -4477,7 +4477,7 @@ html,body,#app{background:var(--qzl-canvas)!important;}
 <style id="v104-about-system-page">
 .app-frame:has(.about-page-v2),.app-frame:has(.about-page-v2) .statusbar{background:#F7F6F2!important;background-image:none!important}.about-page-v2{background:#F7F6F2!important;background-image:none!important}.about-page-v2>.page-titlebar{background:#F7F6F2!important;background-image:none!important;border:0!important;box-shadow:none!important}.about-page-v2 .about-body{padding:18px 20px 36px}.about-brand-card{background:#fff;border:1px solid rgba(62,68,59,.06);border-radius:24px;padding:28px 22px 25px;margin:0 0 24px;text-align:center;box-shadow:0 8px 26px rgba(48,54,45,.035)}.about-app-icon{display:block;width:82px;height:82px;object-fit:cover;border-radius:22px;margin:0 auto 16px;box-shadow:0 8px 22px rgba(76,99,64,.09)}.about-brand-card h1{margin:0;color:#30352F;font-size:23px;line-height:1.25;font-weight:760;letter-spacing:-.2px}.about-brand-card p{margin:8px 0 0;color:#747C72;font-size:14px;line-height:1.55}.about-brand-card small{display:inline-block;margin-top:8px;color:#9A9F97;font-size:12px;line-height:1.4}.about-section-label{padding:0 4px 9px;color:#8A9088;font-size:12px;font-weight:650;letter-spacing:.2px}.about-page-v2 .about-link-list{margin:0;background:#fff!important;border:1px solid rgba(62,68,59,.065)!important;border-radius:20px!important;box-shadow:0 8px 24px rgba(48,54,45,.035)!important;overflow:hidden}.about-page-v2 .about-link-list .list-row{min-height:72px!important;padding:11px 16px!important;gap:13px!important;border-bottom:1px solid #EEF0EC!important;background:#fff!important}.about-page-v2 .about-link-list .list-row:last-child{border-bottom:0!important}.about-page-v2 .about-link-list .list-row-icon{width:44px!important;height:44px!important;flex:0 0 44px;border-radius:14px!important;background:#F3F4F1!important;border:0!important;color:#626B60!important;box-shadow:none!important}.about-page-v2 .about-link-list .list-row-icon svg{width:22px!important;height:22px!important;fill:none!important;stroke:currentColor!important;stroke-width:1.8!important;stroke-linecap:round!important;stroke-linejoin:round!important}.about-page-v2 .about-link-list .list-row-main b{font-size:15px!important;line-height:1.35!important;font-weight:650!important;color:#30342F!important}.about-page-v2 .about-link-list .chevron{font-size:22px!important;color:#B5BAB2!important;margin-left:auto!important}.about-page-v2 .about-link-list .list-row:active{background:#F8F9F6!important}.about-page-v2 .about-link-list .list-row:nth-child(n) .list-row-icon{background:#F3F4F1!important;color:#626B60!important}@media(max-width:390px){.about-page-v2 .about-body{padding-left:16px;padding-right:16px}.about-brand-card{padding-top:24px;padding-bottom:22px}.about-app-icon{width:76px;height:76px;border-radius:20px}.about-page-v2 .about-link-list .list-row{min-height:68px!important;padding-left:14px!important;padding-right:14px!important}}
 </style>
-<link rel="stylesheet" href="assets/course.css?v=68105aa9d3"><link rel="stylesheet" href="assets/course-v2.css?v=c1c56569e0"><link rel="stylesheet" href="assets/drawer-v10.css?v=2"><link rel="stylesheet" href="assets/functional-header.css?v=20260918"><link rel="stylesheet" href="assets/icon-soft3d.css?v=58e09d9ee8"><link rel="stylesheet" href="assets/message-toolbar.css?v=f911d93d12"><link rel="stylesheet" href="assets/points-v2.css?v=38eaf8e0f9"><link rel="stylesheet" href="assets/points-v3.css?v=9eb12f3ffa"><link rel="stylesheet" href="assets/membership-benefits-v2.css?v=97e8543cce"><link rel="stylesheet" href="assets/settings-icons-v2.css?v=59393a39c6"><link rel="stylesheet" href="assets/icon-v4-drawer.css?v=0602992d58"><link rel="stylesheet" href="assets/archive-v3.css?v=31718f36ed"><link rel="stylesheet" href="assets/card-motion-v2.css?v=0cea46f142"></head><body><div id="app" aria-live="polite"></div><script src="assets/growth-report-model.js?v=c66b2046b7"></script>
+<link rel="stylesheet" href="assets/course.css?v=68105aa9d3"><link rel="stylesheet" href="assets/course-v2.css?v=c1c56569e0"><link rel="stylesheet" href="assets/drawer-v10.css?v=2"><link rel="stylesheet" href="assets/functional-header.css?v=20260918"><link rel="stylesheet" href="assets/icon-soft3d.css?v=58e09d9ee8"><link rel="stylesheet" href="assets/message-toolbar.css?v=f911d93d12"><link rel="stylesheet" href="assets/points-v2.css?v=38eaf8e0f9"><link rel="stylesheet" href="assets/points-v3.css?v=9eb12f3ffa"><link rel="stylesheet" href="assets/membership-benefits-v2.css?v=97e8543cce"><link rel="stylesheet" href="assets/settings-icons-v2.css?v=59393a39c6"><link rel="stylesheet" href="assets/icon-v4-drawer.css?v=0602992d58"><link rel="stylesheet" href="assets/archive-v3.css?v=31718f36ed"><link rel="stylesheet" href="assets/card-motion-v2.css?v=300a162841"></head><body><div id="app" aria-live="polite"></div><script src="assets/growth-report-model.js?v=c66b2046b7"></script>
 <script src="assets/growth-report-view.js?v=9e5a405290"></script>
 <script src="assets/growth-milestone-model.js?v=0a4020d2bc"></script>
 <script src="assets/growth-milestone-view.js?v=2492e9af08"></script>
@@ -6220,6 +6220,7 @@ function handleClick(e){
   else if(action==='drawer-close')closeDrawer();
   else if(action==='start-scenario'){drawerView.selectedHistory=null;startScenario(el.dataset.scenario);}
   else if(action==='quick-card-open')startQuickCardV90(el.dataset.card||'interpretation');
+  else if(action==='card-reveal-open')openCardRevealOverlayV90(el.dataset.face||'front',el.dataset.runId||'',el.dataset.cardId||'');
   else if(action==='card-flip')flipCardInPlaceV90(el);
   else if(action==='card-save')saveActiveCardV90();
   else if(action==='card-skip')skipActiveCardV90();
@@ -6707,7 +6708,7 @@ function openHistory(index){
 }
 
 function showOverlay(html){overlayRoot.innerHTML=html;}
-function closeOverlay(){overlayRoot.innerHTML='';document.querySelector('[data-action="more-sheet"]')?.setAttribute('aria-expanded','false');}
+function closeOverlay(){overlayRoot.innerHTML='';frame?.classList.remove('card-reveal-open');document.querySelector('[data-action="more-sheet"]')?.setAttribute('aria-expanded','false');}
 function showBottomSheet(content){showOverlay(`<div class="sheet-layer" data-overlay-action="scrim-close"><div class="bottom-sheet" data-sheet="1"><div class="sheet-handle"></div>${content}</div></div>`);}
 function showConfirm(title,message,onConfirm){
   window.__qzlConfirm=onConfirm;
@@ -6726,6 +6727,15 @@ function handleOverlayClick(e){
   const target=e.target.closest('[data-overlay-action]');
   if(!target){if(e.target.classList.contains('sheet-layer')||e.target.classList.contains('overlay'))closeOverlay();return;}
   const action=target.dataset.overlayAction;
+  if(action==='card-reveal-close'){closeCardRevealOverlayV90(false);return;}
+  if(action==='card-reveal-continue'){closeCardRevealOverlayV90(true);return;}
+  if(action==='card-reveal-save'){
+    const layer=target.closest('.card-reveal-layer');
+    saveActiveCardV90();
+    const actions=layer?.querySelector('.card-reveal-actions');
+    if(actions)actions.innerHTML=renderCardRevealActionsV90({saved:true,canSave:false});
+    return;
+  }
   if(action==='home-more-hold'){return;}
   if(action==='home-more-dismiss'){if(e.target===target)closeOverlay();return;}
   if(action==='home-new-chat'){startNewConversationFromMore();return;}
@@ -7590,7 +7600,76 @@ function defaultInterpretCardV90(run=null){return {id:'',type:'interpretation',t
 function renderCardFaceV90(card){const type=card.type||'interpretation';const date=(card.savedAt||card.createdAt||'').slice(5,10).replace('-','.');return `<article class="v90-card-face v90-card-front motion-card-face motion-card-front"><span class="type kicker reveal-item">✦　${esc(cardTypeLabelV90(type))}　✦</span><span class="front-icon reveal-item">${cardIconV90(type)}</span><h3 class="reveal-item">${esc(card.title||'一张值得留下的卡')}</h3><p class="reveal-item">${(card.summary||[]).map(x=>esc(x)).join('<br><br>')}</p><time>${esc(date||'09.08')}</time><div class="foil"></div></article>`;}
 function renderCardSceneV90(face='back',card=null,interactive=true){const data=card||defaultInterpretCardV90(activeCardRunV90());const type=data.type||'interpretation',flipped=face==='front';return `<div class="v90-card-scene motion-card-scene ${flipped?'flipped revealed past-midpoint':''}" data-type="${esc(type)}" ${interactive?`data-action="card-flip" data-motion-interactive="1" role="button" tabindex="0" aria-label="点击翻开${esc(cardTypeLabelV90(type))}"`:''}><div class="turn-ground-shadow"></div><div class="motion-card-tilt"><div class="v90-card-flipper motion-card-flipper"><article class="v90-card-face v90-card-back motion-card-face motion-card-back"><div class="pre-fx" aria-hidden="true"><i class="pre-shimmer"></i><i class="pre-aura"></i><i class="pre-accent"></i><i class="pre-symbol"></i></div><span class="icon">${cardIconV90(type)}</span><h2>${esc(cardTypeLabelV90(type))}</h2><div class="foil"></div></article>${renderCardFaceV90(data)}</div><div class="signature-layer"><i class="reveal-bloom"></i><i class="reveal-sheen"></i><i class="sig-scan"></i><i class="sig-trail"></i><i class="sig-caustic"></i><i class="sig-mend"></i><i class="ring r1"></i><i class="ring r2"></i><i class="ring r3"></i></div><div class="edge-flash"></div><div class="idle-shine"></div></div></div>`;}
 function renderSavePromptV90(){return `<div class="v90-save-prompt"><b>要把这张卡留下来吗？</b><p>保存后，可以在「我的 → 百宝箱」里随时回来看看。</p><div class="inline-actions"><button class="inline-main" data-action="card-save">存入百宝箱</button><button class="inline-alt" data-action="card-skip">先不保存</button></div></div>`;}
-function renderRevealStageV90(face='back',historical=false,runId=''){const run=state.cards.sessions.find(x=>x.id===runId)||activeCardRunV90();const data=defaultInterpretCardV90(run);return `<section class="v90-card-reveal-wrap"><div class="v90-reveal-kicker">${svg.check} ${face==='back'?'解读完成':'这次最值得留下的理解'}</div>${face==='back'?'<p class="v90-reveal-copy">我们把这件事看得更清楚了一些。<br>我也为你留下了一张这次的解读卡。</p>':''}${renderCardSceneV90(face,data,!historical&&face==='back')}<div class="v90-flip-note">${face==='back'&&!historical?'点击翻开看看':''}</div><div class="v90-card-save-slot">${!historical&&face==='front'?renderSavePromptV90():''}</div></section>`;}
+const cardRevealOverlayState={runId:'',cardId:'',face:'back',scrollTop:null};
+function cardRevealDataV90(runId='',cardId=''){
+  const card=cardId?state.cards.toolbox.find(c=>c.id===cardId)||null:null;
+  const run=(runId?state.cards.sessions.find(x=>x.id===runId):null)||activeCardRunV90();
+  return {card,run,data:card||defaultInterpretCardV90(run)};
+}
+function renderCardRevealEntryV90(face='back',runId='',cardId=''){
+  const {card,run,data}=cardRevealDataV90(runId,cardId);
+  const type=data?.type||run?.type||'interpretation',opened=face==='front'||!!card;
+  const status=card?'已保存到百宝箱':opened?'这张卡已经翻开':'已经生成一张卡';
+  return `<button class="v90-card-inline-entry ${opened?'front':'back'}" data-action="card-reveal-open" data-face="${opened?'front':'back'}" data-run-id="${esc(run?.id||runId||'')}" data-card-id="${esc(card?.id||cardId||'')}"><i>${cardIconV90(type)}</i><span><small>${status}</small><b>${esc(cardTypeLabelV90(type))}</b></span><em>${opened?'查看卡片':'全屏翻开'} ›</em></button>`;
+}
+function renderRevealStageV90(face='back',historical=false,runId=''){return renderCardRevealEntryV90(face,runId,'');}
+function renderCardRevealActionsV90({saved=false,canSave=false}={}){
+  const primary=saved?`<div class="card-reveal-saved">${svg.check}<span>已存入百宝箱</span></div>`:canSave?'<button class="card-reveal-primary" data-overlay-action="card-reveal-save">存入百宝箱</button>':'';
+  return `${primary}<button class="card-reveal-secondary" data-overlay-action="card-reveal-continue">继续聊聊</button><button class="card-reveal-link" data-overlay-action="card-reveal-close">返回对话</button>`;
+}
+function openCardRevealOverlayV90(face='back',runId='',cardId=''){
+  migrateCardsV90();
+  const resolved=cardRevealDataV90(runId,cardId),type=resolved.data?.type||'interpretation';
+  const saved=!!resolved.card,actualFace=saved?'front':(face==='front'?'front':'back');
+  const canSave=actualFace==='front'&&!saved&&!!resolved.run&&resolved.run.status==='active';
+  const area=document.getElementById('aiScroll');
+  cardRevealOverlayState.runId=resolved.run?.id||runId||'';
+  cardRevealOverlayState.cardId=resolved.card?.id||cardId||'';
+  cardRevealOverlayState.face=actualFace;
+  cardRevealOverlayState.scrollTop=area?area.scrollTop:null;
+  frame.classList.add('card-reveal-open');
+  showOverlay(`<div class="card-reveal-layer ${actualFace==='front'?'is-front is-front-ready':''}" role="dialog" aria-modal="true" aria-label="${esc(cardTypeLabelV90(type))}全屏卡片"><div class="card-reveal-stage"><header class="card-reveal-head"><button class="card-reveal-close" data-overlay-action="card-reveal-close" aria-label="返回对话">×</button><span><small>CARD REVEAL</small><b>${esc(cardTypeLabelV90(type))}</b></span><i></i></header><main class="card-reveal-main"><p class="card-reveal-lead">${actualFace==='back'?'这次的理解，已经凝成一张卡。':'这次最值得留下的理解。'}</p><div class="card-reveal-card-host">${renderCardSceneV90(actualFace,resolved.data,actualFace==='back')}</div><p class="card-reveal-hint">${actualFace==='back'?'轻触卡片翻开':''}</p></main><footer class="card-reveal-actions">${actualFace==='front'?renderCardRevealActionsV90({saved,canSave}):''}</footer></div></div>`);
+  const scene=overlayRoot.querySelector('.motion-card-scene');
+  if(!scene)return;
+  scene.removeAttribute('data-action');
+  if(actualFace==='back'){
+    scene.setAttribute('data-motion-interactive','1');
+    scene.addEventListener('click',()=>flipCardOverlayV90(scene),{once:true});
+    scene.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();scene.click();}},{once:true});
+    requestAnimationFrame(()=>scene.focus({preventScroll:true}));
+  }else{
+    scene.removeAttribute('data-motion-interactive');
+    window.QZLCardMotion?.staticFront?.(scene);
+  }
+}
+function flipCardOverlayV90(scene){
+  if(!scene||scene.dataset.overlayFlipping==='1')return;
+  scene.dataset.overlayFlipping='1';scene.removeAttribute('data-motion-interactive');
+  const run=cardRevealOverlayState.runId?state.cards.sessions.find(x=>x.id===cardRevealOverlayState.runId):activeCardRunV90();
+  if(run)run.phase=V90_CARD_PHASE.REVEAL_FRONT;
+  if(state.chat.node==='card-reveal-back')state.chat.node='card-reveal-front';
+  cardRevealOverlayState.face='front';saveState();
+  const layer=scene.closest('.card-reveal-layer');layer?.classList.add('is-front');
+  const motion=window.QZLCardMotion;
+  const done=motion?.flip?motion.flip(scene):Promise.resolve().then(()=>scene.classList.add('flipped','revealed','past-midpoint'));
+  Promise.resolve(done).then(()=>{
+    const canSave=!!run&&run.status==='active';
+    const actions=layer?.querySelector('.card-reveal-actions');
+    if(actions)actions.innerHTML=renderCardRevealActionsV90({saved:false,canSave});
+    layer?.classList.add('is-front-ready');
+    refreshConversation({scroll:'preserve'});
+  });
+}
+function closeCardRevealOverlayV90(focus=false){
+  const top=cardRevealOverlayState.scrollTop;
+  closeOverlay();
+  refreshConversation({scroll:'preserve'});
+  requestAnimationFrame(()=>{
+    const area=document.getElementById('aiScroll');
+    if(area&&top!==null)setScrollTopImmediate(area,top);
+    if(focus)setTimeout(()=>document.getElementById('chatInput')?.focus({preventScroll:true}),80);
+  });
+}
 function renderToolboxMiniV90(card){const type=card.type||'interpretation';return `<div class="v90-mini-card ${type}"><span class="type">${esc(cardTypeLabelV90(type))}</span><b>${esc(card.title||'一张卡片')}</b><p>${esc((card.summary||[])[0]||'')}</p><time>${esc((card.savedAt||card.createdAt||'').slice(0,10)||'')}</time></div>`;}
 function renderTreasureBoxV90(){migrateCardsV90();const filter=state.cards.filter||'all';const cards=state.cards.toolbox.slice().sort((a,b)=>String(b.savedAt||b.createdAt).localeCompare(String(a.savedAt||a.createdAt))).filter(c=>filter==='all'||c.type===filter);return `<div class="secondary-page v90-toolbox-page">${titleBar('百宝箱',{back:'home'})}<div class="page-body"><section class="v90-toolbox-hero"><span><i>${svg.treasureBox}</i><h1>把值得留下的理解，收在这里</h1></span><p>翻开的卡片只有在你确认保存后才会进入百宝箱。</p></section><div class="v90-filter-row">${[['all','全部'],['interpretation','解读'],['action','行动'],['strength','优势'],['mirror','镜子'],['repair','修复']].map(([k,l])=>`<button class="${filter===k?'active':''}" data-action="treasure-filter" data-value="${k}">${l}</button>`).join('')}</div>${cards.length?`<div class="v90-toolbox-grid">${cards.map(c=>`<button class="v90-tool-card" data-action="treasure-card-open" data-id="${esc(c.id)}">${renderToolboxMiniV90(c)}</button>`).join('')}</div>`:`<div class="v90-toolbox-empty"><i>${svg.treasureBox}</i><h3>${filter==='all'?'百宝箱还是空的':'这里还没有这类卡片'}</h3><p>${filter==='all'?'完成一次解读并选择“存入百宝箱”，第一张卡就会出现在这里。':'保存对应类型的卡片后，会自动归到这里。'}</p></div>`}</div></div>`;}
 function renderTreasureCardDetailV90(id){migrateCardsV90();const card=state.cards.toolbox.find(c=>c.id===id);if(!card)return `<div class="secondary-page">${titleBar('卡牌详情',{back:'treasure-box'})}<div class="page-body"><div class="v90-toolbox-empty"><h3>没有找到这张卡</h3><p>它可能尚未保存。</p></div></div></div>`;return `<div class="secondary-page v90-toolbox-page">${titleBar('卡牌详情',{back:'treasure-box'})}<div class="page-body v90-card-detail">${renderCardSceneV90('front',card,false)}<div class="v90-card-meta"><div><span>卡牌类型</span><b>${esc(cardTypeLabelV90(card.type))}</b></div><div><span>来源</span><b>${esc(card.source?.eventTitle||'和小亲的对话')}</b></div><div><span>保存时间</span><b>${esc((card.savedAt||'').replace('T',' ').slice(0,16)||'—')}</b></div></div><button class="primary-btn full-btn" data-action="treasure-back-chat" data-id="${esc(card.id)}" style="margin-top:14px">回到原对话</button></div></div>`;}
@@ -7605,8 +7684,8 @@ renderConversationItem=function(m,index,total){
   if(m.kind==='card-intro')return renderCardIntroV90(m.payload?.type||m.stage||'interpretation');
   if(m.kind==='card-invite')return renderCardInviteV90(true);
   if(m.kind==='card-stage'){const st=m.payload?.stage||m.stage;if(st==='restore')return renderRestoreStageV90(true);if(st==='relation')return renderRelationStageV90(true,m.payload?.selected||'');if(st==='confirm')return renderConfirmStageV90(true);}
-  if(m.kind==='card-reveal-snapshot')return renderRevealStageV90(m.payload?.face||'front',true,m.payload?.runId||'');
-  if(m.kind==='card-final'){const card=state.cards.toolbox.find(c=>c.id===m.payload?.cardId)||m.payload?.card||defaultInterpretCardV90();return `<section class="v90-card-reveal-wrap">${renderCardSceneV90('front',card,false)}</section>`;}
+  if(m.kind==='card-reveal-snapshot')return renderCardRevealEntryV90(m.payload?.face||'front',m.payload?.runId||'',m.payload?.cardId||'');
+  if(m.kind==='card-final'){return renderCardRevealEntryV90('front',m.payload?.runId||'',m.payload?.cardId||'');}
   if(m.kind==='card-save-receipt')return `<div class="v90-save-receipt">${svg.check}<span>已存入【百宝箱】</span></div>`;
   return v90LegacyRenderConversationItem(m,index,total);
 };
@@ -7632,7 +7711,7 @@ function beginInterpretationV90(trigger='auto'){migrateCardsV90();if(state.chat.
 function handleRestoreCorrectionV90(kind){addCardArtifactV90('card-stage',{stage:'restore',runId:activeCardRunV90()?.id||''});addChatMessage('user',kind==='wrong'?'有些地方不对':'我想补充一点');addChatMessage('ai',kind==='wrong'?'哪一段和实际情况不一样？':'好，你想补充哪个关键细节？');state.chat.node='free-correction';saveState();refreshConversation({scroll:'auto'});}
 handleRestoreOk=function(){const run=activeCardRunV90();addCardArtifactV90('card-stage',{stage:'restore',runId:run?.id||''});addChatMessage('user','比较贴近');addChatArtifact('stage-summary','你确认了刚才的事件经过。',{stage:'restore'});if(run){run.phase=V90_CARD_PHASE.RELATION;run.context.event='写作业迟迟没有开始，连续提醒后冲突升级。';}scheduleAI('谢谢你确认。接下来我们一起看看，孩子和你各自可能经历了什么。','relation');};
 handleRelationChoice=function(value){const run=activeCardRunV90();addCardArtifactV90('card-stage',{stage:'relation',runId:run?.id||'',selected:value});addChatMessage('user',value);addChatArtifact('stage-summary','你补充了孩子当时更接近的状态：'+esc(value),{stage:'relation'});if(run){run.phase=V90_CARD_PHASE.CONFIRM;run.context.childView=value;run.context.parentView='担心事情失控，越怕耽误越想马上推动';run.context.relationshipLoop='你越着急 → 他越抗拒 → 你更想催';}scheduleAI('谢谢你补充。结合这些信息，我把我们现在形成的理解整理出来了。','confirm');};
-function handleConfirmOkV90(){const run=activeCardRunV90();addCardArtifactV90('card-stage',{stage:'confirm',runId:run?.id||''});addChatMessage('user','这个理解比较贴近');if(run){run.phase=V90_CARD_PHASE.REVEAL_BACK;run.result={title:'先退出催促与抵抗的循环',summary:['他看起来像是在拖延，但也可能是在压力里回避。','你越着急，他越抗拒。','先改变这个循环，比让他立刻听话更重要。']};}state.chat.node='card-reveal-back';saveState();refreshConversation({scroll:'auto'});}
+function handleConfirmOkV90(){const run=activeCardRunV90();addCardArtifactV90('card-stage',{stage:'confirm',runId:run?.id||''});addChatMessage('user','这个理解比较贴近');if(run){run.phase=V90_CARD_PHASE.REVEAL_BACK;run.result={title:'先退出催促与抵抗的循环',summary:['他看起来像是在拖延，但也可能是在压力里回避。','你越着急，他越抗拒。','先改变这个循环，比让他立刻听话更重要。']};}state.chat.node='card-reveal-back';saveState();refreshConversation({scroll:'auto'});setTimeout(()=>openCardRevealOverlayV90('back',run?.id||''),180);}
 function handleConfirmFixV90(){addCardArtifactV90('card-stage',{stage:'confirm',runId:activeCardRunV90()?.id||''});addChatMessage('user','有些地方不太贴近');addChatMessage('ai','可以，我们先不往下走。哪一部分和你的真实感受不太一样？');state.chat.node='revise';saveState();refreshConversation({scroll:'auto'});}
 function flipCardInPlaceV90(el){
   if(state.chat.node!=='card-reveal-back')return;
@@ -7654,8 +7733,8 @@ function flipCardInPlaceV90(el){
   });
 }
 function buildSavedCardV90(){const run=activeCardRunV90();const base=defaultInterpretCardV90(run);const now=new Date().toISOString();return {...base,id:uid('card'),savedAt:now,createdAt:base.createdAt||now,source:{conversationId:run?.conversationId||state.chat.conversationId||'',eventTitle:run?.context?.event||'写作业又吵起来了'}};}
-function saveActiveCardV90(){migrateCardsV90();const run=activeCardRunV90();if(!run||run.type!=='interpretation')return;const card=buildSavedCardV90();state.cards.toolbox.unshift(card);run.status='completed';run.phase=V90_CARD_PHASE.DONE;state.cards.activeRunId=null;addCardArtifactV90('card-final',{cardId:card.id,card});addCardArtifactV90('card-save-receipt',{cardId:card.id});state.chat.node='done';saveState();refreshConversation({scroll:'auto'});toast('已存入百宝箱');}
-function skipActiveCardV90(){const run=activeCardRunV90();const card=defaultInterpretCardV90(run);if(run){run.status='completed';run.phase=V90_CARD_PHASE.DONE;}state.cards.activeRunId=null;addCardArtifactV90('card-final',{card});state.chat.node='done';saveState();refreshConversation({scroll:'auto'});}
+function saveActiveCardV90(){migrateCardsV90();const run=activeCardRunV90();if(!run||run.type!=='interpretation')return;const runId=run.id;const card=buildSavedCardV90();state.cards.toolbox.unshift(card);run.status='completed';run.phase=V90_CARD_PHASE.DONE;state.cards.activeRunId=null;addCardArtifactV90('card-final',{cardId:card.id,card,runId});addCardArtifactV90('card-save-receipt',{cardId:card.id,runId});state.chat.node='done';saveState();refreshConversation({scroll:'preserve'});toast('已存入百宝箱');}
+function skipActiveCardV90(){const run=activeCardRunV90();const runId=run?.id||'';const card=defaultInterpretCardV90(run);if(run){run.status='completed';run.phase=V90_CARD_PHASE.DONE;}state.cards.activeRunId=null;addCardArtifactV90('card-final',{card,runId});state.chat.node='done';saveState();refreshConversation({scroll:'preserve'});}
 const v90LegacySendChatInput=sendChatInput;
 sendChatInput=function(){
   const input=document.getElementById('chatInput');const value=(input?.value||'').trim();if(!value)return;
