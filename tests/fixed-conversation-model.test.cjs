@@ -4,28 +4,44 @@ const model = require('../assets/fixed-conversation-model.js');
 
 test('fixed flow starts with an open question and does not invent scene facts', () => {
   const flow = model.createFlow('孩子写作业很困难，我不知道该怎么帮他。');
-  assert.equal(flow.stage, 'scene');
+  assert.equal(flow.stage, 'invite');
   assert.equal(flow.answers.scene, '');
-  assert.match(flow.prompt, /最近一次|具体/);
-  assert.doesNotMatch(flow.prompt, /没有开始|顶嘴|发火|作业太难/);
+  assert.match(flow.prompt, /愿意|最近一次|解读/);
+  assert.doesNotMatch(flow.prompt, /应用题|不知道先算|口算/);
+  assert.equal(model.answer(flow, '首页灰字示例').stage, 'invite');
 });
 
 test('fixed flow advances only after parent supplies each requested detail', () => {
-  let flow = model.createFlow('孩子写作业很困难，我不知道该怎么帮他。');
+  let flow = model.accept(model.createFlow('孩子写作业很困难，我不知道该怎么帮他。'));
   flow = model.answer(flow, '昨晚八点，他坐在书桌前一直没有动笔。');
   assert.equal(flow.stage, 'interaction');
   assert.equal(flow.answers.scene, '昨晚八点，他坐在书桌前一直没有动笔。');
   flow = model.answer(flow, '我提醒了两次，他说等一下，后来我提高了声音。');
+  assert.equal(flow.stage, 'confirm');
+  flow = model.confirm(flow, '对，就是这样。');
   assert.equal(flow.stage, 'expectation');
   flow = model.answer(flow, '我最担心他越来越依赖我催，也希望他能自己开始。');
   assert.equal(flow.stage, 'result');
   assert.deepEqual(flow.result.modules.map(item => item.title), [
     '这次发生了什么', '孩子行为背后的信息', '你们怎样互相影响', '换个角度看这件事'
   ]);
+  assert.match(flow.result.modules[1].body, /可能还没找到做题的第一步/);
+  assert.match(flow.result.modules[3].body, /能够表达困难、借助帮助继续/);
+});
+
+test('demo preset follows the approved 小宝 math-homework evidence chain', () => {
+  const flow = model.presetFlow();
+  assert.equal(flow.seed, '小宝写作业怎么总是这么拖拉？明明题也不多，每次都弄到快十点。我催了好几次也没用，真是越看越来气。');
+  assert.match(flow.presets.scene, /七点半开始写数学/);
+  assert.match(flow.presets.scene, /口算挺快/);
+  assert.match(flow.presets.interaction, /不知道先算什么/);
+  assert.match(flow.presets.expectation, /怕他养成拖拉的习惯/);
+  assert.equal(flow.summary.title, '解读卡·亲子翻译');
+  assert.deepEqual(flow.summary.items.map(item => item.title), ['本次片段','值得记住的理解','你的担心与期待','下次可以试试']);
 });
 
 test('example answer is a draft and never submitted by the model', () => {
-  const flow = model.createFlow('孩子写作业很困难，我不知道该怎么帮他。');
+  const flow = model.accept(model.createFlow('孩子写作业很困难，我不知道该怎么帮他。'));
   const draft = model.exampleDraft(flow.stage);
   assert.equal(draft.submitted, false);
   assert.ok(draft.text.length > 0);

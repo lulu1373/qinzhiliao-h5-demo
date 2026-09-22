@@ -6229,8 +6229,11 @@ function handleClick(e){
   else if(action==='treasure-back-chat')returnToCardSourceV90(el.dataset.id||'');
   else if(action==='chat-send')sendChatInput();
   else if(action==='fixed-example')typeof fixedExample==='function'&&fixedExample(el.dataset.stage||'');
+  else if(action==='fixed-accept')typeof fixedAccept==='function'&&fixedAccept();
+  else if(action==='fixed-confirm')typeof fixedConfirm==='function'&&fixedConfirm();
   else if(action==='fixed-flip')typeof fixedFlip==='function'&&fixedFlip(el);
   else if(action==='fixed-save')typeof fixedSave==='function'&&fixedSave();
+  else if(action==='fixed-skip')typeof fixedSkip==='function'&&fixedSkip();
   else if(action==='chat-choice')handleChatChoice(el.dataset.value);
   else if(action==='interpret-start')beginInterpretationV90('auto');
   else if(action==='interpret-later')continueTalking();
@@ -9288,6 +9291,14 @@ const QZLFixedConversationModel=window.QZLFixedConversationModel||(()=>{
   const answer=(flow,text)=>{const answers={...flow.answers,[flow.stage]:text},stage=flow.stage==='scene'?'interaction':flow.stage==='interaction'?'expectation':'result';const result=stage==='result'?{title:'从一次具体片段，看见你们怎样卡住又怎样靠近',modules:[{title:'这次发生了什么',tone:'blue',body:answers.scene,evidence:'来自你刚才描述的片段'},{title:'孩子行为背后的信息',tone:'violet',body:'孩子的行为可能是在当下压力里寻找一个更容易开始的入口。',evidence:'可能理解，不是确定判断'},{title:'你们怎样互相影响',tone:'peach',body:answers.interaction,evidence:'来自你描述的互动过程'},{title:'换个角度看这件事',tone:'green',body:'你在意的不只是完成没有，而是希望孩子逐渐拥有自己开始的空间。',evidence:'结合你的担心与期待整理'}]}:null;return {...flow,answers,stage,prompt:prompts[stage]||'',result};};
   return {LABELS:labels,PROMPTS:prompts,createFlow,answer,exampleDraft:stage=>({text:examples[stage]||'',submitted:false})};
 })();
+QZLFixedConversationModel.PRESET={seed:'小宝写作业怎么总是这么拖拉？明明题也不多，每次都弄到快十点。我催了好几次也没用，真是越看越来气。',scene:'昨晚七点半开始写数学，前面的口算挺快。翻到应用题后就一直擦了写、写了擦，还拿橡皮在桌上摆弄，半天没往下写。',interaction:'我催了几次“快点写”，他还是没往下写，后来就说“你别一直催，我不知道先算什么，写错了又要擦”。我坐下来陪他读了一遍题，他才接着写，写完还是快十点了。',expectation:'我最怕他养成拖拉的习惯，现在题少都这样，以后题多更写不完。我希望会做的能接着写，不用我一直催；不会的就早点说卡在哪里。'};
+QZLFixedConversationModel.SUMMARY=[{title:'本次片段',body:'昨晚口算较顺，到了应用题，小宝反复擦写、停着没往下做，最终接近十点才完成。'},{title:'值得记住的理解',body:'这次的慢，可能与找不到做题的第一步有关，不宜直接等同于“不自觉”。他说“不知道先算什么”，也在一起读题后继续了。'},{title:'你的担心与期待',body:'你担心拖拉养成习惯，以后题多更写不完；希望他会做的接着写，不会的早点说，不用反复催。'},{title:'下次可以试试',body:'再停住时，先把“快点写”换成了解具体卡点：“这道题，你卡在哪一步？”'}];
+QZLFixedConversationModel.createFlow=seed=>({stage:'invite',seed,answers:{scene:'',interaction:'',expectation:''},prompt:'你愿意的话，我们可以挑最近一次一起看看：他在哪儿慢下来了，你提醒之后又发生了什么。我帮你把这些线索整理成一份解读。要是这会儿还气着，不想分析，也没关系，咱们可以先聊聊。',result:null,confirmed:false,presets:{...QZLFixedConversationModel.PRESET}});
+QZLFixedConversationModel.presetFlow=()=>({...QZLFixedConversationModel.createFlow(QZLFixedConversationModel.PRESET.seed),presets:{...QZLFixedConversationModel.PRESET},summary:{title:'解读卡·亲子翻译',items:QZLFixedConversationModel.SUMMARY.map(item=>({...item}))}});
+QZLFixedConversationModel.accept=flow=>({...flow,stage:'scene',prompt:'好，我们先挑最近一次，不用你把整个晚上重新讲一遍。最近那次，他是从一开始就慢，还是写到某一部分才明显慢下来？当时你看到他具体在做什么？'});
+QZLFixedConversationModel.confirm=flow=>({...flow,stage:'expectation',confirmed:true,prompt:'好，那我们就按这个经过往下看。你刚才说越看越来气，最后我也想听听你这边。这件事最让你在意或担心的是什么？你最希望先看到哪一点变化？'});
+QZLFixedConversationModel.exampleDraft=stage=>({stage,text:QZLFixedConversationModel.PRESET[stage]||'',submitted:false});
+QZLFixedConversationModel.answer=(flow,text)=>{const value=String(text||'').trim();if(!value)return flow;const answers={...flow.answers,[flow.stage]:value};if(flow.stage==='scene')return {...flow,answers,stage:'interaction',prompt:'这个区别很有用：前面的口算能往下做，停顿主要出现在应用题。现在我们看的是一个具体卡住的片段，不只是笼统的“写作业慢”。看到他停着，你当时是怎么回应的？从你回应之后到这次作业结束，他的表现有怎样的变化？'};if(flow.stage==='interaction')return {...flow,answers,stage:'confirm',prompt:'从你说的经过看，有个变化值得留意：几次催促后，他仍停着；你陪他读题后，他才继续往下写。我把这一次的经过串起来，你看看有没有哪里没说准？'};return {...flow,answers,stage:'result',prompt:'',result:{title:'解读卡·亲子翻译',modules:QZLFixedConversationModel.SUMMARY.map(item=>({...item,tone:item.title==='本次片段'?'blue':item.title==='值得记住的理解'?'violet':item.title==='你的担心与期待'?'peach':'green',evidence:'基于已确认的对话内容'}))}};};
 function fixedFlow(){return state.chat?.fixedFlow||null;}
 function fixedProgress(stage){
   const order=['scene','interaction','expectation','result'], index=Math.max(0,order.indexOf(stage));
@@ -9295,9 +9306,11 @@ function fixedProgress(stage){
 }
 function renderFixedNode(){
   const flow=fixedFlow(); if(!flow)return '';
+  if(flow.stage==='invite')return `<article class="fixed-flow-card"><div class="fixed-flow-head"><span class="fixed-flow-mark">${svg.relation}</span><span><b>正面解读</b><small>先听你说，再决定要不要一起看深一点</small></span></div><p class="fixed-flow-question">${esc(flow.prompt)}</p><div class="fixed-flow-actions"><button class="fixed-primary" data-action="fixed-accept">一起看看</button><button class="fixed-secondary" data-action="fixed-later">我想先聊聊</button></div></article>`;
+  if(flow.stage==='confirm')return `<article class="fixed-flow-card fixed-confirm-card"><div class="fixed-flow-head"><span class="fixed-flow-mark">${svg.check}</span><span><b>2/3 双方回应</b><small>场景 · 过程 · 结果</small></span></div><p class="fixed-flow-question">${esc(flow.prompt)}</p><div class="fixed-confirm-facts"><p><b>1. 场景</b>昨晚七点半开始写数学作业，前面的口算比较顺，到了应用题明显慢下来。</p><p><b>2. 过程</b>他反复擦写、摆弄橡皮；你催了几次「快点写」，他还是没往下写，后来告诉你「不知道先算什么，写错了又要擦」。你随后坐下来，陪他读了一遍题。</p><p><b>3. 结果</b>一起读题后，他继续写了，作业最终完成，但已经接近十点。</p></div><p class="fixed-flow-note">我这样梳理，符合当时的实际情况吗？如果有不准确或遗漏的地方，你可以进行补充。</p><div class="fixed-flow-actions"><button class="fixed-primary" data-action="fixed-confirm">对，就是这样</button><button class="fixed-secondary" data-action="confirm-fix">我想补充或修改</button></div></article>`;
   if(flow.stage==='result'){
     const modules=flow.result?.modules||[];
-    return `<article class="fixed-flow-card fixed-result-card"><div class="fixed-result-hero"><span class="fixed-result-kicker">这一次，我们先留下一个理解</span><h3>${esc(flow.result?.title||'从一次片段开始理解你们')}</h3><p>以下内容只基于你刚才提供的片段整理，你可以继续补充或修正。</p></div><div class="fixed-result-modules">${modules.map(item=>`<section class="fixed-result-module ${item.tone}"><small>${esc(item.title)}</small><b>${esc(item.title)}</b><p>${esc(item.body)}</p><em>${esc(item.evidence)}</em></section>`).join('')}</div><div class="fixed-card-scene ${flow.confirmed?'is-flipped':''}" data-action="fixed-flip" role="button" tabindex="0" aria-label="翻开摘要卡"><div class="fixed-card-flipper"><div class="fixed-card-face fixed-card-front"><b>一张值得留下的理解</b><small>点击翻开摘要卡</small></div><div class="fixed-card-face fixed-card-back"><b>下次可以试试</b><small>先把提醒变成一个问题，再给孩子一点自己开始的空间。</small></div></div></div>${flow.confirmed?'<div class="fixed-confirmed">✓ 已确认这次理解，你可以把它存进百宝箱</div>':'<div class="fixed-flow-actions"><button class="fixed-primary" data-action="confirm-ok">这个理解比较贴近</button><button class="fixed-secondary" data-action="confirm-fix">我想补充或修改</button></div>'}${flow.confirmed?'<div class="fixed-save-row"><button data-action="fixed-save">存入百宝箱</button></div>':''}</article>`;
+    return `<article class="fixed-flow-card fixed-result-card"><div class="fixed-result-hero"><span class="fixed-result-kicker">这一次，我们先留下一个理解</span><h3>${esc(flow.result?.title||'从一次片段开始理解你们')}</h3><p>你担心的不只是昨晚写得晚，而是这样拖下去会养成习惯，以后题多了更写不完。你希望先看到的变化也很具体：会做的接着写，不用你反复催；不会的早点说卡在哪里。</p><p class="fixed-result-intro">现在我已经搜集到了足够的信息。接下来，我将为你生成《解读卡》，帮助你梳理这次事件。</p></div><div class="fixed-result-modules">${modules.map(item=>`<section class="fixed-result-module ${item.tone}"><small>${esc(item.title)}</small><b>${esc(item.title)}</b><p>${esc(item.body)}</p><em>${esc(item.evidence)}</em></section>`).join('')}</div><div class="fixed-card-scene ${flow.confirmed?'is-flipped':''}" data-action="fixed-flip" role="button" tabindex="0" aria-label="翻开摘要卡"><div class="fixed-card-flipper"><div class="fixed-card-face fixed-card-front"><b>解读卡·亲子翻译</b><small>点击翻开这张卡</small></div><div class="fixed-card-face fixed-card-back"><b>这次的理解，也可以留下一张卡</b><small>下次停住时，先把“快点写”换成：“这道题，你卡在哪一步？”</small></div></div></div>${flow.confirmed?'<div class="fixed-confirmed">✓ 已确认这次理解，你可以把它存进百宝箱</div>':'<div class="fixed-flow-actions"><button class="fixed-primary" data-action="confirm-ok">领取本次解读卡</button><button class="fixed-secondary" data-action="confirm-fix">补充或修正</button></div>'}${flow.confirmed?'<div class="fixed-save-row"><button data-action="fixed-save">存入百宝箱</button><button data-action="fixed-skip">先不保存</button></div>':''}</article>`;
   }
   const stage=flow.stage, label=QZLFixedConversationModel.LABELS[stage];
   return `<article class="fixed-flow-card"><div class="fixed-flow-head"><span class="fixed-flow-mark">${svg.relation}</span><span><b>亲子片段解读</b><small>${esc(label)} · ${stage==='scene'?'先听你说具体片段':'继续沿着你刚才说的往下看'}</small></span></div>${fixedProgress(stage)}<p class="fixed-flow-question">${esc(flow.prompt)}</p><p class="fixed-flow-note">你可以用自己的话说，不需要一次讲完整。</p><button class="fixed-flow-example" data-action="fixed-example" data-stage="${stage}">${esc(QZLFixedConversationModel.exampleDraft(stage).text)}</button></article>`;
@@ -9306,19 +9319,47 @@ const fixedLegacyRenderChatNode=renderChatNode;
 renderChatNode=function(node){if(fixedFlow())return renderFixedNode(node);return fixedLegacyRenderChatNode(node);};
 function startFixedConversation(key='homework',firstAnswer=''){
   const seeds={homework:'孩子写作业很困难，我不知道该怎么帮他。',phone:'孩子玩手机时间很多，我有点担心。',backtalk:'孩子一说就顶嘴，我不知道怎么和他沟通。',procrastination:'孩子总是拖拖拉拉，我很容易着急。'};
-  const seed=seeds[key]||seeds.homework;let flow=QZLFixedConversationModel.createFlow(seed);const opening=String(firstAnswer||'').trim();
-  if(opening)flow=QZLFixedConversationModel.answer(flow,opening);
+  const seed=seeds[key]||seeds.homework;const opening=String(firstAnswer||'').trim();
+  // The composer text is an opening statement, not an answer to the first
+  // evidence question. Keep the invitation visible until the parent opts in.
+  let flow=QZLFixedConversationModel.createFlow(opening||seed);
   clearTimeout(aiTimer); state.chat={active:true,scenario:'fixed-'+key,node:'fixed-'+flow.stage,messages:[{role:'user',html:esc(opening||seed),time:todayTime()},{role:'ai',html:opening?flow.prompt:'我听到了。我们先不急着找办法，先把最近一次具体发生的片段看清楚。',time:todayTime()}],typing:false,reviewResult:null,freeTurns:0,conversationId:uid('conv'),fixedFlow:flow};
   pendingConversationStart=true;saveState();navigate('home');refreshConversation({scroll:'start'});requestAnimationFrame(()=>{if(flow.stage!=='result')fixedDraft(flow.stage);});
 }
 window.QZLFixedConversationStart=startFixedConversation;
+function fixedAccept(){
+  const flow=fixedFlow(); if(!flow||flow.stage!=='invite')return;
+  const next=QZLFixedConversationModel.accept(flow);
+  state.chat={...state.chat,fixedFlow:next,node:'fixed-'+next.stage};
+  addChatMessage('user','好，帮我看看吧。');
+  addChatMessage('ai',next.prompt);
+  saveState(); refreshConversation({scroll:'auto'});
+  requestAnimationFrame(()=>fixedDraft(next.stage));
+}
+function fixedLater(){
+  const flow=fixedFlow(); if(!flow||flow.stage!=='invite')return;
+  state.chat={...state.chat,fixedFlow:null,node:'done'};
+  addChatMessage('user','我想先聊聊');
+  addChatMessage('ai','好，我们先不急着分析。你现在最想聊的那一部分，可以直接说给我听。');
+  saveState(); refreshConversation({scroll:'auto'});
+}
+function fixedConfirm(){
+  const flow=fixedFlow(); if(!flow||flow.stage!=='confirm')return;
+  const next=QZLFixedConversationModel.confirm(flow,'对，就是这样。');
+  state.chat={...state.chat,fixedFlow:next,node:'fixed-'+next.stage};
+  addChatMessage('user','对，就是这样。');
+  addChatMessage('ai',next.prompt);
+  saveState(); refreshConversation({scroll:'auto'});
+  requestAnimationFrame(()=>fixedDraft(next.stage));
+}
 function fixedDraft(stage,focus=false){const input=document.getElementById('chatInput');if(!input)return;const text=QZLFixedConversationModel.exampleDraft(stage).text;input.value=text;input.dataset.demoDraft=text;input.classList.add('fixed-demo-draft');autoSizeTextarea(input);document.getElementById('chatSendBtn')?.classList.add('send-ready');if(focus)input.focus({preventScroll:true});}
 function fixedExample(stage){fixedDraft(stage,true);}
 function fixedFlip(el){el?.closest('.fixed-card-scene')?.classList.toggle('is-flipped');}
 function fixedSave(){const flow=fixedFlow();if(!flow?.confirmed)return;const card={id:uid('card'),type:'interpretation',title:'从一次具体片段，看见你们怎样卡住又怎样靠近',summary:(flow.result?.modules||[]).map(item=>item.body),createdAt:new Date().toISOString(),savedAt:new Date().toISOString(),source:{kind:'conversation',conversationId:state.chat.conversationId,eventTitle:flow.answers.scene||'一次亲子片段'}};state.cards={...state.cards,toolbox:[card,...(state.cards?.toolbox||[])]};state.chat={...state.chat,node:'done',fixedFlow:null};saveState();refreshConversation({scroll:'preserve'});toast('已存入百宝箱');}
+function fixedSkip(){const flow=fixedFlow();if(!flow?.confirmed)return;state.chat={...state.chat,node:'done',fixedFlow:null};saveState();refreshConversation({scroll:'preserve'});}
 const fixedLegacyHandleChatChoice=handleChatChoice;
 handleChatChoice=function(value){if(fixedFlow())return submitFixedAnswer(value);return fixedLegacyHandleChatChoice(value);};
-function submitFixedAnswer(value){const flow=fixedFlow();if(!flow||flow.stage==='result')return;const text=String(value||'').trim();if(!text)return;addChatMessage('user',text);const next=QZLFixedConversationModel.answer(flow,text);state.chat={...state.chat,fixedFlow:next,node:'fixed-'+next.stage};if(next.stage==='result')addChatMessage('ai','谢谢你把这三段信息说清楚了。我把这次片段整理成四个角度，你可以逐项看看是否贴近。');else addChatMessage('ai',next.prompt);saveState();refreshConversation({scroll:'auto'});if(next.stage!=='result')requestAnimationFrame(()=>fixedDraft(next.stage));}
+function submitFixedAnswer(value){const flow=fixedFlow();if(!flow||flow.stage==='result')return;const text=String(value||'').trim();if(!text)return;addChatMessage('user',text);const next=QZLFixedConversationModel.answer(flow,text);state.chat={...state.chat,fixedFlow:next,node:'fixed-'+next.stage};if(next.stage==='result')addChatMessage('ai','你担心的不只是昨晚写得晚，而是这样拖下去会养成习惯，以后题多了更写不完。你希望先看到的变化也很具体：会做的接着写，不用你反复催；不会的早点说卡在哪里。现在我已经搜集到了足够的信息。接下来，我将为你生成《解读卡》，帮助你梳理这次事件。');else addChatMessage('ai',next.prompt);saveState();refreshConversation({scroll:'auto'});if(next.stage!=='result')requestAnimationFrame(()=>fixedDraft(next.stage));}
 const fixedLegacySendChatInput=sendChatInput;
 sendChatInput=function(){const input=document.getElementById('chatInput'),value=(input?.value||'').trim();if(!fixedFlow()&&input?.classList.contains('fixed-demo-draft')){input.value='';input.classList.remove('fixed-demo-draft');delete input.dataset.demoDraft;document.getElementById('chatSendBtn')?.classList.remove('send-ready');startFixedConversation('homework',value);return;}if(!fixedFlow())return fixedLegacySendChatInput();if(!value)return;input.value='';input.classList.remove('fixed-demo-draft');delete input.dataset.demoDraft;autoSizeTextarea(input);document.getElementById('chatSendBtn')?.classList.remove('send-ready');submitFixedAnswer(value);};
 document.addEventListener('input',event=>{const input=event.target;if(input?.id==='chatInput'&&input.classList.contains('fixed-demo-draft')&&input.value!==input.dataset.demoDraft){input.classList.remove('fixed-demo-draft');delete input.dataset.demoDraft;}});
