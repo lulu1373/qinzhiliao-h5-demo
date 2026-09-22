@@ -4491,7 +4491,7 @@ html,body,#app{background:var(--qzl-canvas)!important;}
 <script src="assets/points-v3-icons.js?v=f4d9f1b625"></script>
 <script src="assets/membership-benefit-icons.js?v=22571f5605"></script>
 <script src="assets/settings-icons-v2.js?v=ea5d80bec1"></script>
-<script src="assets/card-motion-v2.js?v=c5c0ba53c9"></script>
+<script src="assets/card-motion-v2.js?v=c5c0ba53c9"></script><script src="assets/fixed-conversation-model.js?v=1"></script>
 <script>
 (function(){
 'use strict';
@@ -6228,6 +6228,9 @@ function handleClick(e){
   else if(action==='treasure-card-open')navigate('treasure-box/card/'+encodeURIComponent(el.dataset.id||''));
   else if(action==='treasure-back-chat')returnToCardSourceV90(el.dataset.id||'');
   else if(action==='chat-send')sendChatInput();
+  else if(action==='fixed-example')typeof fixedExample==='function'&&fixedExample(el.dataset.stage||'');
+  else if(action==='fixed-flip')typeof fixedFlip==='function'&&fixedFlip(el);
+  else if(action==='fixed-save')typeof fixedSave==='function'&&fixedSave();
   else if(action==='chat-choice')handleChatChoice(el.dataset.value);
   else if(action==='interpret-start')beginInterpretationV90('auto');
   else if(action==='interpret-later')continueTalking();
@@ -8416,6 +8419,7 @@ function installExperience() {
     }
   };
   function startHomeTopic(key){
+    if(typeof startFixedConversation==='function') return startFixedConversation(key);
     const topic=HOME_CHAT_TOPICS[key];
     if(!topic)return;
     state.chat={
@@ -9274,6 +9278,62 @@ function installPointsV2(){
 installPointsV2();
 /* END POINTS V2 CONTROLLER */
 
+/* Fixed demo conversation: a bounded, evidence-led mainline for live demos. */
+const fixedStylesheet=document.createElement('link');fixedStylesheet.rel='stylesheet';fixedStylesheet.href='assets/fixed-conversation.css?v=1';document.head.appendChild(fixedStylesheet);
+const QZLFixedConversationModel=window.QZLFixedConversationModel||(()=>{
+  const labels={scene:'找准片段',interaction:'看清互动',expectation:'厘清期待',result:'形成理解'};
+  const prompts={scene:'最近一次具体发生了什么？你可以只说一个片段：当时在什么情境里，孩子做了什么？',interaction:'谢谢你把片段说清楚了。接下来我想了解过程：你当时怎么回应，孩子又怎么回应？最后停在了哪里？',expectation:'我大概看见这段互动的轮廓了。对这件事，你最担心什么，又希望以后出现什么小变化？'};
+  const examples={scene:'比如：昨晚八点，他坐在书桌前，翻了几页练习册还没有开始写。',interaction:'比如：我问他准备好了吗，他说等一下；我又提醒了一次，后来两个人都有点急。',expectation:'比如：我担心每天都要靠我催，希望他能慢慢学会自己开始。'};
+  const createFlow=seed=>({stage:'scene',seed,answers:{scene:'',interaction:'',expectation:''},prompt:prompts.scene,result:null,confirmed:false});
+  const answer=(flow,text)=>{const answers={...flow.answers,[flow.stage]:text},stage=flow.stage==='scene'?'interaction':flow.stage==='interaction'?'expectation':'result';const result=stage==='result'?{title:'从一次具体片段，看见你们怎样卡住又怎样靠近',modules:[{title:'这次发生了什么',tone:'blue',body:answers.scene,evidence:'来自你刚才描述的片段'},{title:'孩子行为背后的信息',tone:'violet',body:'孩子的行为可能是在当下压力里寻找一个更容易开始的入口。',evidence:'可能理解，不是确定判断'},{title:'你们怎样互相影响',tone:'peach',body:answers.interaction,evidence:'来自你描述的互动过程'},{title:'换个角度看这件事',tone:'green',body:'你在意的不只是完成没有，而是希望孩子逐渐拥有自己开始的空间。',evidence:'结合你的担心与期待整理'}]}:null;return {...flow,answers,stage,prompt:prompts[stage]||'',result};};
+  return {LABELS:labels,PROMPTS:prompts,createFlow,answer,exampleDraft:stage=>({text:examples[stage]||'',submitted:false})};
+})();
+function fixedFlow(){return state.chat?.fixedFlow||null;}
+function fixedProgress(stage){
+  const order=['scene','interaction','expectation','result'], index=Math.max(0,order.indexOf(stage));
+  return `<div class="fixed-flow-progress" aria-label="对话进度">${order.slice(0,3).map((_,i)=>`<span class="${i<index?'is-done ':''}${i===index?'is-current':''}"></span>`).join('')}</div><div class="fixed-flow-labels">${['找准片段','看清互动','厘清期待'].map((label,i)=>`<span class="${i===index?'is-current':''}">${label}</span>`).join('')}</div>`;
+}
+function renderFixedNode(){
+  const flow=fixedFlow(); if(!flow)return '';
+  if(flow.stage==='result'){
+    const modules=flow.result?.modules||[];
+    return `<article class="fixed-flow-card fixed-result-card"><div class="fixed-result-hero"><span class="fixed-result-kicker">这一次，我们先留下一个理解</span><h3>${esc(flow.result?.title||'从一次片段开始理解你们')}</h3><p>以下内容只基于你刚才提供的片段整理，你可以继续补充或修正。</p></div><div class="fixed-result-modules">${modules.map(item=>`<section class="fixed-result-module ${item.tone}"><small>${esc(item.title)}</small><b>${esc(item.title)}</b><p>${esc(item.body)}</p><em>${esc(item.evidence)}</em></section>`).join('')}</div><div class="fixed-card-scene ${flow.confirmed?'is-flipped':''}" data-action="fixed-flip" role="button" tabindex="0" aria-label="翻开摘要卡"><div class="fixed-card-flipper"><div class="fixed-card-face fixed-card-front"><b>一张值得留下的理解</b><small>点击翻开摘要卡</small></div><div class="fixed-card-face fixed-card-back"><b>下次可以试试</b><small>先把提醒变成一个问题，再给孩子一点自己开始的空间。</small></div></div></div>${flow.confirmed?'<div class="fixed-confirmed">✓ 已确认这次理解，你可以把它存进百宝箱</div>':'<div class="fixed-flow-actions"><button class="fixed-primary" data-action="confirm-ok">这个理解比较贴近</button><button class="fixed-secondary" data-action="confirm-fix">我想补充或修改</button></div>'}${flow.confirmed?'<div class="fixed-save-row"><button data-action="fixed-save">存入百宝箱</button></div>':''}</article>`;
+  }
+  const stage=flow.stage, label=QZLFixedConversationModel.LABELS[stage];
+  return `<article class="fixed-flow-card"><div class="fixed-flow-head"><span class="fixed-flow-mark">${svg.relation}</span><span><b>亲子片段解读</b><small>${esc(label)} · ${stage==='scene'?'先听你说具体片段':'继续沿着你刚才说的往下看'}</small></span></div>${fixedProgress(stage)}<p class="fixed-flow-question">${esc(flow.prompt)}</p><p class="fixed-flow-note">你可以用自己的话说，不需要一次讲完整。</p><button class="fixed-flow-example" data-action="fixed-example" data-stage="${stage}">${esc(QZLFixedConversationModel.exampleDraft(stage).text)}</button></article>`;
+}
+const fixedLegacyRenderChatNode=renderChatNode;
+renderChatNode=function(node){if(fixedFlow())return renderFixedNode(node);return fixedLegacyRenderChatNode(node);};
+function startFixedConversation(key='homework',firstAnswer=''){
+  const seeds={homework:'孩子写作业很困难，我不知道该怎么帮他。',phone:'孩子玩手机时间很多，我有点担心。',backtalk:'孩子一说就顶嘴，我不知道怎么和他沟通。',procrastination:'孩子总是拖拖拉拉，我很容易着急。'};
+  const seed=seeds[key]||seeds.homework;let flow=QZLFixedConversationModel.createFlow(seed);const opening=String(firstAnswer||'').trim();
+  if(opening)flow=QZLFixedConversationModel.answer(flow,opening);
+  clearTimeout(aiTimer); state.chat={active:true,scenario:'fixed-'+key,node:'fixed-'+flow.stage,messages:[{role:'user',html:esc(opening||seed),time:todayTime()},{role:'ai',html:opening?flow.prompt:'我听到了。我们先不急着找办法，先把最近一次具体发生的片段看清楚。',time:todayTime()}],typing:false,reviewResult:null,freeTurns:0,conversationId:uid('conv'),fixedFlow:flow};
+  pendingConversationStart=true;saveState();navigate('home');refreshConversation({scroll:'start'});requestAnimationFrame(()=>{if(flow.stage!=='result')fixedDraft(flow.stage);});
+}
+window.QZLFixedConversationStart=startFixedConversation;
+function fixedDraft(stage,focus=false){const input=document.getElementById('chatInput');if(!input)return;const text=QZLFixedConversationModel.exampleDraft(stage).text;input.value=text;input.dataset.demoDraft=text;input.classList.add('fixed-demo-draft');autoSizeTextarea(input);document.getElementById('chatSendBtn')?.classList.add('send-ready');if(focus)input.focus({preventScroll:true});}
+function fixedExample(stage){fixedDraft(stage,true);}
+function fixedFlip(el){el?.closest('.fixed-card-scene')?.classList.toggle('is-flipped');}
+function fixedSave(){const flow=fixedFlow();if(!flow?.confirmed)return;const card={id:uid('card'),type:'interpretation',title:'从一次具体片段，看见你们怎样卡住又怎样靠近',summary:(flow.result?.modules||[]).map(item=>item.body),createdAt:new Date().toISOString(),savedAt:new Date().toISOString(),source:{kind:'conversation',conversationId:state.chat.conversationId,eventTitle:flow.answers.scene||'一次亲子片段'}};state.cards={...state.cards,toolbox:[card,...(state.cards?.toolbox||[])]};state.chat={...state.chat,node:'done',fixedFlow:null};saveState();refreshConversation({scroll:'preserve'});toast('已存入百宝箱');}
+const fixedLegacyHandleChatChoice=handleChatChoice;
+handleChatChoice=function(value){if(fixedFlow())return submitFixedAnswer(value);return fixedLegacyHandleChatChoice(value);};
+function submitFixedAnswer(value){const flow=fixedFlow();if(!flow||flow.stage==='result')return;const text=String(value||'').trim();if(!text)return;addChatMessage('user',text);const next=QZLFixedConversationModel.answer(flow,text);state.chat={...state.chat,fixedFlow:next,node:'fixed-'+next.stage};if(next.stage==='result')addChatMessage('ai','谢谢你把这三段信息说清楚了。我把这次片段整理成四个角度，你可以逐项看看是否贴近。');else addChatMessage('ai',next.prompt);saveState();refreshConversation({scroll:'auto'});if(next.stage!=='result')requestAnimationFrame(()=>fixedDraft(next.stage));}
+const fixedLegacySendChatInput=sendChatInput;
+sendChatInput=function(){const input=document.getElementById('chatInput'),value=(input?.value||'').trim();if(!fixedFlow()&&input?.classList.contains('fixed-demo-draft')){input.value='';input.classList.remove('fixed-demo-draft');delete input.dataset.demoDraft;document.getElementById('chatSendBtn')?.classList.remove('send-ready');startFixedConversation('homework',value);return;}if(!fixedFlow())return fixedLegacySendChatInput();if(!value)return;input.value='';input.classList.remove('fixed-demo-draft');delete input.dataset.demoDraft;autoSizeTextarea(input);document.getElementById('chatSendBtn')?.classList.remove('send-ready');submitFixedAnswer(value);};
+document.addEventListener('input',event=>{const input=event.target;if(input?.id==='chatInput'&&input.classList.contains('fixed-demo-draft')&&input.value!==input.dataset.demoDraft){input.classList.remove('fixed-demo-draft');delete input.dataset.demoDraft;}});
+const fixedLegacyStartScenario=startScenario;
+startScenario=function(kind){if(['homework','phone','backtalk','procrastination'].includes(kind))return startFixedConversation(kind);return fixedLegacyStartScenario(kind);};
+const fixedLegacyConfirm=handleConfirmOkV90;
+handleConfirmOkV90=function(){if(!fixedFlow())return fixedLegacyConfirm();const flow=fixedFlow();state.chat={...state.chat,fixedFlow:{...flow,confirmed:true},node:'fixed-result'};addChatMessage('user','这个理解比较贴近');addChatMessage('ai','好，我把这次理解留在这里。你可以翻开摘要卡，或存入百宝箱。');saveState();refreshConversation({scroll:'auto'});};
+const fixedLegacyConfirmFix=handleConfirmFixV90;
+handleConfirmFixV90=function(){if(!fixedFlow())return fixedLegacyConfirmFix();const flow=fixedFlow();const next={...flow,stage:'expectation',prompt:QZLFixedConversationModel.PROMPTS?.expectation||'对这件事，你最担心什么，又希望以后出现什么小变化？',confirmed:false};state.chat={...state.chat,fixedFlow:next,node:'fixed-expectation'};addChatMessage('ai','可以，我们先不急着保存。你想补充或修改的地方，直接说给我听。');saveState();refreshConversation({scroll:'auto'});};
+const fixedLegacyConfirmOld=handleConfirmOk;
+handleConfirmOk=function(){if(fixedFlow())return handleConfirmOkV90();return fixedLegacyConfirmOld();};
+const fixedLegacyRenderRoute=renderRoute;
+renderRoute=function(route){fixedLegacyRenderRoute(route);if(routeBase(route)==='home'&&!state.chat.active)requestAnimationFrame(()=>fixedDraft('scene'));};
+const fixedLegacyRenderComposer=renderComposer;
+renderComposer=function(){const html=fixedLegacyRenderComposer();if(state.chat.active)return html;const draft=QZLFixedConversationModel.exampleDraft('scene').text;return html.replace('<textarea id="chatInput"','<textarea class="fixed-demo-draft" data-demo-draft="'+esc(draft)+'" value="'+esc(draft)+'" id="chatInput"');};
 /* V9.0 initialization */
 migrateCardsV90();
 /* V8.0: initialize only after approved reference artwork + family archive IA + icon harmony overrides are active. */
