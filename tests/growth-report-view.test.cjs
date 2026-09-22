@@ -77,6 +77,16 @@ test('monthly report avoids fabricated emotion chart and supports topic correcti
  assert.match(html,/data-gr-action="subject" data-value="child"/);
  assert.match(html,/data-gr-action="route" data-route="archive"/);
 });
+test('weekly report organizes evidence into child parent and relationship dynamics',()=>{
+ const html=view.render({...populated,mode:'week',dynamics:{child:{items:[{label:'孩子状态',text:'孩子说出了怕做错。',sources:['r1']}]},parent:{items:[{label:'家长状态',text:'我先停下了催促。',sources:['r1']}]},relationship:{items:[{label:'亲子关系',text:'重新开始谈下一步。',sources:['r1']}]} }},{...ui,mode:'week',source:'example'},{});
+ for (const label of ['孩子状态','家长状态','亲子关系']) assert.match(html,new RegExp(label));
+ assert.match(html,/gr-dynamics-grid/);
+});
+test('monthly report renders transparent achievements emotion points and growth stage hints',()=>{
+ const html=view.render({...populated,mode:'month',achievements:[{title:'连续记录',level:'初始勋章',rule:'本月留下 3 天记录'}],emotions:[{date:'2026-08-24',value:2,label:'紧绷'},{date:'2026-08-26',value:4,label:'平稳'}],growthTrack:[{title:'从催促到提问',stage:'正在练习',body:'记录显示你开始先问卡点。',sources:['r1']}]},{...ui,mode:'month',source:'example'},{});
+ for (const label of ['本月成就','初始勋章','情绪趋势','紧绷','平稳','成长轨迹','阶段提示']) assert.match(html,new RegExp(label));
+ assert.match(html,/gr-emotion-chart/);
+});
 test('method detail includes principle, concrete steps and example phrase with escaped content',()=>{
  assert.equal(typeof view.renderMethod,'function');
  const html=view.renderMethod({...method,title:'<img src=x>',phrase:'<script>bad</script>'},{});

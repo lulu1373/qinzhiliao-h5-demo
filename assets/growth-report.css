@@ -67,6 +67,31 @@
 .gr-page .gr-highlight-item + .gr-highlight-item {border-top: 1px solid var(--gr-line); padding-top: 12px;}
 .gr-page .gr-highlight-item p {font-size: 16px; color: #4b5544;}
 .gr-page .gr-highlight .gr-evidence {padding-bottom: 0; min-height: 34px;}
+.gr-page .gr-dynamics-grid {display: grid; gap: 10px;}
+.gr-page .gr-dynamics-card {padding: 16px 17px;}
+.gr-page .gr-dynamics-card .gr-eyebrow {font-size: 15px;}
+.gr-page .gr-dynamics-child {background: #f7faf3;}
+.gr-page .gr-dynamics-parent {background: #fffaf2;}
+.gr-page .gr-dynamics-relationship {background: #faf7f3;}
+.gr-page .gr-dynamics-item {margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--gr-line);}
+.gr-page .gr-dynamics-item p {font-size: 14px; line-height: 1.7;}
+.gr-page .gr-achievement-grid {display: grid; gap: 10px;}
+.gr-page .gr-achievement {display: flex; align-items: center; gap: 12px; padding: 15px 16px; background: #fffaf0; border-color: rgba(190, 143, 62, .16);}
+.gr-page .gr-achievement-icon {display: inline-flex; align-items: center; justify-content: center; flex: 0 0 42px; width: 42px; height: 42px; border-radius: 14px; color: #b7802e; background: #fff0d2;}
+.gr-page .gr-achievement-icon svg {width: 24px; height: 24px; stroke: currentColor; fill: none; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round;}
+.gr-page .gr-achievement h3 {margin-top: 2px;}
+.gr-page .gr-achievement-empty {background: #fafaf3;}
+.gr-page .gr-emotion-chart {display: grid; gap: 10px; padding: 17px; background: #f7faf3;}
+.gr-page .gr-emotion-point {display: flex; align-items: center; gap: 10px; min-height: 35px;}
+.gr-page .gr-emotion-dot {width: 12px; height: 12px; flex: 0 0 12px; border-radius: 50%; background: #7b9e62; box-shadow: 0 0 0 5px #e0ecd6;}
+.gr-page .gr-emotion-point[data-level="2"] .gr-emotion-dot {background: #d3994d; box-shadow: 0 0 0 5px #f8e8cf;}
+.gr-page .gr-emotion-point[data-level="3"] .gr-emotion-dot {background: #b6a16a; box-shadow: 0 0 0 5px #f3ecd8;}
+.gr-page .gr-emotion-point b {display: block; font-size: 14px; font-weight: 600;}
+.gr-page .gr-emotion-point time {display: block; color: var(--gr-muted); font-size: 12px; margin-top: 1px;}
+.gr-page .gr-growth-track {display: grid; gap: 10px;}
+.gr-page .gr-growth-item {background: #f6f8f0;}
+.gr-page .gr-growth-item > p {margin-top: 8px; font-size: 14px; line-height: 1.8;}
+.gr-page .gr-growth-empty {background: #fafaf3;}
 .gr-page .gr-practice > div + div {margin-top: 15px;}
 .gr-page .gr-practice p {margin-top: 6px;}
 .gr-page .gr-new-response {border-left: 3px solid #a2b98d; background: #f0f4e9; border-radius: 0 12px 12px 0; padding: 12px 13px;}

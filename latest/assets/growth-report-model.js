@@ -64,6 +64,10 @@
     pause:{id:'pause',title:'少催一次，先问卡在哪里',summary:'把下一句催促换成一个具体问题。',principle:'孩子停下来可能有不同原因。先核对卡点，能帮助下一步更具体；这次记录尚不能说明方法已经有效。',before:'快一点，我说了多少遍了！',after:'你是还没准备好，还是不知道从哪里开始？',steps:['发现自己又想催促时，先停一个呼吸。','只问一个具体问题，留时间听答案。','一起选一个很小的起点，稍后记录发生了什么。'],phrase:'我们先不急着做完，先看看卡在哪一步。',status:'待尝试后反馈'},
     repair:{id:'repair',title:'争执后，给一次重新开口的机会',summary:'说清自己的行为，再邀请对方重新谈谈。',principle:'承认自己刚才的行为，能让修复从一个具体动作开始。对方暂时不想说，也可以等一等。',before:'还不是因为你不听话！',after:'刚才我声音大了。你愿意的话，我们重新说一次。',steps:['用一句话承认刚才自己的行为。','不在道歉后加上责怪。','邀请重新交谈，允许对方晚一点回应。'],phrase:'刚才我的声音太大了。等你准备好，我们再聊。',status:'记录过一次尝试'}
   };
+  const EXAMPLE_EMOTIONS = Object.freeze([
+    Object.freeze({date:'2026-08-20',value:2,label:'紧绷'}),
+    Object.freeze({date:'2026-08-26',value:4,label:'平稳'})
+  ]);
   const clone = value => JSON.parse(JSON.stringify(value));
   const personal = item => item && item.provenance !== 'example' && (!LEGACY_IDS.includes(item.id) || item.provenance === 'personal');
   function collect(input, key, example, source, range, dateKey) {
@@ -92,6 +96,31 @@
     const practice = records.length ? {title:'正在练习：先理解，再回应',before:METHODS[records[records.length-1].methodId].before,after:records[records.length-1].parentObservation,observe:'接下来留意：问过之后发生了什么？没变化时，也把当时的难处记下来。',sources} : null;
     const topics = mode === 'month' && records.length > 1 ? [{id:'listen-pattern',title:'“先听完”出现在不同场景',body:'睡前聊天、手机约定和作业都有记录。结果并不一致，可以继续观察哪些时机更容易让彼此说下去。',sources}] : [];
     return {methods,practice,topics};
+  }
+  function dynamics(records, source) {
+    const list = (key, fallback) => records.filter(record => record[key] || fallback(record)).slice(-3).map(record => ({
+      text:record[key] || fallback(record), sources:[record.id]
+    }));
+    if (source === 'example') return {
+      child:{items:list('childObservation', record => ''),note:'来自你的记录，保留孩子当时说过或做过的具体回应。'},
+      parent:{items:list('parentObservation', record => record.summary || ''),note:'回看你当时采用的具体做法。'},
+      relationship:{items:list('relationshipObservation', record => record.methodId === 'repair' ? '争执后重新开口，给彼此留出再次沟通的机会。' : ''),note:'只展示已有记录，不把一次回应当作关系结论。'}
+    };
+    return {
+      child:{items:[],note:'当前没有足够的直接观察记录。'},
+      parent:{items:list('summary', record => record.title || ''),note:'来自你留下的对话片段。'},
+      relationship:{items:[],note:'还没有足够记录描述亲子关系变化。'}
+    };
+  }
+  function monthlySignals(records, stats, source) {
+    if (source !== 'example') return {achievements:[],emotions:[],growthTrack:[]};
+    const days = new Set(records.map(record => record.date)).size;
+    const achievements = days >= 3 ? [{title:'持续记录',level:'观察勋章',rule:`本月留下 ${days} 天记录`}]:[];
+    return {
+      achievements,
+      emotions:EXAMPLE_EMOTIONS,
+      growthTrack:[{title:'从催促到先问卡点',label:'阶段提示',stage:'正在练习',body:'已有记录显示你开始把连续催促换成一个具体问题。还需要更多次反馈，才能继续判断这条练习是否稳定。',sources:records.map(record=>record.id)}]
+    };
   }
   function latestUpdate(items, correction) {
     const values = items.flatMap(item=>[item.updatedAt,item.feedbackAt,item.savedAt,item.date]).concat(correction && correction.updatedAt).filter(value=>dateOf(value));
@@ -127,8 +156,9 @@
     const correction = corrections && corrections[`${source}:${mode}:${range.start}`];
     const summary = correction && typeof correction.text === 'string' && correction.text.trim() ? {title:'你校正后的回顾',body:correction.text.trim(),corrected:true} : makeSummary(mode,stats,hasData,isExample,records);
     const details = isExample ? exampleDetails(records,mode) : {methods:[],practice:null,topics:[]};
+    const signals = mode === 'month' ? monthlySignals(records,stats,source) : {achievements:[],emotions:[],growthTrack:[]};
     const timeline = records.flatMap(record=>[{date:record.date,title:record.title || '一次记录',body:record.summary || '',subject:'parent',sourceId:record.id},...(isExample && record.childObservation ? [{date:record.date,title:'这一次，孩子的回应',body:record.childObservation,subject:'child',sourceId:record.id}] : [])]).sort((a,b)=>a.date.localeCompare(b.date));
-    return {period:range,source,isExample,ongoing:now>=range.start && now<=range.end,summary,stats,highlights:observations(records,source),...details,actions,records,timeline,emotions:[],cards,updatedAt:latestUpdate(items,correction),hasData,insufficient:records.length<3,undatedCount:actionSet.undated+recordSet.undated+cardSet.undated};
+    return {period:range,source,isExample,ongoing:now>=range.start && now<=range.end,summary,stats,highlights:observations(records,source),dynamics:dynamics(records,source),...details,...signals,actions,records,timeline,cards,updatedAt:latestUpdate(items,correction),hasData,insufficient:records.length<3,undatedCount:actionSet.undated+recordSet.undated+cardSet.undated};
   }
   return {period,shift,build,EXAMPLE_ANCHOR,EXAMPLE_ACTIONS:Object.freeze(EXAMPLE_ACTIONS),EXAMPLE_RECORDS:Object.freeze(EXAMPLE_RECORDS)};
 }));

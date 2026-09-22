@@ -106,20 +106,40 @@
   }
   function weekly(report,deps) {
     const highlights = report.highlights || {};
+    const dynamics = report.dynamics || {};
+    const dynamicsPanel = (key,label,empty) => {
+      const data = dynamics[key] || {};
+      const items = data.items || [];
+      return `<article class="gr-panel gr-dynamics-card gr-dynamics-${esc(key)}"><span class="gr-eyebrow">${esc(label)}</span>${data.note ? `<p class="gr-meta">${esc(data.note)}</p>` : ''}${items.length ? items.slice(0,3).map(item=>`<div class="gr-dynamics-item"><p>${esc(item.text || item.body || '')}</p>${sourceLink(item.sources)}</div>`).join('') : `<p class="gr-muted">${esc(empty)}</p>`}</article>`;
+    };
+    const dynamicSection = section('家庭成长动态',`<div class="gr-dynamics-grid">${dynamicsPanel('child','孩子状态','先留下你看到或听到的具体回应。')}${dynamicsPanel('parent','家长状态','先回看你当时做了什么。')}${dynamicsPanel('relationship','亲子关系','还没有足够记录描述关系变化，先留一点空间。')}</div>`);
     const highlight = (subject,title) => `<article class="gr-panel gr-highlight gr-highlight-${subject}"><span class="gr-eyebrow">${esc(title)}</span>${subject === 'child' ? '<p class="gr-meta">根据你的记录，留下孩子当时的回应</p>' : ''}${(highlights[subject] || []).slice(-2).map(item => `<div class="gr-highlight-item"><p>${esc(item.text)}</p>${sourceLink(item.sources)}</div>`).join('') || `<p class="gr-muted">${subject === 'child' ? '还没有足够的孩子回应记录，先留一点观察的空间。' : '先从已有行动回看，更多具体片段可以慢慢补上。'}</p>`}</article>`;
     const practice = report.practice;
     const practicePanel = practice ? section(practice.title.startsWith('正在练习') ? practice.title : '正在练习：' + practice.title,`<div class="gr-panel gr-practice"><div><span class="gr-eyebrow">以前更容易这样</span><p>${esc(practice.before)}</p></div><div class="gr-new-response"><span class="gr-eyebrow">这周出现过的新回应</span><p>${esc(practice.after)}</p></div><div><span class="gr-eyebrow">还需要继续观察</span><p>${esc(practice.observe)}</p></div>${sourceLink(practice.sources)}</div>`) : '';
-    return section('值得回看的片段',highlight('parent','你这边的尝试') + highlight('child','孩子这边的回应')) + practicePanel + actionSection(report,'练习与反馈',deps);
+    return dynamicSection + section('值得回看的片段',highlight('parent','你这边的尝试') + highlight('child','孩子这边的回应')) + practicePanel + actionSection(report,'练习与反馈',deps);
+  }
+  function achievements(report,deps) {
+    const items = report.achievements || [];
+    return section('本月成就',`<div class="gr-achievement-grid">${items.length ? items.map(item=>`<article class="gr-panel gr-achievement"><span class="gr-achievement-icon" aria-hidden="true">${icon('treasure',deps)}</span><div><span class="gr-eyebrow">${esc(item.level || '记录勋章')}</span><h3>${esc(item.title)}</h3><p class="gr-meta">${esc(item.rule || '根据本月已确认的记录生成')}</p></div></article>`).join('') : `<div class="gr-panel gr-achievement-empty"><h3>本月还没有成就勋章</h3><p class="gr-muted">完成一次记录或反馈后，勋章会按公开规则更新。</p></div>`}</div>`);
+  }
+  function emotionTrend(report,deps) {
+    const points = report.emotions || [];
+    if (!points.length) return section('情绪趋势',`<div class="gr-panel gr-emotion-empty">${icon('growth',deps)}<h3>情绪记录还不够</h3><p>先留下几次当时的感受，再一起看变化。没有记录的日子，我们留白。</p>${button('records','去看记录',{},'gr-evidence')}</div>`);
+    return section('情绪趋势',`<div class="gr-panel gr-emotion-chart" role="img" aria-label="本月已记录的情绪变化">${points.map(point=>`<div class="gr-emotion-point" data-level="${esc(point.value)}"><span class="gr-emotion-dot" aria-hidden="true"></span><div><b>${esc(point.label)}</b><time>${esc(point.date)}</time></div></div>`).join('')}<p class="gr-meta">只展示你实际记录过的感受，不补齐没有记录的日期。</p></div>`);
+  }
+  function growthTrack(report) {
+    const items = report.growthTrack || [];
+    return section('成长轨迹',`<div class="gr-growth-track">${items.length ? items.map(item=>`<article class="gr-panel gr-growth-item"><div class="gr-row"><h3>${esc(item.title || '一条成长线索')}</h3><span class="gr-badge">${esc(item.stage || '继续观察')}</span></div><span class="gr-eyebrow">${esc(item.label || '阶段提示')}</span><p>${esc(item.body || '')}</p>${sourceLink(item.sources)}</article>`).join('') : `<div class="gr-panel gr-growth-empty"><h3>能力变化还需要更多记录</h3><p class="gr-muted">当前只显示具体行为和阶段提示，不把一次对话当成能力结论。</p></div>`}</div>`);
   }
   function monthly(report,ui,deps) {
-    const emotions = section('情绪与相处',`<div class="gr-panel gr-emotion-empty">${icon('growth',deps)}<h3>情绪记录还不够</h3><p>先留下几次当时的感受，再一起看变化。没有记录的日子，我们留白。</p></div>`);
+    const emotions = emotionTrend(report,deps);
     const topics = (report.topics || []).map(topic => {
       const correction = (ui.corrections || {})[topic.id], value = typeof correction === 'string' ? correction : (correction || {}).value;
       const updated = typeof correction === 'object' && correction.text;
       return `<article class="gr-panel gr-topic"><div class="gr-row"><h3>${esc(topic.title)}</h3>${value === 'disagree' ? '<span class="gr-badge">待核验</span>' : ''}</div><p>${esc(updated || topic.body)}</p>${sourceLink(topic.sources)}<div class="gr-correction" aria-label="这段理解贴近吗？">${button('topic-correct','符合我的情况',{id:topic.id,value:'agree'},`gr-chip${value === 'agree' ? ' is-active' : ''}`,` aria-pressed="${value === 'agree'}"`)}${button('topic-correct','不太贴近',{id:topic.id,value:'disagree'},`gr-chip${value === 'disagree' ? ' is-active' : ''}`,` aria-pressed="${value === 'disagree'}"`)}</div>${updated ? '<p class="gr-meta">已保留你的补充，不会自动覆盖。</p>' : ''}</article>`;
     }).join('');
     const related = `<div class="gr-related">${button('route',icon('assessment',deps)+'<span>看看相关测评</span><span aria-hidden="true">›</span>',{route:'assessments'},'gr-related-link')}${button('route',icon('archive',deps)+'<span>回看家庭档案</span><span aria-hidden="true">›</span>',{route:'archive'},'gr-related-link')}</div>`;
-    return emotions + (topics ? section('可以继续观察的课题',topics) : '') + section('成长时间线',timeline(report,ui)) + related;
+    return achievements(report,deps) + emotions + (topics ? section('可以继续观察的课题',topics) : '') + growthTrack(report) + section('成长时间线',timeline(report,ui)) + related;
   }
   function timeline(report,ui) {
     const subject = ui.subject || 'parent';

@@ -9,6 +9,11 @@ function installGrowthMilestones({settings,day,validDate,localDate,reportModel,d
     if (!gr.familyId) gr.familyId = uid('family');
     if (!Array.isArray(gr.milestones)) gr.milestones = [];
     if (!Array.isArray(gr.exampleMilestones)) gr.exampleMilestones = JSON.parse(JSON.stringify(model.EXAMPLE_MILESTONES));
+    const exampleDefaults = new Map(model.EXAMPLE_MILESTONES.map(item => [item.id, item]));
+    gr.exampleMilestones = gr.exampleMilestones.map(item => {
+      const base = exampleDefaults.get(item.id);
+      return base && !Number.isInteger(item.eventAge) && Number.isInteger(base.eventAge) ? {...item,eventAge:base.eventAge} : item;
+    });
     return gr;
   }
   const bucket = source => source === 'example' ? 'exampleMilestones' : 'milestones';
@@ -61,10 +66,12 @@ function installGrowthMilestones({settings,day,validDate,localDate,reportModel,d
     reconcile();
     const gr = config();
     const all=items();
-    const years=[...new Set([day().slice(0,4),...all.map(item=>String(item.date || '').slice(0,4)).filter(Boolean)])].sort((a,b)=>b.localeCompare(a));
-    const selectedYear=years.includes(String(gr.milestoneYear || '')) ? String(gr.milestoneYear) : years[0];
-    if (gr.milestoneYear !== selectedYear) gr.milestoneYear=selectedYear;
-    return view.render(all,{source:gr.source,today:day(),undoAvailable:removed?.source === gr.source,years,selectedYear},deps);
+    const ages=[...new Set(all.map(item=>item.eventAge).filter(age=>Number.isInteger(age) && age >= 0 && age <= 25))].sort((a,b)=>a-b).map(String);
+    const hasUnknown=all.some(item=>!Number.isInteger(item.eventAge));
+    const ageOptions=hasUnknown ? [...ages,'unknown'] : ages;
+    const selectedAge=ageOptions.includes(String(gr.milestoneAge || '')) ? String(gr.milestoneAge) : (ages[0] || (hasUnknown ? 'unknown' : 'all'));
+    if (gr.milestoneAge !== selectedAge) gr.milestoneAge=selectedAge;
+    return view.render(all,{source:gr.source,today:day(),undoAvailable:removed?.source === gr.source,ages,selectedAge},deps);
   }
   function summary(report) { return view.renderSummary(items(report.source,report.period),deps); }
   function find(id, source = config().source) { return items(source).find(item=>item.id === id); }
@@ -90,7 +97,8 @@ function installGrowthMilestones({settings,day,validDate,localDate,reportModel,d
     editor = {id:item?.id || null,source:source || item?.source || null,provenance};
     const draft = item || {title:(source?.title || '').trim().slice(0,80),
       date:validDate(source?.date) ? source.date : day(),category:'other',subject:'parent',memberId:'self',
-      description:(source?.excerpt || '').trim().slice(0,1200),meaning:'',source};
+      description:(source?.excerpt || '').trim().slice(0,1200),meaning:'',source,eventAge:null,photoData:''};
+    editor.photoData = draft.photoData || '';
     display(view.renderEditor(draft,{source:provenance,today:day(),editing:!!item,members:members()},deps),true);
   }
   function saveEditor() {
@@ -98,7 +106,8 @@ function installGrowthMilestones({settings,day,validDate,localDate,reportModel,d
     const value = id => document.getElementById(id)?.value || '';
     const memberId = value('gmMember') || 'self', member = members().find(item=>item.id === memberId);
     const input = {title:value('gmTitle'),date:value('gmDate'),category:value('gmCategory'),
-      description:value('gmDescription'),meaning:value('gmMeaning'),memberId,subject:member?.subject || 'parent'};
+      description:value('gmDescription'),meaning:value('gmMeaning'),memberId,subject:member?.subject || 'parent',
+      eventAge:value('gmEventAge'),photoData:editor.photoData || ''};
     try {
       if (!member) throw new Error('请选择记录对象');
       if (!input.description.trim()) throw new Error('请写下发生了什么');
@@ -117,6 +126,27 @@ function installGrowthMilestones({settings,day,validDate,localDate,reportModel,d
       }
       notice.hidden = false; notice.textContent = error.message; notice.scrollIntoView({block:'nearest'});
     }
+  }
+  function setPhoto(file) {
+    if (!editor || !file) return;
+    if (!/^image\/(?:png|jpeg|webp)$/.test(file.type) || file.size > 1024 * 1024) {
+      const notice = document.getElementById('gmError');
+      if (notice) { notice.hidden = false; notice.textContent = '请选择 JPG、PNG 或 WebP 图片，文件不超过 1 MB'; }
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = () => {
+      editor.photoData = String(reader.result || '');
+      const preview = document.querySelector('.gm-photo-preview');
+      if (preview) preview.innerHTML = `<img id="gmPhotoPreview" class="gm-editor-photo" src="${esc(editor.photoData)}" alt="已选照片">`;
+    };
+    reader.readAsDataURL(file);
+  }
+  function removePhoto() {
+    if (!editor) return;
+    editor.photoData = '';
+    const preview = document.querySelector('.gm-photo-preview');
+    if (preview) preview.innerHTML = '<span id="gmPhotoPreview" class="gm-photo-empty">尚未添加照片</span>';
   }
   function showSource(id) {
     const item = find(id);
@@ -156,11 +186,14 @@ function installGrowthMilestones({settings,day,validDate,localDate,reportModel,d
     else if (action === 'milestone-detail') detail(data.id);
     else if (action === 'milestone-edit') openEditor(data.id);
     else if (action === 'milestone-save') saveEditor();
+    else if (action === 'milestone-photo-remove') removePhoto();
     else if (action === 'milestone-source') showSource(data.id);
     else if (action === 'milestone-remove') remove(data.id);
     else if (action === 'milestone-undo') undo();
     else if (action === 'milestone-reviewed') reviewed(data.id);
-    else if (action === 'milestone-year' && /^\d{4}$/.test(String(data.value || ''))) {
+    else if (action === 'milestone-age' && (data.value === 'unknown' || /^\d{1,2}$/.test(String(data.value || '')))) {
+      const gr=config(); gr.milestoneAge=String(data.value); saveState(); refresh({top:0});
+    } else if (action === 'milestone-year' && /^\d{4}$/.test(String(data.value || ''))) {
       const gr=config(); gr.milestoneYear=String(data.value); saveState(); refresh({top:0});
     } else if (['milestone-section','growth-review'].includes(action)) {
       const gr = config(); gr.section = action === 'milestone-section' ? 'milestones' : 'review'; gr.screen = 'report';
@@ -170,5 +203,5 @@ function installGrowthMilestones({settings,day,validDate,localDate,reportModel,d
   }
   function reset() { editor = null; removed = null; }
   config();
-  return {renderNavigation,render,summary,sourceButton,handle,reconcile,reset};
+  return {renderNavigation,render,summary,sourceButton,handle,reconcile,reset,setPhoto};
 }

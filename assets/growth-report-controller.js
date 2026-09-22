@@ -302,5 +302,8 @@ function installGrowthReports() {
   openGrowthMilestoneFromExperience = id => milestones?.handle({grAction:'milestone-from-source',id,kind:'action'});
   milestones?.reconcile();
   document.addEventListener('click',handle,true);
+  document.addEventListener('change',event => {
+    if (event.target?.id === 'gmPhoto') milestones?.setPhoto(event.target.files?.[0]);
+  },true);
 }
 installGrowthReports();

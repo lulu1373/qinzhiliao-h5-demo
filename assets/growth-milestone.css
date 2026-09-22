@@ -77,6 +77,13 @@
 .gr-page .gm-card-icon-reconnect {background: #f7e7e3; color: #a9655b;}
 .gr-page .gm-card-icon-other {background: #eef0e7; color: #748264;}
 .gr-page .gm-card-meta {margin-bottom: 5px;}
+.gr-page .gm-age {color: #71825f; font-weight: 600;}
+.gr-page .gm-photo {display: block; width: 100%; max-height: 180px; margin-top: 12px; border-radius: 15px; object-fit: cover; background: #f0f2e9;}
+.gr-page .gm-photo-field .gr-meta {margin-top: 6px;}
+.gr-page .gm-photo-preview {margin-top: 10px;}
+.gr-page .gm-editor-photo {display: block; width: 110px; height: 84px; border-radius: 13px; object-fit: cover;}
+.gr-page .gm-photo-empty {display: inline-flex; min-height: 42px; align-items: center; padding: 0 13px; border-radius: 12px; background: #f4f5ee; color: #8a927f; font-size: 13px;}
+.gr-page .gm-photo-remove {margin-top: 5px;}
 .gr-page .gm-card-title {font-size: 18px; line-height: 1.45; min-height: 31px;}
 .gr-page .gm-card-description {font-size: 14px; line-height: 1.75;}
 .gr-page .gm-empty-icon {display: inline-flex; width: 62px; height: 62px; align-items: center; justify-content: center; margin: 0 auto 20px; border-radius: 24px; color: #7c9b66; background: #eef2e7;}

@@ -25,6 +25,15 @@ test('timeline provides a compact time axis and category-aligned cards without p
   assert.match(html,/gm-card-content/);
   assert.doesNotMatch(html,/gm-empty-mark[^>]*>✦/);
 });
+test('milestone renders an age axis and only displays an actual saved photo', () => {
+ const photo='data:image/png;base64,AA==';
+ const html=view.render([{...item,eventAge:10,photoData:photo},{...item,id:'m-2',eventAge:null}],{source:'personal',ages:['10'],selectedAge:'10'}, {icons:{'try-change':'<svg></svg>'}});
+ assert.match(html,/按年龄查看里程碑/);
+ assert.match(html,/data-gr-action="milestone-age" data-value="10"/);
+ assert.match(html,/10 岁/);
+ assert.match(html,/class="gm-photo"/);
+ assert.doesNotMatch(html,/m-2[^]*class="gm-photo"/);
+});
 test('example timeline identifies its isolation and toggle target', () => {
   const html = view.render([item],{source:'example',undoAvailable:true});
   assert.match(html,/示例里程碑 · 非你的真实记录/);
@@ -42,6 +51,14 @@ test('editor fields have labels, required data, limits and explicit confirmation
   assert.match(html,/data-gr-action="milestone-save"/);
   assert.match(html,/确认留下/);
   assert.match(html,/确认后才会进入你的里程碑/);
+});
+test('editor provides optional event age and photo fields', () => {
+ const html=view.renderEditor({...item,eventAge:10},{today:'2026-09-09'});
+ assert.match(html,/for="gmEventAge"/);
+ assert.match(html,/id="gmEventAge"/);
+ assert.match(html,/for="gmPhoto"/);
+ assert.match(html,/id="gmPhoto"/);
+ assert.match(html,/accept="image\/\*"/);
 });
 test('member selector uses actual member ids with current selection', () => {
   const html=view.renderEditor({...item,memberId:'child-1'},{editing:true,members:[{id:'self',label:'我',subject:'parent'},{id:'child-1',label:'小麦',subject:'child'}]});

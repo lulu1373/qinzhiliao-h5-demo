@@ -14,6 +14,17 @@
     if (result.length > limit) throw new TypeError(`${label}最多 ${limit} 字`);
     return result;
   }
+  function eventAge(value) {
+    if (value === undefined || value === null || value === '') return null;
+    const age = Number(value);
+    if (!Number.isInteger(age) || age < 0 || age > 25) throw new TypeError('请填写有效年龄');
+    return age;
+  }
+  function photoData(value) {
+    if (value === undefined || value === null || value === '') return '';
+    if (typeof value !== 'string' || !/^data:image\/(?:png|jpeg|webp);base64,[A-Za-z0-9+/=]+$/.test(value) || value.length > 1600000) throw new TypeError('照片格式无效或文件过大');
+    return value;
+  }
   function fields(input, today) {
     if (!validDate(input.date) || !validDate(today) || input.date > today) throw new TypeError('请选择有效日期，不能晚于今天');
     if (!Object.hasOwn(CATEGORIES,input.category)) throw new TypeError('请选择有效分类');
@@ -21,7 +32,8 @@
     return {
       title:text(input.title,'标题',80,true), date:input.date, category:input.category,
       description:text(input.description,'经过',1200), meaning:text(input.meaning,'意义',800),
-      subject:input.subject || 'parent', memberId:text(input.memberId || 'self','记录对象标识',100,true)
+      subject:input.subject || 'parent', memberId:text(input.memberId || 'self','记录对象标识',100,true),
+      eventAge:eventAge(input.eventAge), photoData:photoData(input.photoData)
     };
   }
   function sourceSnapshot(source) {
@@ -97,8 +109,8 @@
   }
   function remove(items, id) { return items.filter(item=>item.id !== id).map(clone); }
   const EXAMPLE_MILESTONES=Object.freeze([
-    Object.freeze(create({title:'争执后，我重新开口',date:'2026-08-24',category:'reconnect',description:'我说了刚才声音太大，问孩子愿不愿意重新说一次。',meaning:'这一次，我给重新交谈留了一个机会。',subject:'parent'}, {id:'ex-m24',familyId:'example-family',provenance:'example',now:'2026-08-24T13:00:00Z',today:'2026-08-26'})),
-    Object.freeze(create({title:'先听到担心，再谈下一步',date:'2026-08-25',category:'try-change',description:'孩子说怕做错。我先复述了他的担心，再问他想从哪一题开始。',meaning:'留下这次具体尝试，之后可以回来看看。',subject:'parent'}, {id:'ex-m25',familyId:'example-family',provenance:'example',now:'2026-08-25T13:00:00Z',today:'2026-08-26'}))
+    Object.freeze(create({title:'争执后，我重新开口',date:'2026-08-24',category:'reconnect',description:'我说了刚才声音太大，问孩子愿不愿意重新说一次。',meaning:'这一次，我给重新交谈留了一个机会。',subject:'parent',eventAge:10}, {id:'ex-m24',familyId:'example-family',provenance:'example',now:'2026-08-24T13:00:00Z',today:'2026-08-26'})),
+    Object.freeze(create({title:'先听到担心，再谈下一步',date:'2026-08-25',category:'try-change',description:'孩子说怕做错。我先复述了他的担心，再问他想从哪一题开始。',meaning:'留下这次具体尝试，之后可以回来看看。',subject:'parent',eventAge:10}, {id:'ex-m25',familyId:'example-family',provenance:'example',now:'2026-08-25T13:00:00Z',today:'2026-08-26'}))
   ]);
   return {CATEGORIES,EXAMPLE_MILESTONES,create,update,list,findBySource,reconcile,remove};
 }));

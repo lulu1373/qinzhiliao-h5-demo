@@ -100,6 +100,15 @@ test('monthly example timeline includes explicitly observed child events', () =>
   assert.ok(children.length>0);
   assert.ok(children.every(x=>r.records.find(y=>y.id===x.sourceId).childObservation===x.body));
 });
+test('report provides grounded dynamics, transparent achievements, recorded emotions and stage hints', () => {
+  const r=build({source:'example',mode:'month',emotions:[{date:'2026-08-24',value:2,label:'紧绷'},{date:'2026-08-26',value:4,label:'平稳'}]});
+  assert.ok(r.dynamics.child.items.length);
+  assert.ok(r.dynamics.parent.items.length);
+  assert.ok(r.dynamics.relationship.items.length);
+  assert.ok(r.achievements.length);
+  assert.deepEqual(r.emotions.map(item=>item.label),['紧绷','平稳']);
+  assert.ok(r.growthTrack.length);
+});
 test('isolated example feedback updates only allowlisted fields and known actions', () => {
   const r=build({source:'example',exampleFeedback:{a26:{status:'done',result:'worse',resultText:'更难了',feedbackAt:'2026-08-26T13:00:00Z',title:'overwrite'},unknown:{result:'better'}}});
   assert.equal(r.actions.find(x=>x.id==='a26').result,'worse');

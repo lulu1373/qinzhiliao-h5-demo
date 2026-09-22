@@ -18,6 +18,12 @@ test('creation does not mutate input or source and snapshots source autofill',()
  item.source.excerpt='edited';assert.equal(source.excerpt,base.description);
 });
 test('manual entries have no fabricated source',()=>{assert.equal(make().source,null);});
+test('milestones preserve an optional event age and a bounded image data URL',()=>{
+ const item=make({eventAge:10,photoData:'data:image/png;base64,AA=='});
+ assert.equal(item.eventAge,10);assert.equal(item.photoData,'data:image/png;base64,AA==');
+ assert.throws(()=>make({eventAge:26}),/年龄/);
+ assert.throws(()=>make({photoData:'https://example.com/image.png'}),/照片/);
+});
 test('invalid dates and future dates are rejected',()=>{
  for(const date of ['2026-02-29','2026-13-01','2026-08-32','2026-9-01','2026-09-10','bad','']) assert.throws(()=>make({date}),/日期/);
  assert.equal(make({date:'2024-02-29'}).date,'2024-02-29');
