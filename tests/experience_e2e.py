@@ -181,6 +181,7 @@ class ExperienceTests(unittest.TestCase):
             self.assertFalse(self.page.evaluate('document.documentElement.scrollWidth > innerWidth'))
 
     def test_four_cards_save_and_edit_without_duplicate(self):
+        self.page.evaluate("()=>window.QZLCardMotion?.setQuality('reduced')")
         for kind in ('action', 'strength', 'mirror', 'repair'):
             self.page.goto(self.url + '#/experience/card/' + kind)
             self.page.locator('#xpCardEvent').fill('我刚才打断了对方的话。')
@@ -188,12 +189,14 @@ class ExperienceTests(unittest.TestCase):
             self.xp('card-prepare')
             self.assertEqual(self.page.locator('[data-xp-action="card-save"]').count(), 0)
             self.xp('card-flip')
+            self.page.wait_for_selector('.cp-motion-front:visible')
             self.xp('card-save')
             self.assertIn('已存入百宝箱', self.page.locator('.cp-page').inner_text())
             self.xp('card-edit')
             self.page.locator('#xpCardNote').fill('修改后，我想先表达歉意。')
             self.xp('card-prepare')
             self.xp('card-flip')
+            self.page.wait_for_selector('.cp-motion-front:visible')
             self.xp('card-save')
             saved = [c for c in self.stored()['cards']['toolbox'] if c['type'] == kind]
             self.assertEqual(len(saved), 1, 'editing a saved card updates that card')
@@ -204,6 +207,7 @@ class ExperienceTests(unittest.TestCase):
             self.page.locator('#xpCardNote').fill('这是下一次的练习。')
             self.xp('card-prepare')
             self.xp('card-flip')
+            self.page.wait_for_selector('.cp-motion-front:visible')
             self.xp('card-save')
             self.assertEqual(len([c for c in self.stored()['cards']['toolbox'] if c['type'] == kind]), 2)
             latest_card = self.stored()['cards']['toolbox'][-1]

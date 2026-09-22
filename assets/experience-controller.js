@@ -277,7 +277,7 @@ function installExperience() {
     const data = read();
     commit({...data,cardDrafts:{...data.cardDrafts,[type]:{...data.cardDrafts?.[type],...patch}}});
   }
-  function cardAction(action, type) {
+  function cardAction(action, type, sourceEl=null) {
     const practice = window.QZLCardPractice, draft = read().cardDrafts?.[type] || {};
     if (!practice?.types.includes(type)) return;
     if (action === 'card-new') card(type,{event:'',note:'',card:null,editId:null,editCreatedAt:null,flipped:false,saved:false});
@@ -285,7 +285,20 @@ function installExperience() {
       const event = value('xpCardEvent'), note = value('xpCardNote');
       const prepared = practice.prepare(type,{event,note},{id:draft.editId || uid('practice'),now:draft.editCreatedAt || now()});
       card(type,{event,note,card:prepared,flipped:false,saved:false});
-    } else if (action === 'card-flip') card(type,{flipped:!draft.flipped});
+    } else if (action === 'card-flip') {
+      if(draft.flipped)return;
+      const motion=window.QZLCardMotion;
+      if(motion?.practiceOut&&sourceEl){
+        const top=sourceEl.closest('.xp-page')?.scrollTop||0;
+        motion.practiceOut(sourceEl,type).then(()=>{
+          card(type,{flipped:true});
+          refresh(top);
+          requestAnimationFrame(()=>motion.practiceIn?.(document.querySelector('.cp-motion-front'),type));
+        });
+        return;
+      }
+      card(type,{flipped:true});
+    }
     else if (action === 'card-edit') card(type,{editId:draft.card?.id,editCreatedAt:draft.card?.createdAt,card:null,flipped:false,saved:false});
     else if (action === 'card-save') {
       if (!draft.card || !draft.flipped) return;
@@ -314,7 +327,7 @@ function installExperience() {
     busy = true;
     const {xpAction:action,id,scene,route,type,topic,value:val,step} = button.dataset;
     try {
-      if (action.startsWith('card-')) return cardAction(action,type);
+      if (action.startsWith('card-')) return cardAction(action,type,button);
       if (action === 'route') {
         if (route === 'growth') state.growthReports = {...state.growthReports,source:'personal',anchor:date(),screen:'report'};
         return go(route);
