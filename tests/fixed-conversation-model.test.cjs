@@ -1,6 +1,9 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const path = require('node:path');
 const model = require('../assets/fixed-conversation-model.js');
+const index = fs.readFileSync(path.join(__dirname, '..', 'index.html'), 'utf8');
 
 test('fixed flow starts with an open question and does not invent scene facts', () => {
   const flow = model.createFlow('孩子写作业很困难，我不知道该怎么帮他。');
@@ -46,4 +49,10 @@ test('example answer is a draft and never submitted by the model', () => {
   assert.equal(draft.submitted, false);
   assert.ok(draft.text.length > 0);
   assert.equal(flow.answers.scene, '');
+});
+
+test('fixed result hands off to the existing full-screen card reveal effect', () => {
+  assert.match(index, /function beginFixedCardReveal\(flow\)/);
+  assert.match(index, /openCardRevealOverlayV90\('back',run\.id\)/);
+  assert.match(index, /state\.chat=\{\.\.\.state\.chat,fixedFlow:null,node:'card-reveal-back'/);
 });

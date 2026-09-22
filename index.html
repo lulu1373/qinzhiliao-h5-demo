@@ -9352,6 +9352,19 @@ function fixedConfirm(){
   saveState(); refreshConversation({scroll:'auto'});
   requestAnimationFrame(()=>fixedDraft(next.stage));
 }
+function beginFixedCardReveal(flow){
+  migrateCardsV90();
+  const previous=activeCardRunV90();
+  if(previous&&previous.status==='active')previous.status='paused';
+  const run=createCardRunV90('interpretation','fixed-conversation');
+  run.phase=V90_CARD_PHASE.REVEAL_BACK;
+  run.context={event:'小宝写数学作业时在应用题上卡住',eventTitle:'小宝写作业片段'};
+  run.result={title:'解读卡·亲子翻译',summary:(QZLFixedConversationModel.SUMMARY||[]).map(item=>item.body)};
+  state.chat={...state.chat,fixedFlow:null,node:'card-reveal-back',scenario:'card-interpretation'};
+  saveState();
+  refreshConversation({scroll:'auto'});
+  setTimeout(()=>openCardRevealOverlayV90('back',run.id),180);
+}
 function fixedDraft(stage,focus=false){const input=document.getElementById('chatInput');if(!input)return;const text=QZLFixedConversationModel.exampleDraft(stage).text;input.value=text;input.dataset.demoDraft=text;input.classList.add('fixed-demo-draft');autoSizeTextarea(input);document.getElementById('chatSendBtn')?.classList.add('send-ready');if(focus)input.focus({preventScroll:true});}
 function fixedExample(stage){fixedDraft(stage,true);}
 function fixedFlip(el){el?.closest('.fixed-card-scene')?.classList.toggle('is-flipped');}
@@ -9359,7 +9372,7 @@ function fixedSave(){const flow=fixedFlow();if(!flow?.confirmed)return;const car
 function fixedSkip(){const flow=fixedFlow();if(!flow?.confirmed)return;state.chat={...state.chat,node:'done',fixedFlow:null};saveState();refreshConversation({scroll:'preserve'});}
 const fixedLegacyHandleChatChoice=handleChatChoice;
 handleChatChoice=function(value){if(fixedFlow())return submitFixedAnswer(value);return fixedLegacyHandleChatChoice(value);};
-function submitFixedAnswer(value){const flow=fixedFlow();if(!flow||flow.stage==='result')return;const text=String(value||'').trim();if(!text)return;addChatMessage('user',text);const next=QZLFixedConversationModel.answer(flow,text);state.chat={...state.chat,fixedFlow:next,node:'fixed-'+next.stage};if(next.stage==='result')addChatMessage('ai','你担心的不只是昨晚写得晚，而是这样拖下去会养成习惯，以后题多了更写不完。你希望先看到的变化也很具体：会做的接着写，不用你反复催；不会的早点说卡在哪里。现在我已经搜集到了足够的信息。接下来，我将为你生成《解读卡》，帮助你梳理这次事件。');else addChatMessage('ai',next.prompt);saveState();refreshConversation({scroll:'auto'});if(next.stage!=='result')requestAnimationFrame(()=>fixedDraft(next.stage));}
+function submitFixedAnswer(value){const flow=fixedFlow();if(!flow||flow.stage==='result')return;const text=String(value||'').trim();if(!text)return;addChatMessage('user',text);const next=QZLFixedConversationModel.answer(flow,text);if(next.stage==='result'){addChatMessage('ai','你担心的不只是昨晚写得晚，而是这样拖下去会养成习惯，以后题多了更写不完。你希望先看到的变化也很具体：会做的接着写，不用你反复催；不会的早点说卡在哪里。现在我已经搜集到了足够的信息。接下来，我将为你生成《解读卡》，帮助你梳理这次事件。');beginFixedCardReveal(next);}else{state.chat={...state.chat,fixedFlow:next,node:'fixed-'+next.stage};addChatMessage('ai',next.prompt);saveState();refreshConversation({scroll:'auto'});requestAnimationFrame(()=>fixedDraft(next.stage));}}
 const fixedLegacySendChatInput=sendChatInput;
 sendChatInput=function(){const input=document.getElementById('chatInput'),value=(input?.value||'').trim();if(!fixedFlow()&&input?.classList.contains('fixed-demo-draft')){input.value='';input.classList.remove('fixed-demo-draft');delete input.dataset.demoDraft;document.getElementById('chatSendBtn')?.classList.remove('send-ready');startFixedConversation('homework',value);return;}if(!fixedFlow())return fixedLegacySendChatInput();if(!value)return;input.value='';input.classList.remove('fixed-demo-draft');delete input.dataset.demoDraft;autoSizeTextarea(input);document.getElementById('chatSendBtn')?.classList.remove('send-ready');submitFixedAnswer(value);};
 document.addEventListener('input',event=>{const input=event.target;if(input?.id==='chatInput'&&input.classList.contains('fixed-demo-draft')&&input.value!==input.dataset.demoDraft){input.classList.remove('fixed-demo-draft');delete input.dataset.demoDraft;}});
