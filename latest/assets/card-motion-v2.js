@@ -104,7 +104,8 @@ function frontLightSweep(scene){
 }
 function flip(scene){
   if(scene.dataset.busy==='1')return;
-  const cfg=q(),dur=cfg.duration,flipper=scene.querySelector('.motion-card-flipper'),tiltEl=scene.querySelector('.motion-card-tilt');
+  const cfg=q(),stageDur=scene.closest('.card-reveal-layer')?600:cfg.duration,dur=stageDur,flipper=scene.querySelector('.motion-card-flipper'),tiltEl=scene.querySelector('.motion-card-tilt');
+  scene.dataset.stageTiming=scene.closest('.card-reveal-layer')?'600':'engine';
   scene.dataset.busy='1';scene.classList.add('is-lifted');
   if(quality==='reduced'){
     setTimeout(()=>{scene.classList.add('flipped','revealed','past-midpoint');scene.classList.remove('is-lifted');scene.dataset.busy='0'},30);return;
@@ -249,7 +250,7 @@ function ringFx(scene,color,count=2){
 function flipAsync(scene){
   if(!scene)return Promise.resolve();
   flip(scene);
-  const delay=quality==='reduced'?200:q().duration+390;
+  const delay=quality==='reduced'?200:(scene.closest('.card-reveal-layer')?600:q().duration)+390;
   return new Promise(resolve=>setTimeout(resolve,delay));
 }
 function staticFront(scene){

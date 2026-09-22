@@ -7601,6 +7601,7 @@ function renderCardFaceV90(card){const type=card.type||'interpretation';const da
 function renderCardSceneV90(face='back',card=null,interactive=true){const data=card||defaultInterpretCardV90(activeCardRunV90());const type=data.type||'interpretation',flipped=face==='front';return `<div class="v90-card-scene motion-card-scene ${flipped?'flipped revealed past-midpoint':''}" data-type="${esc(type)}" ${interactive?`data-action="card-flip" data-motion-interactive="1" role="button" tabindex="0" aria-label="点击翻开${esc(cardTypeLabelV90(type))}"`:''}><div class="turn-ground-shadow"></div><div class="motion-card-tilt"><div class="v90-card-flipper motion-card-flipper"><article class="v90-card-face v90-card-back motion-card-face motion-card-back"><div class="pre-fx" aria-hidden="true"><i class="pre-shimmer"></i><i class="pre-aura"></i><i class="pre-accent"></i><i class="pre-symbol"></i></div><span class="icon">${cardIconV90(type)}</span><h2>${esc(cardTypeLabelV90(type))}</h2><div class="foil"></div></article>${renderCardFaceV90(data)}</div><div class="signature-layer"><i class="reveal-bloom"></i><i class="reveal-sheen"></i><i class="sig-scan"></i><i class="sig-trail"></i><i class="sig-caustic"></i><i class="sig-mend"></i><i class="ring r1"></i><i class="ring r2"></i><i class="ring r3"></i></div><div class="edge-flash"></div><div class="idle-shine"></div></div></div>`;}
 function renderSavePromptV90(){return `<div class="v90-save-prompt"><b>要把这张卡留下来吗？</b><p>保存后，可以在「我的 → 百宝箱」里随时回来看看。</p><div class="inline-actions"><button class="inline-main" data-action="card-save">存入百宝箱</button><button class="inline-alt" data-action="card-skip">先不保存</button></div></div>`;}
 const cardRevealOverlayState={runId:'',cardId:'',face:'back',scrollTop:null};
+const CARD_REVEAL_ACTION_DELAY_MS=800;
 function cardRevealDataV90(runId='',cardId=''){
   const card=cardId?state.cards.toolbox.find(c=>c.id===cardId)||null:null;
   const run=(runId?state.cards.sessions.find(x=>x.id===runId):null)||activeCardRunV90();
@@ -7628,7 +7629,7 @@ function openCardRevealOverlayV90(face='back',runId='',cardId=''){
   cardRevealOverlayState.face=actualFace;
   cardRevealOverlayState.scrollTop=area?area.scrollTop:null;
   frame.classList.add('card-reveal-open');
-  showOverlay(`<div class="card-reveal-layer ${actualFace==='front'?'is-front is-front-ready':''}" role="dialog" aria-modal="true" aria-label="${esc(cardTypeLabelV90(type))}全屏卡片"><div class="card-reveal-stage"><header class="card-reveal-head"><button class="card-reveal-close" data-overlay-action="card-reveal-close" aria-label="返回对话">×</button><span><small>CARD REVEAL</small><b>${esc(cardTypeLabelV90(type))}</b></span><i></i></header><main class="card-reveal-main"><p class="card-reveal-lead">${actualFace==='back'?'这次的理解，已经凝成一张卡。':'这次最值得留下的理解。'}</p><div class="card-reveal-card-host">${renderCardSceneV90(actualFace,resolved.data,actualFace==='back')}</div><p class="card-reveal-hint">${actualFace==='back'?'轻触卡片翻开':''}</p></main><footer class="card-reveal-actions">${actualFace==='front'?renderCardRevealActionsV90({saved,canSave}):''}</footer></div></div>`);
+  showOverlay(`<div class="card-reveal-layer is-entering ${actualFace==='front'?'is-front is-front-ready':''}" data-stage="card-reveal" role="dialog" aria-modal="true" aria-label="${esc(cardTypeLabelV90(type))}全屏卡片"><div class="card-reveal-stage"><header class="card-reveal-head"><span><small>CARD REVEAL</small><b>${esc(cardTypeLabelV90(type))}</b></span></header><main class="card-reveal-main"><p class="card-reveal-lead">${actualFace==='back'?'这次的理解，已经凝成一张卡。':'这次最值得留下的理解。'}</p><div class="card-reveal-card-host">${renderCardSceneV90(actualFace,resolved.data,actualFace==='back')}</div><p class="card-reveal-hint">${actualFace==='back'?'轻触卡片翻开':''}</p></main><footer class="card-reveal-actions">${actualFace==='front'?renderCardRevealActionsV90({saved,canSave}):''}</footer></div></div>`);
   const scene=overlayRoot.querySelector('.motion-card-scene');
   if(!scene)return;
   scene.removeAttribute('data-action');
@@ -7653,11 +7654,14 @@ function flipCardOverlayV90(scene){
   const motion=window.QZLCardMotion;
   const done=motion?.flip?motion.flip(scene):Promise.resolve().then(()=>scene.classList.add('flipped','revealed','past-midpoint'));
   Promise.resolve(done).then(()=>{
-    const canSave=!!run&&run.status==='active';
-    const actions=layer?.querySelector('.card-reveal-actions');
-    if(actions)actions.innerHTML=renderCardRevealActionsV90({saved:false,canSave});
-    layer?.classList.add('is-front-ready');
-    refreshConversation({scroll:'preserve'});
+    const actionDelay=window.QZLCardMotion?.getQuality?.()==='reduced'?100:CARD_REVEAL_ACTION_DELAY_MS;
+    setTimeout(()=>{
+      const canSave=!!run&&run.status==='active';
+      const actions=layer?.querySelector('.card-reveal-actions');
+      if(actions)actions.innerHTML=renderCardRevealActionsV90({saved:false,canSave});
+      layer?.classList.add('is-front-ready');
+      refreshConversation({scroll:'preserve'});
+    },actionDelay);
   });
 }
 function closeCardRevealOverlayV90(focus=false){

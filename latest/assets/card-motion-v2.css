@@ -2,6 +2,8 @@
 .motion-card-tilt{position:absolute;inset:0;transform:translateY(var(--lift)) scale(var(--scale)) rotateX(var(--tilt-x)) rotateY(var(--tilt-y));transform-style:preserve-3d;transition:transform 160ms ease-out;will-change:transform}
 .motion-card-scene.is-pressed .motion-card-tilt{--scale:.975}
 .motion-card-scene.is-lifted .motion-card-tilt{--lift:-9px;--scale:1.035}
+.card-reveal-layer .motion-card-tilt{transition:transform 150ms cubic-bezier(.2,.8,.2,1)}
+.card-reveal-layer .motion-card-scene.is-pressed .motion-card-tilt{transition-duration:100ms;--scale:.965}
 .motion-card-flipper{position:absolute;inset:0;transform-style:preserve-3d;-webkit-transform-style:preserve-3d;transition:none;will-change:transform}
 .motion-card-scene.flipped .motion-card-flipper{transform:rotateY(180deg)}
 .motion-card-face{position:absolute;inset:0;border-radius:24px;overflow:hidden;backface-visibility:hidden;-webkit-backface-visibility:hidden;transform-style:preserve-3d;-webkit-transform-style:preserve-3d;border:1px solid rgba(255,255,255,.15);box-shadow:var(--shadow)}
@@ -202,46 +204,46 @@ body[data-card-motion-quality="reduced"] .cp-card{transition:opacity 180ms ease!
 body[data-card-motion-quality="lite"] .motion-card-scene{--shadow:0 13px 28px rgba(46,48,42,.10)}
 
 /* Full-screen card reveal stage */
+.app-frame.card-reveal-open .main-viewport{
+  transform:scale(.985) translateY(3px);
+  filter:brightness(.72) saturate(.84) blur(3px);
+  transition:transform 900ms cubic-bezier(.2,.78,.2,1),filter 900ms ease;
+}
+.app-frame.card-reveal-open .screen-host{transition:filter 900ms ease}
 .card-reveal-layer{
   position:absolute;inset:0;z-index:128;overflow:hidden;
-  background:
-    radial-gradient(circle at 50% 34%,rgba(255,255,255,.54),transparent 27%),
-    radial-gradient(circle at 20% 12%,rgba(164,193,148,.18),transparent 30%),
-    radial-gradient(circle at 82% 18%,rgba(159,139,211,.15),transparent 27%),
-    rgba(31,34,28,.58);
-  -webkit-backdrop-filter:blur(12px) saturate(.82);
-  backdrop-filter:blur(12px) saturate(.82);
-  animation:qzl-card-stage-in .34s cubic-bezier(.2,.76,.2,1)
+  background:transparent;pointer-events:auto
+}
+.card-reveal-layer:after{
+  content:"";position:absolute;inset:0;pointer-events:none;opacity:0;
+  background:radial-gradient(circle at 50% 48%,rgba(255,249,221,.22),transparent 32%);
+  animation:card-reveal-depth 900ms 300ms cubic-bezier(.2,.75,.2,1) forwards
 }
 .card-reveal-layer:before{
-  content:"";position:absolute;inset:-16%;pointer-events:none;opacity:.55;
-  background:radial-gradient(circle at 50% 45%,rgba(255,250,229,.28),transparent 34%);
-  animation:qzl-card-stage-breathe 5.5s ease-in-out infinite
+  content:"";position:absolute;inset:12% 8%;pointer-events:none;opacity:0;border-radius:50%;
+  background:radial-gradient(ellipse at center,rgba(246,231,181,.32),transparent 68%);
+  filter:blur(24px);animation:card-reveal-halo 700ms 500ms cubic-bezier(.18,.75,.2,1) forwards
 }
 .card-reveal-stage{
   position:relative;z-index:1;width:100%;height:100%;
   padding:calc(12px + var(--safe-top)) 18px calc(14px + var(--safe-bottom));
-  display:grid;grid-template-rows:58px minmax(0,1fr) auto;color:#f8f5ed
+  display:grid;grid-template-rows:58px minmax(0,1fr) auto;color:#3b352d
 }
 .card-reveal-head{
-  display:grid;grid-template-columns:44px 1fr 44px;align-items:center;text-align:center
+  display:grid;grid-template-columns:1fr;align-items:center;text-align:center;pointer-events:none
 }
-.card-reveal-close{
-  width:38px;height:38px;border:1px solid rgba(255,255,255,.16);border-radius:50%;
-  background:rgba(255,255,255,.09);color:#fff;font-size:22px;line-height:1;display:grid;place-items:center;
-  -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)
-}
-.card-reveal-head small{display:block;font-size:9px;letter-spacing:.18em;color:rgba(255,255,255,.58)}
-.card-reveal-head b{display:block;margin-top:3px;font:560 15px/1.2 Georgia,"Songti SC",serif;letter-spacing:.12em;color:#fff}
+.card-reveal-head small{display:block;font-size:9px;letter-spacing:.18em;color:rgba(71,77,63,.58)}
+.card-reveal-head b{display:block;margin-top:3px;font:560 15px/1.2 Georgia,"Songti SC",serif;letter-spacing:.12em;color:#3e4937}
 .card-reveal-main{
   min-height:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
   padding:8px 0 4px
 }
-.card-reveal-lead{margin:0 0 15px;text-align:center;font-size:12px;line-height:1.6;color:rgba(255,255,255,.70)}
+.card-reveal-lead{margin:0 0 15px;text-align:center;font-size:12px;line-height:1.6;color:rgba(69,73,62,.68)}
 .card-reveal-card-host{width:100%;display:flex;align-items:center;justify-content:center;min-height:0}
 .card-reveal-card-host .v90-card-scene.motion-card-scene{width:min(72%,286px)!important;margin:0 auto}
+.card-reveal-layer.is-entering .card-reveal-card-host{opacity:0;transform:scale(.72) translateY(80px);animation:card-reveal-rise 700ms 500ms cubic-bezier(.18,.78,.2,1) forwards}
 .card-reveal-hint{
-  min-height:20px;margin:13px 0 0;font-size:11px;letter-spacing:.08em;color:rgba(255,255,255,.62);
+  min-height:20px;margin:13px 0 0;font-size:11px;letter-spacing:.08em;color:rgba(69,73,62,.62);
   transition:opacity .2s ease,transform .2s ease
 }
 .card-reveal-layer.is-front .card-reveal-hint{opacity:0;transform:translateY(4px)}
@@ -258,10 +260,10 @@ body[data-card-motion-quality="lite"] .motion-card-scene{--shadow:0 13px 28px rg
   box-shadow:0 9px 24px rgba(0,0,0,.16),inset 0 1px 0 #fff
 }
 .card-reveal-secondary{
-  height:44px;border-radius:22px;background:rgba(255,255,255,.10);color:#fff;
-  border:1px solid rgba(255,255,255,.15);-webkit-backdrop-filter:blur(9px);backdrop-filter:blur(9px)
+  height:44px;border-radius:22px;background:rgba(70,82,61,.82);color:#fff;
+  border:1px solid rgba(255,255,255,.34);-webkit-backdrop-filter:blur(9px);backdrop-filter:blur(9px)
 }
-.card-reveal-link{height:34px;background:transparent;color:rgba(255,255,255,.66);font-weight:500}
+.card-reveal-link{height:34px;background:transparent;color:rgba(69,73,62,.66);font-weight:500}
 .card-reveal-saved{
   height:42px;border-radius:21px;display:flex;align-items:center;justify-content:center;gap:7px;
   background:rgba(225,244,215,.13);border:1px solid rgba(225,244,215,.18);font-size:12px;color:#edf8e8
@@ -282,8 +284,9 @@ body[data-card-motion-quality="lite"] .motion-card-scene{--shadow:0 13px 28px rg
 .v90-card-inline-entry b{display:block;font-size:13px;font-weight:650}
 .v90-card-inline-entry em{font-style:normal;font-size:10px;color:#7f887a;white-space:nowrap}
 .v90-card-inline-entry.front{background:linear-gradient(145deg,#faf9f5,#eef3e9)}
-@keyframes qzl-card-stage-in{from{opacity:0}to{opacity:1}}
-@keyframes qzl-card-stage-breathe{0%,100%{transform:scale(.98);opacity:.42}50%{transform:scale(1.04);opacity:.62}}
+@keyframes card-reveal-depth{0%{opacity:0;transform:scale(.96)}100%{opacity:1;transform:scale(1)}}
+@keyframes card-reveal-halo{0%{opacity:0;transform:scale(.76)}100%{opacity:.82;transform:scale(1)}}
+@keyframes card-reveal-rise{0%{opacity:0;transform:scale(.72) translateY(80px)}72%{opacity:1;transform:scale(1.035) translateY(-5px)}88%{transform:scale(.992) translateY(2px)}100%{opacity:1;transform:scale(1) translateY(0)}}
 @media(max-height:760px){
   .card-reveal-stage{grid-template-rows:50px minmax(0,1fr) auto;padding-top:calc(7px + var(--safe-top))}
   .card-reveal-main{padding-top:0}.card-reveal-lead{margin-bottom:8px}
@@ -292,6 +295,7 @@ body[data-card-motion-quality="lite"] .motion-card-scene{--shadow:0 13px 28px rg
   .card-reveal-primary{height:44px}.card-reveal-secondary{height:40px}
 }
 @media(prefers-reduced-motion:reduce){
-  .card-reveal-layer,.card-reveal-layer:before{animation:none!important}
+  .app-frame.card-reveal-open .main-viewport{transform:none;filter:brightness(.82)}
+  .card-reveal-layer:after,.card-reveal-layer:before,.card-reveal-layer.is-entering .card-reveal-card-host{animation:none!important;opacity:1;transform:none}
   .card-reveal-actions,.card-reveal-hint{transition:none!important}
 }
