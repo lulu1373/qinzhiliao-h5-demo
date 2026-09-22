@@ -9287,6 +9287,7 @@ installPointsV2();
 
 /* Fixed demo conversation: a bounded, evidence-led mainline for live demos. */
 const fixedStylesheet=document.createElement('link');fixedStylesheet.rel='stylesheet';fixedStylesheet.href='assets/fixed-conversation.css?v=1';document.head.appendChild(fixedStylesheet);
+const fixedModelAssetAvailable=!!window.QZLFixedConversationModel;
 const QZLFixedConversationModel=window.QZLFixedConversationModel||(()=>{
   const labels={scene:'找准片段',interaction:'看清互动',expectation:'厘清期待',result:'形成理解'};
   const prompts={scene:'最近一次具体发生了什么？你可以只说一个片段：当时在什么情境里，孩子做了什么？',interaction:'谢谢你把片段说清楚了。接下来我想了解过程：你当时怎么回应，孩子又怎么回应？最后停在了哪里？',expectation:'我大概看见这段互动的轮廓了。对这件事，你最担心什么，又希望以后出现什么小变化？'};
@@ -9295,6 +9296,7 @@ const QZLFixedConversationModel=window.QZLFixedConversationModel||(()=>{
   const answer=(flow,text)=>{const answers={...flow.answers,[flow.stage]:text},stage=flow.stage==='scene'?'interaction':flow.stage==='interaction'?'expectation':'result';const result=stage==='result'?{title:'从一次具体片段，看见你们怎样卡住又怎样靠近',modules:[{title:'这次发生了什么',tone:'blue',body:answers.scene,evidence:'来自你刚才描述的片段'},{title:'孩子行为背后的信息',tone:'violet',body:'孩子的行为可能是在当下压力里寻找一个更容易开始的入口。',evidence:'可能理解，不是确定判断'},{title:'你们怎样互相影响',tone:'peach',body:answers.interaction,evidence:'来自你描述的互动过程'},{title:'换个角度看这件事',tone:'green',body:'你在意的不只是完成没有，而是希望孩子逐渐拥有自己开始的空间。',evidence:'结合你的担心与期待整理'}]}:null;return {...flow,answers,stage,prompt:prompts[stage]||'',result};};
   return {LABELS:labels,PROMPTS:prompts,createFlow,answer,exampleDraft:stage=>({text:examples[stage]||'',submitted:false})};
 })();
+if(!fixedModelAssetAvailable){
 QZLFixedConversationModel.PRESET={seed:'小宝写作业怎么总是这么拖拉？明明题也不多，每次都弄到快十点。我催了好几次也没用，真是越看越来气。',scene:'昨晚七点半开始写数学，前面的口算挺快。翻到应用题后就一直擦了写、写了擦，还拿橡皮在桌上摆弄，半天没往下写。',interaction:'我催了几次“快点写”，他还是没往下写，后来就说“你别一直催，我不知道先算什么，写错了又要擦”。我坐下来陪他读了一遍题，他才接着写，写完还是快十点了。',expectation:'我最怕他养成拖拉的习惯，现在题少都这样，以后题多更写不完。我希望会做的能接着写，不用我一直催；不会的就早点说卡在哪里。'};
 QZLFixedConversationModel.SUMMARY=[{title:'本次片段',body:'昨晚口算较顺，到了应用题，小宝反复擦写、停着没往下做，最终接近十点才完成。'},{title:'值得记住的理解',body:'这次的慢，可能与找不到做题的第一步有关，不宜直接等同于“不自觉”。他说“不知道先算什么”，也在一起读题后继续了。'},{title:'你的担心与期待',body:'你担心拖拉养成习惯，以后题多更写不完；希望他会做的接着写，不会的早点说，不用反复催。'},{title:'下次可以试试',body:'再停住时，先把“快点写”换成了解具体卡点：“这道题，你卡在哪一步？”'}];
 QZLFixedConversationModel.createFlow=seed=>({stage:'invite',seed,answers:{scene:'',interaction:'',expectation:''},prompt:'你愿意的话，我们可以挑最近一次一起看看：他在哪儿慢下来了，你提醒之后又发生了什么。我帮你把这些线索整理成一份解读。要是这会儿还气着，不想分析，也没关系，咱们可以先聊聊。',result:null,confirmed:false,presets:{...QZLFixedConversationModel.PRESET}});
@@ -9306,6 +9308,7 @@ QZLFixedConversationModel.pause=flow=>flow&&flow.stage!=='result'&&flow.stage!==
 QZLFixedConversationModel.resume=flow=>flow?({...flow,paused:false}):flow;
 QZLFixedConversationModel.exampleDraft=stage=>({stage,text:QZLFixedConversationModel.PRESET[stage]||'',submitted:false});
 QZLFixedConversationModel.answer=(flow,text)=>{const value=String(text||'').trim();if(!value)return flow;const answers={...flow.answers,[flow.stage]:value};if(flow.stage==='scene')return {...flow,answers,stage:'interaction',prompt:'这个区别很有用：前面的口算能往下做，停顿主要出现在应用题。现在我们看的是一个具体卡住的片段，不只是笼统的“写作业慢”。看到他停着，你当时是怎么回应的？从你回应之后到这次作业结束，他的表现有怎样的变化？'};if(flow.stage==='interaction')return {...flow,answers,stage:'confirm',prompt:'从你说的经过看，有个变化值得留意：几次催促后，他仍停着；你陪他读题后，他才继续往下写。我把这一次的经过串起来，你看看有没有哪里没说准？'};return {...flow,answers,stage:'result',prompt:'',result:{title:'解读卡·亲子翻译',modules:QZLFixedConversationModel.SUMMARY.map(item=>({...item,tone:item.title==='本次片段'?'blue':item.title==='值得记住的理解'?'violet':item.title==='你的担心与期待'?'peach':'green',evidence:'基于已确认的对话内容'}))}};};
+}
 function fixedFlow(){return state.chat?.fixedFlow||null;}
 function fixedProgress(stage){
   const order=['scene','interaction','expectation','result'], index=Math.max(0,order.indexOf(stage));
