@@ -56,3 +56,32 @@ test('fixed result hands off to the existing full-screen card reveal effect', ()
   assert.match(index, /openCardRevealOverlayV90\('back',run\.id\)/);
   assert.match(index, /state\.chat=\{\.\.\.state\.chat,fixedFlow:null,node:'card-reveal-back'/);
 });
+
+test('result stays in the conversation until the parent claims the card', () => {
+  let flow = model.accept(model.createFlow(model.PRESET.seed));
+  flow = model.answer(flow, model.PRESET.scene);
+  flow = model.answer(flow, model.PRESET.interaction);
+  flow = model.confirm(flow);
+  flow = model.answer(flow, model.PRESET.expectation);
+  assert.equal(flow.stage, 'result');
+  assert.equal(flow.claimed, false);
+  const claimed = model.claim(flow);
+  assert.equal(claimed.stage, 'reveal_back');
+  assert.equal(claimed.claimed, true);
+});
+
+test('result UI exposes claim and does not render the card face inline', () => {
+  assert.match(index, /data-action="fixed-claim">领取本次解读卡/);
+  assert.match(index, /function fixedClaim\(\)/);
+  assert.doesNotMatch(index, /if\(flow\.stage==='result'\)[\s\S]*fixed-card-scene \$\{flow\.confirmed/);
+});
+
+test('an in-progress fixed flow can pause and resume without changing its stage', () => {
+  const flow = model.accept(model.createFlow('seed'));
+  const paused = model.pause(flow);
+  assert.equal(paused.paused, true);
+  assert.equal(paused.stage, 'scene');
+  const resumed = model.resume(paused);
+  assert.equal(resumed.paused, false);
+  assert.equal(resumed.stage, 'scene');
+});

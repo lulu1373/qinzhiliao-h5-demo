@@ -21,7 +21,7 @@
     {title:'你的担心与期待',body:'你担心拖拉养成习惯，以后题多更写不完；希望他会做的接着写，不会的早点说，不用反复催。'},
     {title:'下次可以试试',body:'再停住时，先把“快点写”换成了解具体卡点：“这道题，你卡在哪一步？”'}
   ];
-  function createFlow(seed = '') { return {stage:'invite',seed:String(seed || ''),answers:{scene:'',interaction:'',expectation:''},prompt:'你愿意的话，我们可以挑最近一次一起看看：他在哪儿慢下来了，你提醒之后又发生了什么。我帮你把这些线索整理成一份解读。要是这会儿还气着，不想分析，也没关系，咱们可以先聊聊。',result:null,confirmed:false,presets:{...PRESET}}; }
+  function createFlow(seed = '') { return {stage:'invite',seed:String(seed || ''),answers:{scene:'',interaction:'',expectation:''},prompt:'你愿意的话，我们可以挑最近一次一起看看：他在哪儿慢下来了，你提醒之后又发生了什么。我帮你把这些线索整理成一份解读。要是这会儿还气着，不想分析，也没关系，咱们可以先聊聊。',result:null,confirmed:false,claimed:false,paused:false,presets:{...PRESET}}; }
   function presetFlow() { const flow=createFlow(PRESET.seed); return {...flow,presets:{...PRESET},summary:{title:'解读卡·亲子翻译',items:SUMMARY.map(item=>({...item}))}}; }
   function accept(flow) { return {...flow,stage:'scene',prompt:PROMPTS.scene}; }
   function resultFor(flow) { return {title:'解读卡·亲子翻译',modules:[
@@ -32,6 +32,9 @@
   ]}; }
   function answer(flow,text) { const value=String(text||'').trim(); if(!value||!['scene','interaction','expectation'].includes(flow.stage))return flow; const answers={...flow.answers,[flow.stage]:value}; const stage=flow.stage==='scene'?'interaction':flow.stage==='interaction'?'confirm':'result'; return {...flow,answers,stage,prompt:stage==='result'?'':stage==='confirm'?'我把这一次的经过串起来，你看看有没有哪里没说准：':PROMPTS[stage],result:stage==='result'?resultFor({...flow,answers}):null,confirmed:false}; }
   function confirm(flow) { if(flow.stage!=='confirm')return flow; return {...flow,stage:'expectation',prompt:PROMPTS.expectation,confirmed:true}; }
+  function claim(flow) { if(flow.stage!=='result'||!flow.result)return flow; return {...flow,stage:'reveal_back',claimed:true}; }
+  function pause(flow) { if(!flow||flow.stage==='result'||flow.stage==='reveal_back'||flow.stage==='done')return flow; return {...flow,paused:true}; }
+  function resume(flow) { if(!flow)return flow; return {...flow,paused:false}; }
   function exampleDraft(stage) { return {stage,text:stage==='scene'?PRESET.scene:stage==='interaction'?PRESET.interaction:PRESET.expectation,submitted:false}; }
-  return {LABELS,PROMPTS,PRESET,SUMMARY,createFlow,presetFlow,accept,answer,confirm,exampleDraft,resultFor};
+  return {LABELS,PROMPTS,PRESET,SUMMARY,createFlow,presetFlow,accept,answer,confirm,claim,pause,resume,exampleDraft,resultFor};
 });
