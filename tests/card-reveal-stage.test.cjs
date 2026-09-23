@@ -44,6 +44,11 @@ test('fixed interpretation reveal keeps four labeled modules in a scrollable lar
 });
 
 test('long-form card keeps a fixed shape and screen share, with type scaling to the card', () => {
-  assert.match(css, /has-reading-modules \.card-reveal-card-host \.v90-card-scene\.motion-card-scene\{[\s\S]*?width:min\(88%,calc\(60dvh \/ 1\.525\)\)!important;[\s\S]*?aspect-ratio:2\/3\.05!important;[\s\S]*?container-type:inline-size/);
+  assert.match(css, /has-reading-modules\.is-front \.card-reveal-card-host \.v90-card-scene\.motion-card-scene\.has-reading-modules\{[\s\S]*?width:min\(100%,calc\(var\(--reading-card-h\) \/ 1\.525\)\)!important;[\s\S]*?aspect-ratio:2\/3\.05!important;[\s\S]*?container-type:inline-size/);
   assert.match(css, /card-reading-section p\{font-size:5\.4cqw!important/);
+});
+
+test('long-form card uses 78% of the screen height and a single row of actions', () => {
+  assert.match(css, /--reading-card-h:78dvh/);
+  assert.match(css, /has-reading-modules \.card-reveal-actions\{[^}]*display:flex/);
 });
