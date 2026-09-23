@@ -43,7 +43,7 @@ test('fixed interpretation reveal keeps four labeled modules in a scrollable lar
   assert.match(index, /card-reveal-layer is-entering[^`]*has-reading-modules/);
 });
 
-test('long-form card front fills the reveal stage with readable type', () => {
-  assert.match(css, /V10: larger, more readable front face[\s\S]*?width:min\(94%,440px\)!important;[\s\S]*?aspect-ratio:auto!important/);
-  assert.match(css, /card-reading-section p\{font-size:15px!important/);
+test('long-form card keeps a fixed shape and screen share, with type scaling to the card', () => {
+  assert.match(css, /has-reading-modules \.card-reveal-card-host \.v90-card-scene\.motion-card-scene\{[\s\S]*?width:min\(88%,calc\(60dvh \/ 1\.525\)\)!important;[\s\S]*?aspect-ratio:2\/3\.05!important;[\s\S]*?container-type:inline-size/);
+  assert.match(css, /card-reading-section p\{font-size:5\.4cqw!important/);
 });

@@ -409,22 +409,24 @@ body[data-card-motion-quality="lite"] .motion-card-scene{--shadow:0 13px 28px rg
   }
 }
 
-/* V10: larger, more readable front face for the long-form interpretation card.
-   The card fills the space between the header and the action buttons; its modules scroll inside. */
-.card-reveal-layer.is-front .card-reveal-card-host .v90-card-scene.motion-card-scene.has-reading-modules,
-.card-reveal-layer.is-front.has-reading-modules .card-reveal-card-host .v90-card-scene.motion-card-scene{
-  width:min(94%,440px)!important;
-  aspect-ratio:auto!important;
-  height:min(calc(100dvh - 118px - var(--reading-actions-space,150px) - var(--safe-top) - var(--safe-bottom)),720px)!important;
-  min-height:360px;
+/* V10: the long-form interpretation card keeps a fixed 2:3.05 shape and a fixed share of the screen.
+   Size = 60% of the viewport height (capped at 88% of the width); all type scales with the card (cqw). */
+.card-reveal-layer.has-reading-modules .card-reveal-card-host .v90-card-scene.motion-card-scene{
+  width:min(88%,calc(60vh / 1.525))!important;
+  width:min(88%,calc(60dvh / 1.525))!important;
+  aspect-ratio:2/3.05!important;
+  height:auto!important;
+  container-type:inline-size;
 }
-.card-reveal-layer.has-reading-modules.is-front .card-reveal-lead{margin-bottom:6px}
+.card-reveal-layer.has-reading-modules .card-reveal-lead{margin-bottom:1.2dvh}
 .card-reveal-layer.has-reading-modules.is-front .card-reveal-hint{display:none}
-.motion-card-scene.has-reading-modules .motion-card-front{padding:18px 18px 12px!important}
-.motion-card-scene.has-reading-modules .motion-card-front .front-icon{width:34px!important;height:34px!important;margin:6px auto 2px!important}
-.motion-card-scene.has-reading-modules .motion-card-front .front-icon svg{width:32px!important;height:32px!important}
-.motion-card-scene.has-reading-modules .motion-card-front h3{font-size:20px!important;margin:4px 8px 10px!important}
-.card-reveal-layer .card-reading-section{padding:11px 10px 12px!important}
-.card-reveal-layer .card-reading-section>b{font-size:14px!important;margin-bottom:5px!important}
-.card-reveal-layer .motion-card-scene.has-reading-modules .motion-card-front .card-reading-section p{font-size:15px!important;line-height:1.75!important;color:#4f564e}
-.card-reveal-layer .card-scroll-cue{font-size:10px!important;margin-top:6px!important}
+.card-reveal-layer .motion-card-scene.has-reading-modules .motion-card-front{padding:5.5cqw 5.5cqw 3.6cqw!important}
+.card-reveal-layer .motion-card-scene.has-reading-modules .motion-card-front .kicker{font-size:3.4cqw!important}
+.card-reveal-layer .motion-card-scene.has-reading-modules .motion-card-front .front-icon{width:11cqw!important;height:11cqw!important;margin:2cqw auto 1cqw!important}
+.card-reveal-layer .motion-card-scene.has-reading-modules .motion-card-front .front-icon svg{width:10.4cqw!important;height:10.4cqw!important}
+.card-reveal-layer .motion-card-scene.has-reading-modules .motion-card-front h3{font-size:7cqw!important;margin:1.2cqw 2.4cqw 3cqw!important}
+.card-reveal-layer .motion-card-scene.has-reading-modules .card-reading-section{padding:3.4cqw 3cqw 3.6cqw!important}
+.card-reveal-layer .motion-card-scene.has-reading-modules .card-reading-section>b{font-size:4.9cqw!important;margin-bottom:1.5cqw!important}
+.card-reveal-layer .motion-card-scene.has-reading-modules .motion-card-front .card-reading-section p{font-size:5.4cqw!important;line-height:1.7!important;color:#4f564e}
+.card-reveal-layer .motion-card-scene.has-reading-modules .card-scroll-cue{font-size:3.1cqw!important;margin-top:1.8cqw!important}
+.card-reveal-layer .motion-card-scene.has-reading-modules .motion-card-front time{font-size:3.6cqw!important;margin-top:1.2cqw!important}
