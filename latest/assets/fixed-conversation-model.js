@@ -5,8 +5,8 @@
 })(typeof window !== 'undefined' ? window : globalThis, function() {
   const LABELS = {invite:'自然邀请',scene:'找准片段',interaction:'看清互动',confirm:'事实确认',expectation:'厘清期待',result:'形成解读'};
   const PROMPTS = {
-    scene:'好，我们先挑最近一次，不用你把整个晚上重新讲一遍。最近那次，他是从一开始就慢，还是写到某一部分才明显慢下来？当时你看到他具体在做什么？',
-    interaction:'这个区别很有用：前面的口算能往下做，停顿主要出现在应用题。现在我们看的是一个具体卡住的片段，不只是笼统的“写作业慢”。看到他停着，你当时是怎么回应的？从你回应之后到这次作业结束，他的表现有怎样的变化？不必记住每句话，讲你记得的几个节点就好：比如仍然停着、说出了困难，或者后来继续写了。',
+    scene:'好，我们先挑最近一次，不用你把整个晚上重新讲一遍。\n\n最近那次，他是从一开始就慢，还是写到某一部分才明显慢下来？\n\n当时你看到他具体在做什么？\n\n比如反复擦写、摆弄文具，或盯着题没动笔，说你记得的一两个动作就好。',
+    interaction:'这个区别很有用：前面的口算能往下做，停顿主要出现在应用题。现在我们看的是一个具体卡住的片段，不只是笼统的「写作业慢」。\n\n看到他停着，你当时是怎么回应的？\n\n从你回应之后到这次作业结束，他的表现有怎样的变化？\n\n不必记住每句话，讲你记得的几个节点就好：比如仍然停着、说出了困难，或者后来继续写了。',
     expectation:'好，那我们就按这个经过往下看。你刚才说越看越来气，最后我也想听听你这边。这件事最让你在意或担心的是什么？每天拖到很晚、怕拖拉变成习惯、还是每天都得陪着催着？你最希望先看到哪一点变化？会做的能接着写、不会的早点说卡在哪里、还是作业早点结束？这些只是例子，挑贴近你的说就好，也可以自己说，不用逐项回答。'
   };
   const PRESET = {
@@ -21,7 +21,7 @@
     {title:'你的担心与期待',body:'你担心拖拉养成习惯，以后题多更写不完；希望他会做的接着写，不会的早点说，不用反复催。'},
     {title:'下次可以试试',body:'再停住时，先把“快点写”换成了解具体卡点：“这道题，你卡在哪一步？”'}
   ];
-  function createFlow(seed = '') { return {stage:'invite',seed:String(seed || ''),answers:{scene:'',interaction:'',expectation:''},prompt:'你愿意的话，我们可以挑最近一次一起看看：他在哪儿慢下来了，你提醒之后又发生了什么。我帮你把这些线索整理成一份解读。要是这会儿还气着，不想分析，也没关系，咱们可以先聊聊。',result:null,confirmed:false,claimed:false,paused:false,presets:{...PRESET}}; }
+  function createFlow(seed = '') { return {stage:'invite',seed:String(seed || ''),answers:{scene:'',interaction:'',expectation:''},prompt:'催了好几次，还是拖到快十点，难怪你又急又气。\n\n你愿意的话，我们可以挑最近一次一起看看：他在哪儿慢下来了，你提醒之后又发生了什么。我帮你把这些线索整理成一份解读。要是这会儿还气着，不想分析，也没关系，咱们可以先聊聊。',result:null,confirmed:false,claimed:false,paused:false,presets:{...PRESET}}; }
   function presetFlow() { const flow=createFlow(PRESET.seed); return {...flow,presets:{...PRESET},summary:{title:'解读卡·亲子翻译',items:SUMMARY.map(item=>({...item}))}}; }
   function accept(flow) { return {...flow,stage:'scene',prompt:PROMPTS.scene}; }
   function resultFor(flow) { return {title:'解读卡·亲子翻译',modules:[
@@ -30,11 +30,11 @@
     {title:'你们怎样互相影响',tone:'peach',body:'看到互动模式：这次前半段出现了“他停着不写——你提醒快一点—他仍停着——你再次提醒”的来回。催促在推动速度，但还没有解决他表达的“下一步怎么做”的困难。后来你改为陪他读题，他继续往下写，这段互动让事件出现了转折。如果这种互动反复延续，具体的做题困难可能迟迟没有得到处理。同类问题反复出现时，你们也容易把注意力放在“为什么还不快点”，而不是弄清“究竟卡在哪里”。',evidence:'来自本次互动顺序，不推断长期模式'},
     {title:'换个角度看这件事',tone:'green',body:'正面重述：原本的说法：“他写作业怎么总是这么拖拉？”可以尝试的新说法：“这次他在应用题上卡住了，但他已经能说出自己不知道先算什么，也在一起读题后继续往下做。能够表达困难、借助帮助继续，是可以支持他往前走的起点。”这个理解保留了需要改善的地方，也看见了孩子已经做到的部分；并不意味着作业拖到很晚就不需要处理。督导提醒：1. 先辨认一个具体卡点。下次再次停住时，可以先了解他卡在哪一步，把注意力从单纯提醒速度，转向眼前的困难。2. 留意帮助后能否自己继续。一起弄清卡点后，给他尝试下一步的空间；如果仍停着，再了解剩下的困难，不必马上接管整份作业。',evidence:'结合事实与家长已表达的担心和期待'}
   ]}; }
-  function answer(flow,text) { const value=String(text||'').trim(); if(!value||!['scene','interaction','expectation'].includes(flow.stage))return flow; const answers={...flow.answers,[flow.stage]:value}; const stage=flow.stage==='scene'?'interaction':flow.stage==='interaction'?'confirm':'result'; return {...flow,answers,stage,prompt:stage==='result'?'':stage==='confirm'?'我把这一次的经过串起来，你看看有没有哪里没说准：':PROMPTS[stage],result:stage==='result'?resultFor({...flow,answers}):null,confirmed:false}; }
+  function answer(flow,text) { const value=String(text||'').trim(); if(!value||!['scene','interaction','expectation'].includes(flow.stage))return flow; const answers={...flow.answers,[flow.stage]:value}; const stage=flow.stage==='scene'?'interaction':flow.stage==='interaction'?'confirm':'result'; return {...flow,answers,stage,prompt:stage==='result'?'':stage==='confirm'?'从你说的经过看，有个变化值得留意：几次催促后，他仍停着；你陪他读题后，他才继续往下写。\n\n我把这一次的经过串起来，你看看有没有哪里没说准：':PROMPTS[stage],result:stage==='result'?resultFor({...flow,answers}):null,confirmed:false}; }
   function confirm(flow) { if(flow.stage!=='confirm')return flow; return {...flow,stage:'expectation',prompt:PROMPTS.expectation,confirmed:true}; }
   function claim(flow) { if(flow.stage!=='result'||!flow.result)return flow; return {...flow,stage:'reveal_back',claimed:true}; }
   function pause(flow) { if(!flow||flow.stage==='result'||flow.stage==='reveal_back'||flow.stage==='done')return flow; return {...flow,paused:true}; }
   function resume(flow) { if(!flow)return flow; return {...flow,paused:false}; }
-  function exampleDraft(stage) { return {stage,text:stage==='scene'?PRESET.scene:stage==='interaction'?PRESET.interaction:PRESET.expectation,submitted:false}; }
+  function exampleDraft(stage) { return {stage,text:stage==='seed'?PRESET.seed:stage==='scene'?PRESET.scene:stage==='interaction'?PRESET.interaction:PRESET.expectation,submitted:false}; }
   return {LABELS,PROMPTS,PRESET,SUMMARY,createFlow,presetFlow,accept,answer,confirm,claim,pause,resume,exampleDraft,resultFor};
 });

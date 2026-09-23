@@ -43,6 +43,25 @@ test('demo preset follows the approved 小宝 math-homework evidence chain', () 
   assert.deepEqual(flow.summary.items.map(item => item.title), ['本次片段','值得记住的理解','你的担心与期待','下次可以试试']);
 });
 
+test('demo composer starts from the approved seed', () => {
+  assert.equal(model.exampleDraft('seed').text, model.PRESET.seed);
+  assert.match(index, /fixedDraft\('seed'\)/);
+  assert.match(index, /exampleDraft\('seed'\)\.text/);
+});
+
+test('first visit boots directly into the approved preset conversation', () => {
+  assert.match(index, /FIXED_DEMO_BOOT_KEY/);
+  assert.match(index, /state\.loggedIn=true;startFixedConversation\('homework',QZLFixedConversationModel\.PRESET\.seed\)/);
+  assert.match(index, /if\(!bootstrapFixedDemo\(\)\)renderRoute\(normalizeRoute\(\)\)/);
+});
+
+test('demo stages can advance with one tap using the preset parent replies', () => {
+  assert.match(index, /data-action="fixed-demo-next">继续演示 · 发送预设回复/);
+  assert.match(index, /function fixedDemoNext\(\)/);
+  assert.match(index, /submitFixedAnswer\(QZLFixedConversationModel\.exampleDraft\(flow\.stage\)\.text\)/);
+  assert.match(index, /action==='fixed-later'/);
+});
+
 test('example answer is a draft and never submitted by the model', () => {
   const flow = model.accept(model.createFlow('孩子写作业很困难，我不知道该怎么帮他。'));
   const draft = model.exampleDraft(flow.stage);

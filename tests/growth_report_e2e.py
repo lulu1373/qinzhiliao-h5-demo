@@ -67,6 +67,24 @@ class GrowthReportTests(unittest.TestCase):
         self.click('source', '[data-value="example"]')
         self.assertIn('示例报告', self.page.locator('#grContent').inner_text())
 
+    def test_latest_preloads_complete_fixed_conversation(self):
+        seed='小宝写作业怎么总是这么拖拉？明明题也不多，每次都弄到快十点。我催了好几次也没用，真是越看越来气。'
+        self.page.goto(self.url+'latest/',wait_until='networkidle')
+        self.page.wait_for_selector('[data-action="fixed-accept"]')
+        self.assertIn(seed,self.page.locator('.v36-conversation').inner_text())
+        self.page.locator('[data-action="fixed-accept"]').click()
+        self.page.locator('[data-action="fixed-demo-next"]').click()
+        self.page.locator('[data-action="fixed-demo-next"]').click()
+        self.page.locator('[data-action="fixed-confirm"]').click()
+        self.page.locator('[data-action="fixed-demo-next"]').click()
+        self.page.locator('[data-action="fixed-claim"]').click()
+        self.page.wait_for_selector('.card-reveal-layer .motion-card-scene')
+        self.page.locator('.card-reveal-layer .motion-card-scene').click()
+        self.page.wait_for_selector('.card-reveal-layer.is-front-ready')
+        headings=self.page.locator('.card-reveal-layer .card-reading-section b').all_inner_texts()
+        self.assertEqual(headings,['本次片段','值得记住的理解','你的担心与期待','下次可以试试'])
+        self.assertIn('这道题，你卡在哪一步？',self.page.locator('.card-reveal-layer').inner_text())
+
     def test_default_and_example_periods(self):
         self.open_growth()
         self.assertEqual(self.stored()['growthReports']['mode'], 'week')
