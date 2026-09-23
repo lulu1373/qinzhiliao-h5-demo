@@ -42,3 +42,5 @@
 .fixed-report h3:nth-of-type(2):before{background:#8aa576}.fixed-report h3:nth-of-type(3):before{background:#a599bc}.fixed-report h3:nth-of-type(4):before{background:#d8a06d}
 @media (min-width:700px){.fixed-report{max-width:720px}}
 .fixed-quick-replies.is-full{padding-left:0}
+/* Home composer keeps its normal one-line height while showing the preset opening line (text may be cut off). */
+.composer-input textarea.fixed-demo-draft{height:48px!important;max-height:48px!important;overflow:hidden!important;white-space:nowrap!important;text-overflow:ellipsis}
