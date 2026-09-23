@@ -5,141 +5,91 @@ const path = require('node:path');
 const model = require('../assets/fixed-conversation-model.js');
 const index = fs.readFileSync(path.join(__dirname, '..', 'index.html'), 'utf8');
 
-test('fixed flow starts with an open question and does not invent scene facts', () => {
-  const flow = model.createFlow('孩子写作业很困难，我不知道该怎么帮他。');
+const P = model.CONTENT.parents, A = model.CONTENT.assistant;
+function run(flow, next, log) { log.push(...next.out); const {out, ...rest} = next; return rest; }
+
+test('opening is the parent seed plus the reference invitation, with no progress bar yet', () => {
+  const flow = model.createFlow();
   assert.equal(flow.stage, 'invite');
-  assert.equal(flow.answers.scene, '');
-  assert.match(flow.prompt, /愿意|最近一次|解读/);
-  assert.doesNotMatch(flow.prompt, /应用题|不知道先算|口算/);
-  assert.equal(model.answer(flow, '首页灰字示例').stage, 'invite');
+  assert.deepEqual(flow.out.map(m => m.text), [P[0], A[0]]);
+  assert.equal(P[0], '小宝写作业怎么总是这么拖拉？明明题也不多，每次都弄到快十点。我催了好几次也没用，真是越看越来气。');
+  assert.equal(model.progress(flow), null);
 });
 
-test('fixed flow advances only after parent supplies each requested detail', () => {
-  let flow = model.accept(model.createFlow('孩子写作业很困难，我不知道该怎么帮他。'));
-  flow = model.answer(flow, '昨晚八点，他坐在书桌前一直没有动笔。');
-  assert.equal(flow.stage, 'interaction');
-  assert.equal(flow.answers.scene, '昨晚八点，他坐在书桌前一直没有动笔。');
-  flow = model.answer(flow, '我提醒了两次，他说等一下，后来我提高了声音。');
+test('happy path reproduces the reference dialogue turn by turn', () => {
+  const log = [];
+  let flow = run(null, model.createFlow(), log);
+  flow = run(flow, model.accept(flow), log);
+  assert.equal(log.at(-2).text, '好，帮我看看吧。');
+  assert.deepEqual(model.progress(flow).steps.map(s => s.state), ['current', 'todo', 'todo']);
+  flow = run(flow, model.answer(flow, model.expected(flow)), log);
+  flow = run(flow, model.answer(flow, model.expected(flow)), log);
   assert.equal(flow.stage, 'confirm');
-  flow = model.confirm(flow, '对，就是这样。');
-  assert.equal(flow.stage, 'expectation');
-  flow = model.answer(flow, '我最担心他越来越依赖我催，也希望他能自己开始。');
+  assert.match(log.at(-1).text, /我这样梳理，符合当时的实际情况吗？\n\n如果有不准确或遗漏的地方，你可以进行补充。$/);
+  assert.equal(model.expected(flow), '', 'confirm stage has no example answer');
+  flow = run(flow, model.confirm(flow), log);
+  assert.equal(log.at(-2).text, '对，就是这样。');
+  assert.deepEqual(model.progress(flow).steps.map(s => s.state), ['done', 'done', 'current']);
+  flow = run(flow, model.answer(flow, model.expected(flow)), log);
   assert.equal(flow.stage, 'result');
-  assert.deepEqual(flow.result.modules.map(item => item.title), [
-    '这次发生了什么', '孩子行为背后的信息', '你们怎样互相影响', '换个角度看这件事'
-  ]);
-  assert.match(flow.result.modules[1].body, /可能还没找到做题的第一步/);
-  assert.match(flow.result.modules[3].body, /能够表达困难、借助帮助继续/);
+  assert.deepEqual(log.map(m => m.role === 'user' ? m.text : null).filter(Boolean), P);
+  assert.deepEqual(log.filter(m => m.role === 'ai').map(m => m.text), A);
+  assert.equal(log.at(-1).result.markdown, model.CONTENT.result);
+  assert.equal(model.progress(flow).title, '这次解读已整理好');
+  assert.equal(model.claim(flow).stage, 'reveal_back');
 });
 
-test('demo preset follows the approved 小宝 math-homework evidence chain', () => {
-  const flow = model.presetFlow();
-  assert.equal(flow.seed, '小宝写作业怎么总是这么拖拉？明明题也不多，每次都弄到快十点。我催了好几次也没用，真是越看越来气。');
-  assert.match(flow.presets.scene, /七点半开始写数学/);
-  assert.match(flow.presets.scene, /口算挺快/);
-  assert.match(flow.presets.interaction, /不知道先算什么/);
-  assert.match(flow.presets.expectation, /怕他养成拖拉的习惯/);
-  assert.equal(flow.summary.title, '解读卡·亲子翻译');
-  assert.deepEqual(flow.summary.items.map(item => item.title), ['本次片段','值得记住的理解','你的担心与期待','下次可以试试']);
+test('decline branch and free talk follow the reference copy', () => {
+  const log = [];
+  let flow = run(null, model.createFlow(), log);
+  flow = run(flow, model.decline(flow), log);
+  assert.equal(flow.stage, 'free');
+  assert.equal(log.at(-2).text, '我现在不想分析，就是很烦。');
+  assert.match(log.at(-1).text, /^那咱们先不分析/);
+  flow = run(flow, model.answer(flow, '今天真的很累'), log);
+  assert.equal(flow.stage, 'free');
+  assert.match(log.at(-1).text, /现在帮我看看/);
+  flow = run(flow, model.answer(flow, '现在帮我看看'), log);
+  assert.equal(flow.stage, 'scene');
 });
 
-test('demo composer starts from the approved seed', () => {
-  assert.equal(model.exampleDraft('seed').text, model.PRESET.seed);
-  assert.match(index, /fixedDraft\('seed'\)/);
-  assert.match(index, /exampleDraft\('seed'\)\.text/);
+test('hints and example drafts match each evidence stage', () => {
+  let flow = model.accept(model.createFlow());
+  assert.equal(model.expected(flow), P[2]);
+  assert.deepEqual(model.hints(flow).questions, model.CONTENT.hints[0]);
+  assert.equal(model.hints(model.pause(flow)), null);
 });
 
-test('every /latest/ visit boots into the approved preset conversation from the first sentence', () => {
-  assert.match(index, /if\(!presetEntry\)return false;state\.loggedIn=true;/);
-  assert.match(index, /state\.loggedIn=true;startFixedConversation\('homework',QZLFixedConversationModel\.PRESET\.seed\)/);
+test('early view gives a partial card and can resume where it left off', () => {
+  let flow = model.answer(model.accept(model.createFlow()), P[2]);
+  const early = model.early(flow);
+  assert.equal(early.stage, 'result');
+  assert.equal(early.result.partial, true);
+  assert.equal(model.progress(early).title, '目前的理解 · 部分信息待补充');
+  assert.equal(model.progress(early).current, 2);
+  assert.equal(model.continuePartial(early).stage, 'interaction');
+});
+
+test('markdown renders headings, bold and nested list paragraphs', () => {
+  const html = model.markdown(model.CONTENT.result);
+  assert.match(html, /^<h1><strong>解读卡·亲子翻译<\/strong><\/h1><h3>① 这次发生了什么<\/h3><ul><li><p><strong>事件场景<\/strong>/);
+  assert.match(model.markdown('<b>'), /&lt;b&gt;/);
+});
+
+test('controller renders reference turns, sticky stage bar and quick actions', () => {
+  assert.match(index, /class="fx-ai-name"><img src="\$\{ASSETS\.logo\}" alt="">小亲/);
+  assert.match(index, /data-action="fx-early">先看目前理解/);
+  assert.match(index, /fixedButton\('对，就是这样','fx-confirm','primary'\)\}\$\{fixedButton\('补充或修改','fx-correct'\)\}/);
+  assert.match(index, /用示例回答/);
+  assert.match(index, /action\.startsWith\('fx-'\)/);
+});
+
+test('every /latest/ visit boots into the preset conversation from the first sentence', () => {
+  assert.match(index, /if\(!presetEntry\)return false;state\.loggedIn=true;startFixedConversation\(\);/);
   assert.match(index, /if\(!bootstrapFixedDemo\(\)\)renderRoute\(normalizeRoute\(\)\)/);
 });
 
-test('demo stages advance by sending the prefilled composer draft, not an inline card', () => {
-  assert.doesNotMatch(index, /data-action="fixed-demo-next">继续演示/);
-  assert.match(index, /function fixedSyncDraft\(\)/);
-  assert.match(index, /QZLFixedConversationModel\.composerDraft\(fixedFlow\(\)\)/);
-  assert.match(index, /action==='fixed-later'/);
-});
-
-test('conversation text follows the approved reference dialogue', () => {
-  assert.equal(model.REPLIES.accept, '好，帮我看看吧。');
-  assert.equal(model.REPLIES.confirm, '对，就是这样。');
-  assert.match(model.INVITE, /^催了好几次，还是拖到快十点/);
-  assert.match(model.PROMPTS.confirm, /1\. \*\*场景\*\*/);
-  assert.match(model.PROMPTS.confirm, /我这样梳理，符合当时的实际情况吗？\n\n如果有不准确或遗漏的地方，你可以进行补充。$/);
-  assert.match(model.PROMPTS.expectation, /\*\*这件事最让你在意或担心的是什么？\*\*/);
-  assert.match(model.RESULT_INTRO, /接下来，我将为你生成《解读卡》/);
-});
-
-test('progress bar appears after the parent opts in and tracks three steps', () => {
-  let flow = model.createFlow(model.PRESET.seed);
-  assert.equal(model.progress(flow), null);
-  flow = model.accept(flow);
-  assert.deepEqual(model.progress(flow).steps.map(s => s.state), ['current','todo','todo']);
-  assert.equal(model.progress(flow).title, '一起看懂这次发生的事');
-  flow = model.answer(flow, model.PRESET.scene);
-  assert.deepEqual(model.progress(flow).steps.map(s => s.state), ['done','current','todo']);
-  flow = model.answer(flow, model.PRESET.interaction);
-  assert.equal(flow.stage, 'confirm');
-  assert.deepEqual(model.progress(flow).steps.map(s => s.state), ['done','current','todo']);
-  flow = model.confirm(flow);
-  assert.deepEqual(model.progress(flow).steps.map(s => s.state), ['done','done','current']);
-  flow = model.answer(flow, model.PRESET.expectation);
-  assert.equal(model.progress(flow).title, '这次解读已整理好');
-  assert.deepEqual(model.progress(flow).steps.map(s => s.state), ['done','done','done']);
-  assert.deepEqual(model.STEPS, ['当时情况','双方回应','你的想法']);
-});
-
-test('confirm stage offers quick replies and leaves the composer empty', () => {
-  let flow = model.accept(model.createFlow(model.PRESET.seed));
-  flow = model.answer(flow, model.PRESET.scene);
-  assert.equal(model.composerDraft(flow), model.PRESET.interaction);
-  flow = model.answer(flow, model.PRESET.interaction);
-  assert.equal(model.composerDraft(flow), '');
-  assert.match(index, /data-action="fixed-confirm">对，就是这样<\/button><button class="fixed-secondary" data-action="fixed-supplement">补充修改/);
-  assert.equal(model.composerDraft(model.confirm(flow)), model.PRESET.expectation);
-});
-
-test('example answer is a draft and never submitted by the model', () => {
-  const flow = model.accept(model.createFlow('孩子写作业很困难，我不知道该怎么帮他。'));
-  const draft = model.exampleDraft(flow.stage);
-  assert.equal(draft.submitted, false);
-  assert.ok(draft.text.length > 0);
-  assert.equal(flow.answers.scene, '');
-});
-
-test('fixed result hands off to the existing full-screen card reveal effect', () => {
-  assert.match(index, /function beginFixedCardReveal\(flow\)/);
+test('claiming hands off to the existing full-screen card reveal', () => {
   assert.match(index, /openCardRevealOverlayV90\('back',run\.id\)/);
   assert.match(index, /state\.chat=\{\.\.\.state\.chat,fixedFlow:null,node:'card-reveal-back'/);
-});
-
-test('result stays in the conversation until the parent claims the card', () => {
-  let flow = model.accept(model.createFlow(model.PRESET.seed));
-  flow = model.answer(flow, model.PRESET.scene);
-  flow = model.answer(flow, model.PRESET.interaction);
-  flow = model.confirm(flow);
-  flow = model.answer(flow, model.PRESET.expectation);
-  assert.equal(flow.stage, 'result');
-  assert.equal(flow.claimed, false);
-  const claimed = model.claim(flow);
-  assert.equal(claimed.stage, 'reveal_back');
-  assert.equal(claimed.claimed, true);
-});
-
-test('result UI exposes claim and does not render the card face inline', () => {
-  assert.match(index, /data-action="fixed-claim">领取本次解读卡/);
-  assert.match(index, /function fixedClaim\(\)/);
-  assert.doesNotMatch(index, /if\(flow\.stage==='result'\)[\s\S]*fixed-card-scene \$\{flow\.confirmed/);
-});
-
-test('an in-progress fixed flow can pause and resume without changing its stage', () => {
-  const flow = model.accept(model.createFlow('seed'));
-  const paused = model.pause(flow);
-  assert.equal(paused.paused, true);
-  assert.equal(paused.stage, 'scene');
-  const resumed = model.resume(paused);
-  assert.equal(resumed.paused, false);
-  assert.equal(resumed.stage, 'scene');
 });

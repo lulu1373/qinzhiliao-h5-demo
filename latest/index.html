@@ -4491,7 +4491,7 @@ html,body,#app{background:var(--qzl-canvas)!important;}
 <script src="assets/points-v3-icons.js?v=f4d9f1b625"></script>
 <script src="assets/membership-benefit-icons.js?v=22571f5605"></script>
 <script src="assets/settings-icons-v2.js?v=ea5d80bec1"></script>
-<script src="assets/card-motion-v2.js?v=d8fc278c5e"></script><script src="assets/fixed-conversation-model.js?v=cc412ff20a"></script>
+<script src="assets/card-motion-v2.js?v=d8fc278c5e"></script><script src="assets/fixed-conversation-model.js?v=39512a154a"></script>
 <script>
 (function(){
 'use strict';
@@ -6229,6 +6229,7 @@ function handleClick(e){
   else if(action==='treasure-card-open')navigate('treasure-box/card/'+encodeURIComponent(el.dataset.id||''));
   else if(action==='treasure-back-chat')returnToCardSourceV90(el.dataset.id||'');
   else if(action==='chat-send')sendChatInput();
+  else if(action.startsWith('fx-'))typeof fixedAction==='function'&&fixedAction(action,el);
   else if(action==='fixed-example')typeof fixedExample==='function'&&fixedExample(el.dataset.stage||'');
   else if(action==='fixed-demo-next')typeof fixedDemoNext==='function'&&fixedDemoNext();
   else if(action==='fixed-accept')typeof fixedAccept==='function'&&fixedAccept();
@@ -9299,145 +9300,137 @@ function installPointsV2(){
 installPointsV2();
 /* END POINTS V2 CONTROLLER */
 
-/* Fixed demo conversation: a bounded, evidence-led mainline for live demos. */
-const fixedStylesheet=document.createElement('link');fixedStylesheet.rel='stylesheet';fixedStylesheet.href='assets/fixed-conversation.css?v=3';document.head.appendChild(fixedStylesheet);
+/* Fixed demo conversation: a faithful port of the approved reference H5 (解读卡H5) dialogue. */
+const fixedStylesheet=document.createElement('link');fixedStylesheet.rel='stylesheet';fixedStylesheet.href='assets/fixed-conversation.css?v=4';document.head.appendChild(fixedStylesheet);
 const QZLFixedConversationModel=window.QZLFixedConversationModel;
+const FX=QZLFixedConversationModel;
+const FX_ICON={edit:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 4 5 5-10 10-6 1 1-6Z M13 6l5 5"/></svg>'};
 function fixedFlow(){return state.chat?.fixedFlow||null;}
-function fixedRich(text){
-  const inline=line=>esc(line).replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>');
-  let out='';
-  String(text||'').split(/\n{2,}/).forEach(block=>{
-    let list=null,items=[];
-    const flush=()=>{if(list){out+=`<${list}>${items.map(item=>`<li>${inline(item)}</li>`).join('')}</${list}>`;list=null;items=[];}};
-    block.split('\n').forEach(line=>{const m=line.match(/^(\d+\.|-)\s+(.*)$/);if(m){const tag=m[1]==='-'?'ul':'ol';if(list&&list!==tag)flush();list=tag;items.push(m[2]);}else if(line.trim()){flush();out+=`<p>${inline(line)}</p>`;}});
-    flush();
-  });
-  return `<div class="fixed-rich">${out}</div>`;
+function fixedActive(){return !!(state.chat?.active&&state.chat.fixedStyle);}
+function fixedPush(message){const html=message.role==='user'?esc(message.text).replace(/\n/g,'<br>'):esc(message.text);state.chat.messages.push({role:message.role,html,text:message.text,fx:true,result:message.result||null,time:''});}
+function fixedApply(next,{scroll='latest'}={}){
+  if(!next)return;const {out=[],...flow}=next;
+  out.forEach(fixedPush);
+  state.chat={...state.chat,fixedFlow:flow,node:'fixed-'+flow.stage};
+  saveState();refreshConversation({scroll:out.length?'fx-latest':scroll});
 }
-function fixedAi(text){addChatMessage('ai',fixedRich(text),{html:true});}
-function fixedProgressBar(){
-  const p=QZLFixedConversationModel.progress(fixedFlow());if(!p)return '';
-  return `<div class="fixed-stage ${p.complete?'is-complete':''}" role="status" aria-label="解读进度"><div class="fixed-stage-top">${esc(p.title)}</div><div class="fixed-step-list">${p.steps.map(step=>`<div class="fixed-step is-${step.state}"><i>${step.state==='done'?'✓':step.index}</i><span>${esc(step.label)}</span></div>`).join('')}</div></div>`;
+/* ---------- rendering ---------- */
+function fixedStageBar(){
+  const p=FX.progress(fixedFlow());if(!p)return '';
+  const flow=fixedFlow();
+  return `<div class="fx-stage-wrap"><div class="fx-stage"><div class="fx-stage-top"><span>${esc(p.title)}</span>${p.early?'<button type="button" data-action="fx-early">先看目前理解</button>':''}</div><div class="fx-step-list">${p.steps.map(s=>`<div class="fx-step ${s.state==='todo'?'':s.state}"><i>${s.state==='done'?'✓':s.index}</i>${esc(s.label)}</div>`).join('')}</div></div>${flow.paused?'<div class="fx-pause-banner"><span>已暂停 · 进度与草稿已保留</span><button type="button" data-action="fx-resume">继续解读</button></div>':''}</div>`;
+}
+function fixedButton(label,action,style='secondary'){return `<button type="button" class="fx-${style}" data-action="${action}">${label}</button>`;}
+function fixedActions(){
+  const flow=fixedFlow();if(!flow||flow.paused)return '';
+  if(flow.stage==='invite')return `<div class="fx-actions">${fixedButton('一起看看','fx-accept','primary')}${fixedButton('我想先聊聊','fx-decline')}</div>`;
+  if(flow.stage==='free')return `<div class="fx-actions">${fixedButton('现在帮我看看','fx-accept','primary')}</div>`;
+  if(flow.stage==='confirm')return `<div class="fx-actions">${fixedButton('对，就是这样','fx-confirm','primary')}${fixedButton('补充或修改','fx-correct')}</div>`;
+  if(flow.stage==='result')return `<div class="fx-actions">${fixedButton('补充或修正','fx-correct')}${fixedButton('领取本次解读卡','fx-claim','primary')}</div>${flow.result?.partial&&flow.resumeStage?`<div class="fx-actions">${fixedButton('继续补充信息','fx-continue')}</div>`:''}<div class="fx-message-links">${fixedButton('怎样进一步看清，他停在哪一步？','fx-topic','soft-link')}</div>`;
+  const hints=FX.hints(flow);
+  return `${hints?`<div class="fx-hints"><small>也可以补充（任选，不必逐条回答）</small>${hints.questions.map((q,i)=>`<button type="button" data-action="fx-hint" data-index="${i}">${esc(q)}</button>`).join('')}</div>`:''}<div class="fx-message-links">${fixedButton('先看目前的理解','fx-early','soft-link')}${fixedButton('暂停这次解读','fx-pause','soft-link')}</div>`;
+}
+function fixedReport(result){return `<article class="fx-report fx-md" data-result="true"><div class="fx-result-label"><span>这次的理解</span><span>${result.partial?'初步解读':'亲子翻译'}</span></div>${FX.markdown(result.markdown)}</article>`;}
+function fixedTurn(m,isLatest){
+  if(m.role==='user')return `<div class="fx-turn"><div class="fx-user">${esc(m.text).replace(/\n/g,'<br>')}</div></div>`;
+  return `<div class="fx-turn" ${isLatest?'data-latest="true"':''}><div class="fx-ai-name"><img src="${ASSETS.logo}" alt="">小亲</div>${m.text?`<div class="fx-ai fx-md">${FX.markdown(m.text)}</div>`:''}${m.result?fixedReport(m.result):''}${isLatest&&fixedFlow()?fixedActions():''}</div>`;
 }
 const fixedLegacyRenderChat=renderChat;
-renderChat=function(){const html=fixedLegacyRenderChat();return fixedFlow()?fixedProgressBar()+html:html;};
-function renderFixedNode(){
-  const flow=fixedFlow(); if(!flow)return '';
-  if(flow.paused)return `<article class="fixed-flow-card fixed-paused-card"><div class="fixed-flow-head"><span class="fixed-flow-mark">${svg.pause}</span><span><b>解读已暂停</b><small>进度与草稿已保留</small></span></div><p class="fixed-flow-question">你可以稍后回来，从「${esc(QZLFixedConversationModel.LABELS[flow.stage]||'当前阶段')}」继续。</p><div class="fixed-flow-actions"><button class="fixed-primary" data-action="fixed-resume">继续解读</button></div></article>`;
-  const replies=html=>`<div class="fixed-quick-replies">${html}</div>`;
-  if(flow.stage==='invite')return replies(`<button class="fixed-primary" data-action="fixed-accept">一起看看</button><button class="fixed-secondary" data-action="fixed-later">我想先聊聊</button>`);
-  if(flow.stage==='confirm')return replies(`<button class="fixed-primary" data-action="fixed-confirm">对，就是这样</button><button class="fixed-secondary" data-action="fixed-supplement">补充修改</button>`);
-  if(flow.stage==='result')return replies(`<button class="fixed-secondary" data-action="fixed-revise">补充或修正</button><button class="fixed-primary" data-action="fixed-claim">领取本次解读卡</button>`);
-  return '';
-}
+renderChat=function(){
+  if(!fixedActive())return fixedLegacyRenderChat();
+  const c=state.chat,total=c.messages.length;
+  const rows=c.messages.map((m,i)=>m.fx?fixedTurn(m,i===total-1):renderConversationItem(m,i,total)).join('');
+  const typing=c.typing?`<div class="message-line ai v36-typing-row"><span class="ai-avatar"><img src="${ASSETS.mascotAvatar}" alt="小亲"></span><div class="chat-message ai"><span class="typing"><i></i><i></i><i></i></span></div></div>`:'';
+  return `${fixedStageBar()}<div class="chat-area fx-chat"><div class="fx-chat-info">预设场景 · 写作业拖拉 · 只解读这一次</div><div id="chatMessages">${rows}${typing}${fixedFlow()?'':renderChatNode(c.node)}</div></div>`;
+};
 const fixedLegacyRenderChatNode=renderChatNode;
-renderChatNode=function(node){if(fixedFlow())return renderFixedNode(node);return fixedLegacyRenderChatNode(node);};
-function startFixedConversation(key='homework',firstAnswer=''){
-  const seeds={homework:'孩子写作业很困难，我不知道该怎么帮他。',phone:'孩子玩手机时间很多，我有点担心。',backtalk:'孩子一说就顶嘴，我不知道怎么和他沟通。',procrastination:'孩子总是拖拖拉拉，我很容易着急。'};
-  const seed=seeds[key]||seeds.homework;const opening=String(firstAnswer||'').trim();
-  // The composer text is an opening statement, not an answer to the first
-  // evidence question. Keep the invitation visible until the parent opts in.
-  let flow=QZLFixedConversationModel.createFlow(opening||seed);
-  clearTimeout(aiTimer); state.chat={active:true,scenario:'fixed-'+key,node:'fixed-'+flow.stage,messages:[{role:'user',html:esc(opening||seed),time:todayTime()},{role:'ai',html:fixedRich(opening?flow.prompt:'我听到了。我们先不急着找办法，先把最近一次具体发生的片段看清楚。'),time:todayTime()}],typing:false,reviewResult:null,freeTurns:0,conversationId:uid('conv'),fixedFlow:flow};
-  pendingConversationStart=true;saveState();navigate('home');refreshConversation({scroll:'start'});requestAnimationFrame(fixedSyncDraft);
+renderChatNode=function(node){if(fixedFlow())return '';return fixedLegacyRenderChatNode(node);};
+/* ---------- composer: empty input + 「用示例回答」, like the reference ---------- */
+function fixedSyncComposer(){
+  const shell=document.querySelector('.v36-continuous-shell');shell?.classList.toggle('fx-active',fixedActive()&&!!fixedFlow());
+  const composer=shell?.querySelector(':scope > .composer');if(!composer)return;
+  composer.querySelectorAll('.fx-example,.fx-composer-note').forEach(el=>el.remove());
+  const input=document.getElementById('chatInput');
+  if(input&&fixedActive()&&fixedFlow())input.placeholder='说说你记得的片段…';
+  if(!fixedActive()||!fixedFlow())return;
+  if(FX.expected(fixedFlow()))composer.insertAdjacentHTML('afterbegin',`<button class="fx-example" type="button" data-action="fx-example">${FX_ICON.edit}用示例回答</button>`);
+  composer.insertAdjacentHTML('beforeend','<small class="fx-composer-note">预设内容体验 · 非实时 AI 对话</small>');
+}
+function fixedSetInput(text,{focus=true}={}){const input=document.getElementById('chatInput');if(!input)return;input.value=text;input.classList.remove('fixed-demo-draft');delete input.dataset.demoDraft;autoSizeTextarea(input);document.getElementById('chatSendBtn')?.classList.toggle('send-ready',!!text.trim());if(focus)input.focus({preventScroll:true});}
+function fixedScrollLatest(){
+  const area=document.getElementById('aiScroll');const last=area?.querySelector('#conversationSection [data-latest]');if(!area||!last)return;
+  const bar=area.querySelector('.fx-stage-wrap');const offset=(bar?bar.offsetHeight:0)+12;
+  const start=last.getBoundingClientRect().top-area.getBoundingClientRect().top+area.scrollTop-offset;
+  const visible=area.clientHeight-offset;
+  // Long replies start at their beginning; short replies move only as far as needed (reference behaviour).
+  area.scrollTop=last.offsetHeight>visible-24?start:Math.max(start+last.offsetHeight-visible+16+offset,0);
+}
+const fixedLegacyRefreshConversation=refreshConversation;
+refreshConversation=function(options={}){
+  const fx=options.scroll==='fx-latest';
+  fixedLegacyRefreshConversation(fx?{...options,scroll:'preserve'}:options);
+  fixedSyncComposer();
+  if(fx)requestAnimationFrame(()=>requestAnimationFrame(fixedScrollLatest));
+};
+/* ---------- actions ---------- */
+function startFixedConversation(){
+  const flow=FX.createFlow();clearTimeout(aiTimer);
+  state.chat={active:true,fixedStyle:true,scenario:'fixed-homework',node:'fixed-invite',messages:[],typing:false,reviewResult:null,freeTurns:0,conversationId:uid('conv'),fixedFlow:null};
+  pendingConversationStart=true;
+  const {out,...rest}=flow;out.forEach(fixedPush);state.chat.fixedFlow=rest;
+  saveState();navigate('home');refreshConversation({scroll:'start'});requestAnimationFrame(()=>fixedSetInput('',{focus:false}));
 }
 window.QZLFixedConversationStart=startFixedConversation;
-function fixedAccept(){
-  const flow=fixedFlow(); if(!flow||flow.stage!=='invite')return;
-  const next=QZLFixedConversationModel.accept(flow);
-  state.chat={...state.chat,fixedFlow:next,node:'fixed-'+next.stage};
-  addChatMessage('user',QZLFixedConversationModel.REPLIES.accept);
-  fixedAi(next.prompt);
-  saveState(); refreshConversation({scroll:'auto'});
-  requestAnimationFrame(fixedSyncDraft);
-}
-function fixedLater(){
-  const flow=fixedFlow(); if(!flow||flow.stage!=='invite')return;
-  state.chat={...state.chat,fixedFlow:null,node:'done'};
-  addChatMessage('user','我想先聊聊');
-  addChatMessage('ai','好，我们先不急着分析。你现在最想聊的那一部分，可以直接说给我听。');
-  saveState(); refreshConversation({scroll:'auto'});
-}
-function fixedConfirm(text){
-  const flow=fixedFlow(); if(!flow||flow.stage!=='confirm')return;
-  const next=QZLFixedConversationModel.confirm(flow);
-  state.chat={...state.chat,fixedFlow:next,node:'fixed-'+next.stage};
-  addChatMessage('user',String(text||'').trim()||QZLFixedConversationModel.REPLIES.confirm);
-  fixedAi(next.prompt);
-  saveState(); refreshConversation({scroll:'auto'});
-  requestAnimationFrame(fixedSyncDraft);
-}
-function fixedSupplement(){
-  const flow=fixedFlow(); if(!flow||flow.stage!=='confirm')return;
-  const input=document.getElementById('chatInput'); if(!input)return;
-  fixedClearDraft(input); input.placeholder='说说哪里不准或漏了……'; input.focus({preventScroll:true});
-}
-function fixedRevise(){
-  const flow=fixedFlow(); if(!flow||flow.stage!=='result')return;
-  state.chat={...state.chat,fixedFlow:{...flow,stage:'expectation',claimed:false},node:'fixed-expectation'};
-  addChatMessage('ai','可以，我们先不急着领取。你想补充或修正的地方，直接说给我听。');
-  saveState(); refreshConversation({scroll:'auto'});
-  requestAnimationFrame(fixedSyncDraft);
-}
-function fixedPause(){
-  const flow=fixedFlow(); if(!flow||flow.stage==='result')return;
-  const next=QZLFixedConversationModel.pause(flow);
-  state.chat={...state.chat,fixedFlow:next,node:'fixed-'+next.stage};
-  saveState(); refreshConversation({scroll:'preserve'});
-}
-function fixedResume(){
-  const flow=fixedFlow(); if(!flow?.paused)return;
-  const next=QZLFixedConversationModel.resume(flow);
-  state.chat={...state.chat,fixedFlow:next,node:'fixed-'+next.stage};
-  saveState(); refreshConversation({scroll:'preserve'});
-  requestAnimationFrame(fixedSyncDraft);
-}
+function fixedSend(text){const flow=fixedFlow();if(!flow)return false;if(flow.paused){toast('解读已暂停，点「继续解读」后再发送');return true;}if(['result','reveal_back'].includes(flow.stage)){fixedPush({role:'user',text});saveState();refreshConversation({scroll:'fx-latest'});toast(FX.TOPIC_NOTE);return true;}fixedApply(FX.answer(flow,text));return true;}
 function fixedClaim(){
-  const flow=fixedFlow(); if(!flow||flow.stage!=='result')return;
-  const next=QZLFixedConversationModel.claim(flow); if(next===flow)return;
-  state.chat={...state.chat,fixedFlow:next};
-  beginFixedCardReveal(next);
-}
-function beginFixedCardReveal(flow){
+  const flow=fixedFlow();if(!flow||flow.stage!=='result'||!flow.result)return;
   migrateCardsV90();
-  const previous=activeCardRunV90();
-  if(previous&&previous.status==='active')previous.status='paused';
+  const previous=activeCardRunV90();if(previous&&previous.status==='active')previous.status='paused';
   const run=createCardRunV90('interpretation','fixed-conversation');
   run.phase=V90_CARD_PHASE.REVEAL_BACK;
   run.context={event:'小宝写数学作业时在应用题上卡住',eventTitle:'小宝写作业片段'};
-  run.result={title:'解读卡·亲子翻译',summary:(QZLFixedConversationModel.SUMMARY||[]).map(item=>item.body),modules:(QZLFixedConversationModel.SUMMARY||[]).map(item=>({...item}))};
+  run.result={title:'解读卡·亲子翻译',summary:flow.result.summary.map(item=>item.body),modules:flow.result.summary.map(item=>({...item}))};
   state.chat={...state.chat,fixedFlow:null,node:'card-reveal-back',scenario:'card-interpretation'};
-  saveState();
-  refreshConversation({scroll:'auto'});
+  saveState();refreshConversation({scroll:'preserve'});
   setTimeout(()=>openCardRevealOverlayV90('back',run.id),180);
 }
-function fixedDraft(stage,focus=false){const input=document.getElementById('chatInput');if(!input)return;const text=QZLFixedConversationModel.exampleDraft(stage).text;input.value=text;input.dataset.demoDraft=text;input.classList.add('fixed-demo-draft');autoSizeTextarea(input);document.getElementById('chatSendBtn')?.classList.add('send-ready');if(focus)input.focus({preventScroll:true});}
-function fixedExample(stage){fixedDraft(stage,true);}
-function fixedClearDraft(input){if(!input?.classList.contains('fixed-demo-draft'))return;input.value='';input.classList.remove('fixed-demo-draft');delete input.dataset.demoDraft;autoSizeTextarea(input);document.getElementById('chatSendBtn')?.classList.remove('send-ready');}
-function fixedSyncDraft(){const input=document.getElementById('chatInput');if(!input)return;const text=QZLFixedConversationModel.composerDraft(fixedFlow());if(!text){fixedClearDraft(input);return;}input.value=text;input.dataset.demoDraft=text;input.classList.add('fixed-demo-draft');autoSizeTextarea(input);document.getElementById('chatSendBtn')?.classList.add('send-ready');}
-function fixedDemoNext(){const flow=fixedFlow();if(!flow||!['scene','interaction','expectation'].includes(flow.stage))return;submitFixedAnswer(QZLFixedConversationModel.exampleDraft(flow.stage).text);}
-function fixedFlip(el){el?.closest('.fixed-card-scene')?.classList.toggle('is-flipped');}
-function fixedSave(){const flow=fixedFlow();if(!flow?.confirmed)return;const card={id:uid('card'),type:'interpretation',title:'从一次具体片段，看见你们怎样卡住又怎样靠近',summary:(flow.result?.modules||[]).map(item=>item.body),createdAt:new Date().toISOString(),savedAt:new Date().toISOString(),source:{kind:'conversation',conversationId:state.chat.conversationId,eventTitle:flow.answers.scene||'一次亲子片段'}};state.cards={...state.cards,toolbox:[card,...(state.cards?.toolbox||[])]};state.chat={...state.chat,node:'done',fixedFlow:null};saveState();refreshConversation({scroll:'preserve'});toast('已存入百宝箱');}
-function fixedSkip(){const flow=fixedFlow();if(!flow?.confirmed)return;state.chat={...state.chat,node:'done',fixedFlow:null};saveState();refreshConversation({scroll:'preserve'});}
+function fixedAction(action,el){
+  const flow=fixedFlow();
+  if(action==='fx-accept')return fixedApply(FX.accept(flow));
+  if(action==='fx-decline')return fixedApply(FX.decline(flow));
+  if(action==='fx-confirm')return fixedApply(FX.confirm(flow));
+  if(action==='fx-early'){if(!flow)return;const count=state.chat.messages.length;return fixedApply({...FX.early(flow),resumeCount:count});}
+  if(action==='fx-continue'){if(!flow?.result?.partial)return;const count=flow.resumeCount;const next=FX.continuePartial(flow);if(Number.isInteger(count))state.chat.messages=state.chat.messages.slice(0,count);return fixedApply({...next,resumeCount:null});}
+  if(action==='fx-pause'){if(!flow)return;state.chat={...state.chat,fixedFlow:FX.pause(flow)};saveState();return refreshConversation({scroll:'preserve'});}
+  if(action==='fx-resume'){if(!flow)return;state.chat={...state.chat,fixedFlow:FX.resume(flow)};saveState();return refreshConversation({scroll:'fx-latest'});}
+  if(action==='fx-example'){const text=FX.expected(flow);const input=document.getElementById('chatInput');if(!text||!input)return;if(input.value.trim()){toast('草稿已保留，清空后可填入示例回答。');return;}return fixedSetInput(text);}
+  if(action==='fx-hint'){const hints=FX.hints(flow);const input=document.getElementById('chatInput');if(!hints||!input)return;const add=hints.drafts[Number(el.dataset.index)]||'';return fixedSetInput(input.value+(input.value?'\n':'')+add);}
+  if(action==='fx-correct'){const input=document.getElementById('chatInput');fixedSetInput(input?.value||'');toast('哪一段和实际情况不一样？直接写在输入框里');return;}
+  if(action==='fx-claim')return fixedClaim();
+  if(action==='fx-topic')return toast(FX.TOPIC_NOTE);
+}
 const fixedLegacyHandleChatChoice=handleChatChoice;
-handleChatChoice=function(value){if(fixedFlow())return submitFixedAnswer(value);return fixedLegacyHandleChatChoice(value);};
-function submitFixedAnswer(value){const flow=fixedFlow();if(!flow||flow.paused||['result','reveal_back'].includes(flow.stage))return;const text=String(value||'').trim();if(!text)return;if(flow.stage==='confirm')return fixedConfirm(text);if(flow.stage==='invite'){const next=QZLFixedConversationModel.accept(flow);state.chat={...state.chat,fixedFlow:next,node:'fixed-'+next.stage};addChatMessage('user',text);fixedAi(next.prompt);saveState();refreshConversation({scroll:'auto'});requestAnimationFrame(fixedSyncDraft);return;}addChatMessage('user',text);const next=QZLFixedConversationModel.answer(flow,text);state.chat={...state.chat,fixedFlow:next,node:'fixed-'+next.stage};fixedAi(next.stage==='result'?QZLFixedConversationModel.RESULT_INTRO:next.prompt);saveState();refreshConversation({scroll:'auto'});requestAnimationFrame(fixedSyncDraft);}
+handleChatChoice=function(value){if(fixedFlow())return fixedSend(value);return fixedLegacyHandleChatChoice(value);};
 const fixedLegacySendChatInput=sendChatInput;
-sendChatInput=function(){const input=document.getElementById('chatInput'),value=(input?.value||'').trim();if(!fixedFlow()&&input?.classList.contains('fixed-demo-draft')){input.value='';input.classList.remove('fixed-demo-draft');delete input.dataset.demoDraft;document.getElementById('chatSendBtn')?.classList.remove('send-ready');startFixedConversation('homework',value);return;}if(!fixedFlow())return fixedLegacySendChatInput();if(!value)return;input.value='';input.classList.remove('fixed-demo-draft');delete input.dataset.demoDraft;autoSizeTextarea(input);document.getElementById('chatSendBtn')?.classList.remove('send-ready');submitFixedAnswer(value);};
+sendChatInput=function(){
+  const input=document.getElementById('chatInput'),value=(input?.value||'').trim();
+  if(!fixedFlow()&&!state.chat.active&&input?.classList.contains('fixed-demo-draft')){input.value='';input.classList.remove('fixed-demo-draft');delete input.dataset.demoDraft;startFixedConversation();return;}
+  if(!fixedFlow())return fixedLegacySendChatInput();
+  if(!value)return;
+  if(fixedFlow().paused){toast('解读已暂停，点「继续解读」后再发送');return;}
+  fixedSetInput('',{focus:false});fixedSend(value);
+};
 document.addEventListener('input',event=>{const input=event.target;if(input?.id==='chatInput'&&input.classList.contains('fixed-demo-draft')&&input.value!==input.dataset.demoDraft){input.classList.remove('fixed-demo-draft');delete input.dataset.demoDraft;}});
+function fixedDraft(stage){if(stage!=='seed')return;const input=document.getElementById('chatInput');if(!input)return;const text=FX.PRESET.seed;input.value=text;input.dataset.demoDraft=text;input.classList.add('fixed-demo-draft');autoSizeTextarea(input);document.getElementById('chatSendBtn')?.classList.add('send-ready');}
 const fixedLegacyStartScenario=startScenario;
-startScenario=function(kind){if(['homework','phone','backtalk','procrastination'].includes(kind))return startFixedConversation(kind);return fixedLegacyStartScenario(kind);};
-const fixedLegacyConfirm=handleConfirmOkV90;
-handleConfirmOkV90=function(){if(!fixedFlow())return fixedLegacyConfirm();const flow=fixedFlow();state.chat={...state.chat,fixedFlow:{...flow,confirmed:true},node:'fixed-result'};addChatMessage('user','这个理解比较贴近');addChatMessage('ai','好，我把这次理解留在这里。你可以翻开摘要卡，或存入百宝箱。');saveState();refreshConversation({scroll:'auto'});};
-const fixedLegacyConfirmFix=handleConfirmFixV90;
-handleConfirmFixV90=function(){if(!fixedFlow())return fixedLegacyConfirmFix();const flow=fixedFlow();const next={...flow,stage:'expectation',prompt:QZLFixedConversationModel.PROMPTS?.expectation||'对这件事，你最担心什么，又希望以后出现什么小变化？',confirmed:false};state.chat={...state.chat,fixedFlow:next,node:'fixed-expectation'};addChatMessage('ai','可以，我们先不急着保存。你想补充或修改的地方，直接说给我听。');saveState();refreshConversation({scroll:'auto'});};
-const fixedLegacyConfirmOld=handleConfirmOk;
-handleConfirmOk=function(){if(fixedFlow())return handleConfirmOkV90();return fixedLegacyConfirmOld();};
+startScenario=function(kind){if(kind==='homework')return startFixedConversation();return fixedLegacyStartScenario(kind);};
 const fixedLegacyRenderRoute=renderRoute;
-renderRoute=function(route){fixedLegacyRenderRoute(route);if(routeBase(route)==='home'&&!state.chat.active)requestAnimationFrame(()=>fixedDraft('seed'));};
+renderRoute=function(route){fixedLegacyRenderRoute(route);if(routeBase(route)==='home'){if(!state.chat.active)requestAnimationFrame(()=>fixedDraft('seed'));else requestAnimationFrame(fixedSyncComposer);}};
 const fixedLegacyRenderComposer=renderComposer;
-renderComposer=function(){const html=fixedLegacyRenderComposer();if(state.chat.active)return html;const draft=QZLFixedConversationModel.exampleDraft('seed').text;return html.replace('<textarea id="chatInput"','<textarea class="fixed-demo-draft" data-demo-draft="'+esc(draft)+'" value="'+esc(draft)+'" id="chatInput"');};
-function bootstrapFixedDemo(){const presetEntry=/\/latest(?:\/index\.html)?\/?$/.test(location.pathname)||new URLSearchParams(location.search).get('preset')==='1';if(!presetEntry)return false;state.loggedIn=true;startFixedConversation('homework',QZLFixedConversationModel.PRESET.seed);return true;}
+renderComposer=function(){const html=fixedLegacyRenderComposer();if(state.chat.active)return html;const draft=FX.PRESET.seed;return html.replace('<textarea id="chatInput"','<textarea class="fixed-demo-draft" data-demo-draft="'+esc(draft)+'" value="'+esc(draft)+'" id="chatInput"');};
+/* Every /latest/ visit (or ?preset=1) restarts the approved demo from the parent's first sentence. */
+function bootstrapFixedDemo(){const presetEntry=/\/latest(?:\/index\.html)?\/?$/.test(location.pathname)||new URLSearchParams(location.search).get('preset')==='1';if(!presetEntry)return false;state.loggedIn=true;startFixedConversation();return true;}
+
 /* V9.0 initialization */
 migrateCardsV90();
 /* V8.0: initialize only after approved reference artwork + family archive IA + icon harmony overrides are active. */
