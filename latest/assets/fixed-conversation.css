@@ -30,7 +30,7 @@
 .fixed-quick-replies .fixed-secondary{border:1px solid #e5d6c3;background:#fffdf8;color:#9c704d}
 @media (min-width:700px){.fixed-quick-replies{max-width:720px}}
 /* Detailed 解读卡 report shown before 领取本次解读卡 */
-.fixed-report{margin:4px 0 4px var(--fixed-reply-indent,52px);padding:20px 18px;border:1px solid #e5d8c6;border-radius:20px;background:#fffdf9;box-shadow:0 10px 25px rgba(104,83,52,.05);color:#38332e;font-size:15px;line-height:1.85;animation:fixed-rise .28s ease both}
+.fixed-report{margin:6px auto 10px;width:100%;box-sizing:border-box;padding:20px 18px;border:1px solid #e5d8c6;border-radius:20px;background:#fffdf9;box-shadow:0 10px 25px rgba(104,83,52,.05);color:#38332e;font-size:15px;line-height:1.85;animation:fixed-rise .28s ease both}
 .fixed-report-label{display:flex;justify-content:space-between;margin-bottom:12px;color:#a3947d;font-size:11px;letter-spacing:1px}
 .fixed-report p{margin:0 0 12px}.fixed-report>*:last-child,.fixed-report li>*:last-child{margin-bottom:0}
 .fixed-report strong{font-weight:650;color:#4d453c}

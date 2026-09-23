@@ -149,5 +149,6 @@ test('result stage shows the full reference report above the claim button', () =
   assert.match(html, /<h1><strong>解读卡·亲子翻译<\/strong><\/h1><h3>① 这次发生了什么<\/h3>/);
   for (const h of ['② 孩子行为背后的信息','③ 你们怎样互相影响','④ 换个角度看这件事']) assert.ok(html.includes(h), h);
   assert.match(model.markdown('<b>'), /&lt;b&gt;/);
-  assert.match(index, /class="fixed-report" data-result="true"[\s\S]*?data-action="fixed-claim">领取本次解读卡/);
+  assert.match(index, /state\.chat\.messages\.push\(\{role:'system',kind:'fixed-report'/);
+  assert.match(index, /if\(m&&m\.kind==='fixed-report'\)return fixedReportHtml\(\)/);
 });
