@@ -28,3 +28,15 @@ test('stage timing preserves the existing motion engine with a 600ms flip', () =
   assert.match(motion, /card-reveal-layer/);
   assert.match(motion, /stageDur=scene\.closest\('\.card-reveal-layer'\)\?600/);
 });
+
+
+test('fixed interpretation reveal keeps four labeled modules in a scrollable larger front face', () => {
+  assert.match(index, /run\.result=\{title:'解读卡·亲子翻译',[^\n]*modules:/);
+  for (const heading of ['本次片段','值得记住的理解','你的担心与期待','下次可以试试']) {
+    assert.ok(index.includes(heading), `missing fixed interpretation heading: ${heading}`);
+  }
+  assert.match(index, /class="card-reading-scroll reveal-item"/);
+  assert.match(css, /\.card-reading-scroll\{[\s\S]*?overflow-y:auto/);
+  assert.match(css, /\.card-reveal-layer\.is-front \.card-reveal-card-host \.v90-card-scene\.motion-card-scene\.has-reading-modules\{[\s\S]*?width:min\(86%,326px\)!important/);
+  assert.match(index, /card-reveal-layer is-entering[^`]*has-reading-modules/);
+});
