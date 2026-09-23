@@ -341,3 +341,32 @@
   .xp-home-v22-growth-card{min-height:64px;padding-left:10px;padding-right:10px}
   .xp-home-v22-growth-card b{font-size:14px}
 }
+
+/* Home V3 — daily topic card: centered 小亲 avatar over one large card (Hi + date, title, body, three questions). */
+.xp-home-daily{max-width:600px;margin:0 auto;padding:6px 16px 14px;color:#343a31}
+.xp-daily{position:relative;padding-top:58px}
+.xp-daily-avatar{position:absolute;left:50%;top:0;z-index:2;width:124px;height:124px;transform:translateX(-50%);display:grid;place-items:center;pointer-events:none}
+.xp-daily-halo{position:absolute;inset:-14px;clip-path:polygon(25% 5%,75% 5%,100% 50%,75% 95%,25% 95%,0 50%);background:radial-gradient(circle at 50% 45%,rgba(255,236,214,.95),rgba(236,245,228,.7) 62%,rgba(255,250,243,.2));filter:blur(.2px);opacity:.9}
+.xp-daily-hex{position:relative;display:block;width:104px;height:96px;clip-path:polygon(25% 2%,75% 2%,99% 50%,75% 98%,25% 98%,1% 50%);background:linear-gradient(150deg,#ffb77b,#f6d9a8 45%,#b8d79a)}
+.xp-daily-hex img{position:absolute;left:3px;top:3px;width:calc(100% - 6px);height:calc(100% - 6px);object-fit:cover;object-position:50% 35%;clip-path:polygon(25% 2%,75% 2%,99% 50%,75% 98%,25% 98%,1% 50%);background:linear-gradient(160deg,#fffaf2,#f3f8ee)}
+.xp-daily-card{position:relative;padding:48px 20px 20px;border:1px solid rgba(233,218,199,.9);border-radius:28px;background:linear-gradient(170deg,#fffdf9 0%,#fff6ec 58%,#fbf3e6 100%);box-shadow:0 14px 34px rgba(98,74,48,.07)}
+.xp-daily-head{display:flex;align-items:flex-end;justify-content:space-between;margin:0 0 6px}
+.xp-daily-hi{font:italic 700 34px/1 Georgia,"Times New Roman",serif;letter-spacing:.5px;background:linear-gradient(120deg,#e98a47,#7fa865);-webkit-background-clip:text;background-clip:text;color:transparent;padding-right:4px}
+.xp-daily-date{display:grid;width:46px;overflow:hidden;border-radius:11px;background:#fff;box-shadow:0 4px 12px rgba(98,74,48,.1);text-align:center;margin-top:-22px}
+.xp-daily-date small{display:block;padding:2px 0 1px;background:linear-gradient(120deg,#f0a066,#e2844b);color:#fff;font-size:11px;font-weight:600;line-height:16px}
+.xp-daily-date b{display:block;padding:2px 0 3px;color:#3a3530;font-size:21px;font-weight:700;line-height:26px}
+.xp-daily-card h1{margin:4px 0 12px;color:#3d4a34;font-size:24px;line-height:1.35;font-weight:720;letter-spacing:-.3px}
+.xp-daily-card p{margin:0 0 18px;color:#5b5750;font-size:16px;line-height:1.78}
+.xp-daily-questions{display:flex;flex-direction:column;align-items:flex-start;gap:10px;margin:0;padding:0;list-style:none}
+.xp-daily-questions li{max-width:100%;padding:11px 18px;border:1px solid #eadfd0;border-radius:16px;background:rgba(255,255,255,.92);color:#4a4640;font-size:16px;line-height:1.45;cursor:default;user-select:none;box-shadow:0 3px 10px rgba(98,74,48,.04)}
+@media(max-width:360px),(max-height:760px){
+  .xp-home-daily{padding-top:0;padding-bottom:8px}
+  .xp-daily{padding-top:40px}
+  .xp-daily-avatar{width:92px;height:92px}.xp-daily-halo{inset:-8px}.xp-daily-hex{width:78px;height:72px}
+  .xp-daily-card{padding:34px 16px 14px;border-radius:24px}
+  .xp-daily-hi{font-size:28px}
+  .xp-daily-date{width:40px;margin-top:-18px}.xp-daily-date small{font-size:10px;line-height:14px}.xp-daily-date b{font-size:18px;line-height:22px}
+  .xp-daily-card h1{font-size:20px;margin:2px 0 7px}
+  .xp-daily-card p{font-size:14.5px;line-height:1.62;margin-bottom:11px}
+  .xp-daily-questions{gap:7px}.xp-daily-questions li{padding:7px 14px;font-size:14.5px;border-radius:14px}
+}

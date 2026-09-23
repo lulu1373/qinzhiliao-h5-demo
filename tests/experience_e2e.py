@@ -62,7 +62,7 @@ class ExperienceTests(unittest.TestCase):
         self.assertEqual(len(self.stored()['growthReports']['milestones']), 1)
 
     def test_private_support_can_end_without_action(self):
-        self.xp('home-topic', '[data-topic="homework"]')
+        self.page.evaluate("window.QZLStartHomeTopic('homework')")
         self.page.wait_for_selector('.v36-conversation.active')
         self.assertEqual(self.page.locator('#xpDescription').count(), 0)
         self.start_internal_journey('self')
@@ -75,7 +75,7 @@ class ExperienceTests(unittest.TestCase):
 
     def test_light_home_and_post_entries_stay_in_chat_until_user_asks_for_structure(self):
         self.page.goto(self.url + '#/home')
-        self.xp('home-topic', '[data-topic="homework"]')
+        self.page.evaluate("window.QZLStartHomeTopic('homework')")
         self.page.wait_for_selector('.v36-conversation.active')
         self.assertIn('最近一次写作业困难时', self.page.locator('.v36-conversation').inner_text())
         self.assertEqual(self.page.locator('#xpDescription').count(), 0)
@@ -249,7 +249,7 @@ class ExperienceTests(unittest.TestCase):
 
     def test_clear_conversations_removes_private_journeys(self):
         self.page.goto(self.url + '#/home')
-        self.xp('home-topic', '[data-topic="homework"]')
+        self.page.evaluate("window.QZLStartHomeTopic('homework')")
         self.start_internal_journey('self')
         self.page.locator('#xpDescription').fill('这句只在私人练习里。')
         self.xp('journey-save-context')
@@ -275,7 +275,7 @@ class ExperienceTests(unittest.TestCase):
         self.assertIn('先说清自己的责任', self.page.locator('#xpActionTitle').input_value())
 
     def test_resume_after_end_and_relation_change_preserve_completed_action(self):
-        self.xp('home-topic', '[data-topic="homework"]')
+        self.page.evaluate("window.QZLStartHomeTopic('homework')")
         self.start_internal_journey('self')
         self.page.locator('#xpDescription').fill('我想先留两分钟给自己。')
         self.xp('journey-save-context')
@@ -389,52 +389,34 @@ class ExperienceTests(unittest.TestCase):
         self.assertIn('广州市 · 天河区', self.page.locator('.xp-education-region-bar').inner_text())
         self.assertEqual(self.page.locator('.xp-news-card').count(), 5)
 
-    def test_home_chat_first_layout_uses_concrete_topics_and_keeps_composer_bottom(self):
+    def test_home_daily_topic_card_is_display_only_and_keeps_composer_bottom(self):
         self.page.goto(self.url + '#/home')
-        self.page.wait_for_selector('.xp-home-v22:visible')
-        home = self.page.locator('.xp-home-v22')
-        topics = home.locator('.xp-home-v22-topic-rail > button')
-        self.assertEqual(topics.count(), 4)
-        self.assertEqual(
-            [topics.nth(i).locator('b').inner_text() for i in range(4)],
-            ['孩子写作业很困难','孩子玩手机时间很多','孩子一说就顶嘴','孩子总是拖拖拉拉']
-        )
-        self.assertEqual(topics.locator('small').count(), 0)
-        self.assertEqual(home.locator('.xp-home-v22-growth-card').count(), 2)
-        self.assertEqual(home.locator('.xp-home-v22-growth-card em').count(), 0)
-        self.assertEqual(home.locator('.xp-home-v22-growth-card span > b').count(), 2)
-        self.assertEqual(home.locator('.xp-home-v22-growth-card span > small').count(), 2)
-        self.assertNotIn('继续探索', self.page.locator('body').inner_text())
+        self.page.wait_for_selector('.xp-home-daily:visible')
+        home = self.page.locator('.xp-home-daily')
+        card = home.locator('.xp-daily-card')
+        self.assertEqual(card.locator('.xp-daily-hi').inner_text(), 'Hi')
+        self.assertIn('月', card.locator('.xp-daily-date small').inner_text())
+        self.assertEqual(card.locator('h1').inner_text(), '孩子为什么越来越有主意？')
+        self.assertIn('8岁是孩子的独立意识发展期', card.locator('p').inner_text())
+        self.assertEqual(card.locator('.xp-daily-questions li').all_inner_texts(), ['哪些事该放手？','孩子顶嘴怎么办？','如何建立孩子自信？'])
+        self.assertEqual(card.locator('button, a, [data-xp-action], [data-action]').count(), 0, 'questions are display-only')
+        self.assertEqual(home.locator('.xp-home-v22-growth-card, .xp-home-v22-topic-rail').count(), 0)
         self.assertEqual(self.page.locator('.v90-card-pill:visible').count(), 5)
-        self.assertEqual(self.page.locator('#chatInput').count(), 1)
+        avatar = home.locator('.xp-daily-avatar').bounding_box()
+        box = card.bounding_box()
         composer = self.page.locator('.ai-shell > .composer:visible').bounding_box()
-        hero = home.locator('.xp-home-v22-hero:visible').bounding_box()
-        prompts = home.locator('.xp-home-v22-topics:visible').bounding_box()
-        growth = home.locator('.xp-home-v22-growth:visible').bounding_box()
-        self.assertLessEqual(hero['height'], 112)
-        self.assertGreaterEqual(float(home.locator('.xp-home-v22-copy h1').evaluate('(e)=>parseFloat(getComputedStyle(e).fontSize)')), 27)
-        self.assertGreaterEqual(float(topics.first.locator('b').evaluate('(e)=>parseFloat(getComputedStyle(e).fontSize)')), 14)
-        self.assertGreater(prompts['y'], hero['y'])
-        self.assertGreater(growth['y'], prompts['y'])
-        self.assertGreater(composer['y'], growth['y'] + growth['height'])
-        topics.first.click()
+        self.assertLess(avatar['y'], box['y'])
+        self.assertGreater(avatar['y'] + avatar['height'], box['y'], 'avatar overlaps the card top edge')
+        self.assertAlmostEqual(avatar['x'] + avatar['width'] / 2, box['x'] + box['width'] / 2, delta=2)
+        self.assertGreater(composer['y'], box['y'] + box['height'])
+
+    def test_home_topic_entry_still_starts_light_chat(self):
+        self.page.goto(self.url + '#/home', wait_until='networkidle')
+        self.page.evaluate("window.QZLStartHomeTopic('homework')")
         self.page.wait_for_selector('.v36-conversation.active')
         conversation = self.page.locator('.v36-conversation')
         self.assertIn('孩子写作业很困难，我不知道该怎么帮他。', conversation.inner_text())
-        self.assertIn('不会做、不愿开始', conversation.inner_text())
         self.assertEqual(self.stored()['chat']['scenario'], 'home-homework')
-        self.assertEqual(self.page.locator('.v90-card-pill:visible').count(), 5)
-
-    def test_home_family_archive_entry_opens_archive_overview(self):
-        self.page.goto(self.url + '#/home', wait_until='networkidle')
-        self.page.wait_for_selector('.xp-home-v22:visible')
-        entry = self.page.locator('.xp-home-v22-growth-card.memory')
-        self.assertIn('家庭档案', entry.inner_text())
-        self.assertNotIn('成长记忆', entry.inner_text())
-        entry.click()
-        self.page.wait_for_selector('.a3-overview:visible')
-        self.assertTrue(self.page.url.endswith('#/archive'))
-        self.assertEqual(self.page.locator('.v79-archive-tabs .segment-btn.active').inner_text(), '家庭总览')
 
     def test_drawer_common_tools_has_no_placeholder_more_entry(self):
         self.page.goto(self.url + '#/home')

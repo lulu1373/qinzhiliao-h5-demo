@@ -113,22 +113,22 @@ test('community reply action enters focused reply mode and uses send language',(
   assert.doesNotMatch(detail,/保存回应/); assert.match(detail,/data-xp-action="focus-reply"/); assert.match(detail,/xp-social-label">收藏/);
 });
 
-test('chat-first home exposes four concrete family topics that send directly into light chat',()=>{
+test('home shows the daily topic card with display-only questions and keeps topic chats reachable',()=>{
   const controller=fs.readFileSync(path.join(__dirname,'../assets/experience-controller.js'),'utf8');
+  assert.match(controller,/title:'孩子为什么越来越有主意？'/);
+  assert.match(controller,/8岁是孩子的独立意识发展期，开始重视规则、他人评价，也更想自己做决定。家长的核心任务是，既守住边界，也让孩子感到被理解、被支持。/);
+  assert.match(controller,/questions:\['哪些事该放手？','孩子顶嘴怎么办？','如何建立孩子自信？'\]/);
+  assert.match(controller,/<ul class="xp-daily-questions"[\s\S]{0,160}<li>\$\{esc\(q\)\}<\/li>/);
+  assert.match(controller,/class="xp-daily-hi">Hi</);
+  assert.match(controller,/class="xp-daily-date"/);
+  assert.doesNotMatch(controller,/data-xp-action="home-topic"/);
+  assert.doesNotMatch(controller,/xp-home-v22-growth-card/);
   assert.match(controller,/function startHomeTopic\(/);
-  for(const topic of ['homework','phone','backtalk','procrastination']){
-    assert.match(controller,new RegExp('data-xp-action="home-topic" data-topic="'+topic+'"'));
-  }
-  for(const text of ['孩子写作业很困难','孩子玩手机时间很多','孩子一说就顶嘴','孩子总是拖拖拉拉']){
-    assert.match(controller,new RegExp(text));
-  }
+  assert.match(controller,/window\.QZLStartHomeTopic=/);
   assert.match(controller,/孩子写作业很困难，我不知道该怎么帮他。/);
   assert.match(controller,/mode:'light'/);
-  assert.doesNotMatch(controller,/xp-home-light/);
   assert.match(controller,/return startLightChat\('post',post\)/);
   assert.match(controller,/renderCardQuickBarV90\(\)/);
-  assert.doesNotMatch(controller,/整理成一个小行动/);
-  assert.doesNotMatch(controller,/xp-tool-button/);
 });
 
 

@@ -130,6 +130,8 @@ function installExperience() {
       scene:'procrastination'
     }
   };
+  // Kept for tests and deep links; the home page no longer renders topic buttons.
+  if(typeof window!=='undefined')window.QZLStartHomeTopic=(key)=>startHomeTopic(key);
   function startHomeTopic(key){
     const topic=HOME_CHAT_TOPICS[key];
     if(!topic)return;
@@ -591,28 +593,24 @@ function prepareCommunityImage(file) {
 }
 
 function installExperienceHome({read}) {
+  // Daily topic card (阿福-style layout in 亲智聊 colours). Questions are display-only in this demo.
+  const HOME_DAILY_TOPIC={
+    title:'孩子为什么越来越有主意？',
+    body:'8岁是孩子的独立意识发展期，开始重视规则、他人评价，也更想自己做决定。家长的核心任务是，既守住边界，也让孩子感到被理解、被支持。',
+    questions:['哪些事该放手？','孩子顶嘴怎么办？','如何建立孩子自信？']
+  };
   renderHomeIdle = function() {
-    const memories=(state.archive?.memories||[]).filter(item=>item.enabled!==false);
-    const memory=memories.find(item=>item.status==='confirmed')||memories[0]||null;
-    const milestones=state.growthReports?.milestones||[];
-    const milestone=milestones.slice().sort((a,b)=>String(b.date||'').localeCompare(String(a.date||'')))[0]||null;
-    return `<div class="xp-home xp-home-v22">
-      <section class="xp-home-v22-hero">
-        <div class="xp-home-v22-copy"><h1>今天想聊什么？</h1></div>
-        <img src="${ASSETS.mascotHome}" alt="小亲">
-      </section>
-      <section class="xp-home-v22-topics">
-        <header><h2>想聊哪一件？</h2><button class="xp-home-focus-link" data-xp-action="home-focus">直接说</button></header>
-        <div class="xp-home-prompt-rail xp-home-v22-topic-rail">
-          <button data-xp-action="home-topic" data-topic="homework"><i>${svg.task}</i><b>孩子写作业很困难</b></button>
-          <button data-xp-action="home-topic" data-topic="phone"><i>${svg.phoneRule}</i><b>孩子玩手机时间很多</b></button>
-          <button data-xp-action="home-topic" data-topic="backtalk"><i>${svg.conflict}</i><b>孩子一说就顶嘴</b></button>
-          <button data-xp-action="home-topic" data-topic="procrastination"><i>${svg.repeat}</i><b>孩子总是拖拖拉拉</b></button>
-        </div>
-      </section>
-      <section class="xp-home-v22-growth">
-        <button class="xp-home-v22-growth-card memory" data-xp-action="home-memory"><i>${svg.familyArchive}</i><span><b>家庭档案</b><small>${memories.length} 条记忆</small></span></button>
-        <button class="xp-home-v22-growth-card milestone" data-xp-action="home-milestone"><i>${svg.growthLeaf}</i><span><b>里程碑</b><small>${milestones.length} 个</small></span></button>
+    const today=new Date();
+    const topic=HOME_DAILY_TOPIC;
+    return `<div class="xp-home xp-home-daily">
+      <section class="xp-daily" aria-label="今日话题">
+        <div class="xp-daily-avatar" aria-hidden="true"><span class="xp-daily-halo"></span><span class="xp-daily-hex"><img src="${ASSETS.mascotAvatar}" alt=""></span></div>
+        <article class="xp-daily-card">
+          <header class="xp-daily-head"><span class="xp-daily-hi">Hi</span><time class="xp-daily-date" datetime="${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}"><small>${today.getMonth()+1}月</small><b>${today.getDate()}</b></time></header>
+          <h1>${esc(topic.title)}</h1>
+          <p>${esc(topic.body)}</p>
+          <ul class="xp-daily-questions" aria-label="相关问题">${topic.questions.map(q=>`<li>${esc(q)}</li>`).join('')}</ul>
+        </article>
       </section>
     </div>`;
   };

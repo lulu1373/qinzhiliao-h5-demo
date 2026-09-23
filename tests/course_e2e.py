@@ -101,7 +101,7 @@ class CourseTests(unittest.TestCase):
 
     def test_reward_event_is_idempotent_and_light_chat_does_not_sell_immediately(self):
         self.dismiss_points_reminder()
-        self.page.locator('[data-xp-action="home-topic"][data-topic="homework"]').click()
+        self.page.evaluate("window.QZLStartHomeTopic('homework')")
         self.page.wait_for_timeout(500)
         self.assertEqual(self.page.locator('.course-chat-recommendation').count(), 0)
         reward = "window.dispatchEvent(new CustomEvent('qzl:reward',{detail:{sourceType:'action_feedback',sourceId:'action-1',amount:5}}))"
