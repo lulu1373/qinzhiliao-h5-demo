@@ -49,17 +49,56 @@ test('demo composer starts from the approved seed', () => {
   assert.match(index, /exampleDraft\('seed'\)\.text/);
 });
 
-test('first visit boots directly into the approved preset conversation', () => {
-  assert.match(index, /FIXED_DEMO_BOOT_KEY/);
+test('every /latest/ visit boots into the approved preset conversation from the first sentence', () => {
+  assert.match(index, /if\(!presetEntry\)return false;state\.loggedIn=true;/);
   assert.match(index, /state\.loggedIn=true;startFixedConversation\('homework',QZLFixedConversationModel\.PRESET\.seed\)/);
   assert.match(index, /if\(!bootstrapFixedDemo\(\)\)renderRoute\(normalizeRoute\(\)\)/);
 });
 
-test('demo stages can advance with one tap using the preset parent replies', () => {
-  assert.match(index, /data-action="fixed-demo-next">继续演示 · 发送预设回复/);
-  assert.match(index, /function fixedDemoNext\(\)/);
-  assert.match(index, /submitFixedAnswer\(QZLFixedConversationModel\.exampleDraft\(flow\.stage\)\.text\)/);
+test('demo stages advance by sending the prefilled composer draft, not an inline card', () => {
+  assert.doesNotMatch(index, /data-action="fixed-demo-next">继续演示/);
+  assert.match(index, /function fixedSyncDraft\(\)/);
+  assert.match(index, /QZLFixedConversationModel\.composerDraft\(fixedFlow\(\)\)/);
   assert.match(index, /action==='fixed-later'/);
+});
+
+test('conversation text follows the approved reference dialogue', () => {
+  assert.equal(model.REPLIES.accept, '好，帮我看看吧。');
+  assert.equal(model.REPLIES.confirm, '对，就是这样。');
+  assert.match(model.INVITE, /^催了好几次，还是拖到快十点/);
+  assert.match(model.PROMPTS.confirm, /1\. \*\*场景\*\*/);
+  assert.match(model.PROMPTS.confirm, /我这样梳理，符合当时的实际情况吗？\n\n如果有不准确或遗漏的地方，你可以进行补充。$/);
+  assert.match(model.PROMPTS.expectation, /\*\*这件事最让你在意或担心的是什么？\*\*/);
+  assert.match(model.RESULT_INTRO, /接下来，我将为你生成《解读卡》/);
+});
+
+test('progress bar appears after the parent opts in and tracks three steps', () => {
+  let flow = model.createFlow(model.PRESET.seed);
+  assert.equal(model.progress(flow), null);
+  flow = model.accept(flow);
+  assert.deepEqual(model.progress(flow).steps.map(s => s.state), ['current','todo','todo']);
+  assert.equal(model.progress(flow).title, '一起看懂这次发生的事');
+  flow = model.answer(flow, model.PRESET.scene);
+  assert.deepEqual(model.progress(flow).steps.map(s => s.state), ['done','current','todo']);
+  flow = model.answer(flow, model.PRESET.interaction);
+  assert.equal(flow.stage, 'confirm');
+  assert.deepEqual(model.progress(flow).steps.map(s => s.state), ['done','current','todo']);
+  flow = model.confirm(flow);
+  assert.deepEqual(model.progress(flow).steps.map(s => s.state), ['done','done','current']);
+  flow = model.answer(flow, model.PRESET.expectation);
+  assert.equal(model.progress(flow).title, '这次解读已整理好');
+  assert.deepEqual(model.progress(flow).steps.map(s => s.state), ['done','done','done']);
+  assert.deepEqual(model.STEPS, ['当时情况','双方回应','你的想法']);
+});
+
+test('confirm stage offers quick replies and leaves the composer empty', () => {
+  let flow = model.accept(model.createFlow(model.PRESET.seed));
+  flow = model.answer(flow, model.PRESET.scene);
+  assert.equal(model.composerDraft(flow), model.PRESET.interaction);
+  flow = model.answer(flow, model.PRESET.interaction);
+  assert.equal(model.composerDraft(flow), '');
+  assert.match(index, /data-action="fixed-confirm">对，就是这样<\/button><button class="fixed-secondary" data-action="fixed-supplement">补充修改/);
+  assert.equal(model.composerDraft(model.confirm(flow)), model.PRESET.expectation);
 });
 
 test('example answer is a draft and never submitted by the model', () => {

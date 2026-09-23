@@ -30,10 +30,12 @@ test('stage timing preserves the existing motion engine with a 600ms flip', () =
 });
 
 
+const fixedModel = fs.readFileSync(path.join(__dirname, '..', 'assets', 'fixed-conversation-model.js'), 'utf8');
+
 test('fixed interpretation reveal keeps four labeled modules in a scrollable larger front face', () => {
   assert.match(index, /run\.result=\{title:'解读卡·亲子翻译',[^\n]*modules:/);
   for (const heading of ['本次片段','值得记住的理解','你的担心与期待','下次可以试试']) {
-    assert.ok(index.includes(heading), `missing fixed interpretation heading: ${heading}`);
+    assert.ok(fixedModel.includes(heading), `missing fixed interpretation heading: ${heading}`);
   }
   assert.match(index, /class="card-reading-scroll reveal-item"/);
   assert.match(css, /\.card-reading-scroll\{[\s\S]*?overflow-y:auto/);
