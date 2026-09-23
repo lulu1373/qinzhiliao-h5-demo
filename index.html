@@ -9300,7 +9300,7 @@ installPointsV2();
 /* END POINTS V2 CONTROLLER */
 
 /* Fixed demo conversation: a bounded, evidence-led mainline for live demos. */
-const fixedStylesheet=document.createElement('link');fixedStylesheet.rel='stylesheet';fixedStylesheet.href='assets/fixed-conversation.css?v=6';document.head.appendChild(fixedStylesheet);
+const fixedStylesheet=document.createElement('link');fixedStylesheet.rel='stylesheet';fixedStylesheet.href='assets/fixed-conversation.css?v=7';document.head.appendChild(fixedStylesheet);
 const QZLFixedConversationModel=window.QZLFixedConversationModel;
 function fixedFlow(){return state.chat?.fixedFlow||null;}
 function fixedRich(text){
@@ -9327,10 +9327,10 @@ renderConversationItem=function(m,index,total){if(m&&m.kind==='fixed-report')ret
 function renderFixedNode(){
   const flow=fixedFlow(); if(!flow)return '';
   if(flow.paused)return `<article class="fixed-flow-card fixed-paused-card"><div class="fixed-flow-head"><span class="fixed-flow-mark">${svg.pause}</span><span><b>解读已暂停</b><small>进度与草稿已保留</small></span></div><p class="fixed-flow-question">你可以稍后回来，从「${esc(QZLFixedConversationModel.LABELS[flow.stage]||'当前阶段')}」继续。</p><div class="fixed-flow-actions"><button class="fixed-primary" data-action="fixed-resume">继续解读</button></div></article>`;
-  const replies=html=>`<div class="fixed-quick-replies">${html}</div>`;
+  const replies=(html,full=false)=>`<div class="fixed-quick-replies${full?' is-full':''}">${html}</div>`;
   if(flow.stage==='invite')return replies(`<button class="fixed-primary" data-action="fixed-accept">一起看看</button><button class="fixed-secondary" data-action="fixed-later">我想先聊聊</button>`);
   if(flow.stage==='confirm')return replies(`<button class="fixed-primary" data-action="fixed-confirm">对，就是这样</button><button class="fixed-secondary" data-action="fixed-supplement">补充修改</button>`);
-  if(flow.stage==='result')return replies(`<button class="fixed-secondary" data-action="fixed-revise">补充或修正</button><button class="fixed-primary" data-action="fixed-claim">领取本次解读卡</button>`);
+  if(flow.stage==='result')return replies(`<button class="fixed-secondary" data-action="fixed-revise">补充或修正</button><button class="fixed-primary" data-action="fixed-claim">领取本次解读卡</button>`,true);
   return '';
 }
 const fixedLegacyRenderChatNode=renderChatNode;

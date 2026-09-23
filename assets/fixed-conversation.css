@@ -41,3 +41,4 @@
 .fixed-report h3:before{content:'';display:inline-block;width:3px;height:14px;margin-right:7px;border-radius:5px;background:#b3a477;vertical-align:-1px}
 .fixed-report h3:nth-of-type(2):before{background:#8aa576}.fixed-report h3:nth-of-type(3):before{background:#a599bc}.fixed-report h3:nth-of-type(4):before{background:#d8a06d}
 @media (min-width:700px){.fixed-report{max-width:720px}}
+.fixed-quick-replies.is-full{padding-left:0}
